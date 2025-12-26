@@ -64,7 +64,7 @@ export default function RegisterForm() {
           id="fullName"
           type="text"
           {...register("fullName")}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           placeholder="Enter your full name"
         />
         {errors.fullName && (
@@ -83,7 +83,7 @@ export default function RegisterForm() {
           id="email"
           type="email"
           {...register("email")}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           placeholder="Enter your email"
         />
         {errors.email && (
@@ -137,7 +137,7 @@ export default function RegisterForm() {
           <label
             className={`group relative cursor-pointer overflow-hidden rounded-xl border-2 transition-all ${
               selectedPreference === "men"
-                ? "border-emerald-600 bg-emerald-50"
+                ? "border-blue-600 bg-blue-50"
                 : "border-gray-200 bg-white hover:border-gray-300"
             }`}
           >
@@ -155,7 +155,7 @@ export default function RegisterForm() {
               </div>
             </div>
             {selectedPreference === "men" && (
-              <div className="absolute right-2 top-2 h-6 w-6 rounded-full bg-emerald-600 flex items-center justify-center">
+              <div className="absolute right-2 top-2 h-6 w-6 rounded-full bg-blue-600 flex items-center justify-center">
                 <svg
                   className="h-4 w-4 text-white"
                   fill="none"
@@ -176,7 +176,7 @@ export default function RegisterForm() {
           <label
             className={`group relative cursor-pointer overflow-hidden rounded-xl border-2 transition-all ${
               selectedPreference === "women"
-                ? "border-emerald-600 bg-emerald-50"
+                ? "border-blue-600 bg-blue-50"
                 : "border-gray-200 bg-white hover:border-gray-300"
             }`}
           >
@@ -194,7 +194,7 @@ export default function RegisterForm() {
               </div>
             </div>
             {selectedPreference === "women" && (
-              <div className="absolute right-2 top-2 h-6 w-6 rounded-full bg-emerald-600 flex items-center justify-center">
+              <div className="absolute right-2 top-2 h-6 w-6 rounded-full bg-blue-600 flex items-center justify-center">
                 <svg
                   className="h-4 w-4 text-white"
                   fill="none"
@@ -222,15 +222,15 @@ export default function RegisterForm() {
           id="terms"
           type="checkbox"
           required
-          className="mt-1 h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+          className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
         />
         <label htmlFor="terms" className="text-sm text-gray-600">
           I agree to the{" "}
-          <a href="#" className="font-medium text-emerald-600 hover:text-emerald-700">
+          <a href="#" className="font-medium text-blue-600 hover:text-blue-700">
             Terms and Conditions
           </a>{" "}
           and{" "}
-          <a href="#" className="font-medium text-emerald-600 hover:text-emerald-700">
+          <a href="#" className="font-medium text-blue-600 hover:text-blue-700">
             Privacy Policy
           </a>
         </label>
@@ -239,7 +239,7 @@ export default function RegisterForm() {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full rounded-lg bg-emerald-600 px-4 py-3 font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {isLoading ? (
           <span className="flex items-center justify-center gap-2">

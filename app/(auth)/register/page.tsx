@@ -1,75 +1,53 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import RegisterForm from "../(_components)/registerform";
 
 export default function RegisterPage() {
-  const [isVisible] = useState(true);
-
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 text-white">
+    <main className="min-h-screen bg-gray-50">
       <div className="flex min-h-screen">
         {/* Left Side - Branding */}
-        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-700 to-blue-900">
-            {/* Animated Background Elements */}
-            <div className="absolute -top-40 -left-40 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse-slow"></div>
-            <div className="absolute -bottom-40 -right-40 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse-slow" style={{ animationDelay: "1s" }}></div>
-          </div>
-          
-          <div className={`relative z-10 flex flex-col justify-center px-12 transition-all duration-700 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-20"}`}>
-            <div className="mb-8">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-12 w-12 rounded-xl bg-white flex items-center justify-center text-3xl font-bold text-blue-600">
-                  T
-                </div>
-                <span className="text-3xl font-bold tracking-tight">TAPTO</span>
+        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500 text-white">
+          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_20%,white,transparent_35%),radial-gradient(circle_at_80%_10%,white,transparent_35%),radial-gradient(circle_at_50%_80%,white,transparent_35%)]" />
+          <div className="relative z-10 flex flex-col justify-center px-12 py-10">
+            <div className="flex items-center gap-3 mb-8">
+              <Image
+                src="/logo1.png"
+                alt="TAPTO"
+                width={52}
+                height={52}
+                className="h-12 w-12 bg-white rounded-xl p-2 shadow-md"
+              />
+              <div>
+                <div className="text-3xl font-bold">TAPTO</div>
+                <div className="text-sm text-blue-100">Swipe. Shop. Smile.</div>
               </div>
-              <h1 className="text-4xl font-bold mb-4">Welcome to a Better Shopping Experience</h1>
-              <p className="text-xl text-blue-100 mb-6">Swipe. Shop. Style.</p>
-              <p className="text-blue-100">
-                Join thousands of happy shoppers discovering their perfect style every day. 
-                Create your account and start your fashion journey today!
-              </p>
             </div>
 
-            {/* Feature Highlights */}
-            <div className="space-y-4 max-w-md">
-              <div className="flex items-start gap-3 animate-fadeInUp">
-                <div className="rounded-full bg-white/20 p-2 mt-1">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Personalized Shopping</h3>
-                  <p className="text-sm text-blue-100">Get recommendations based on your style</p>
-                </div>
+            <div className="space-y-4 max-w-xl">
+              <h1 className="text-4xl font-bold leading-tight">Join TAPTO and start fresh.</h1>
+              <p className="text-lg text-blue-100">Create your account, set your style, and unlock exclusive drops.</p>
+              <div className="flex items-center gap-3 text-sm text-blue-100">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm">🛒</span>
+                <span>Sync cart, favorites, and orders across devices.</span>
               </div>
-              <div className="flex items-start gap-3 animate-fadeInUp" style={{ animationDelay: "0.1s" }}>
-                <div className="rounded-full bg-white/20 p-2 mt-1">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Exclusive Deals</h3>
-                  <p className="text-sm text-blue-100">Access member-only discounts</p>
-                </div>
+              <div className="flex items-center gap-3 text-sm text-blue-100">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm">🎁</span>
+                <span>Members-only deals and early access.</span>
               </div>
-              <div className="flex items-start gap-3 animate-fadeInUp" style={{ animationDelay: "0.2s" }}>
-                <div className="rounded-full bg-white/20 p-2 mt-1">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Fast & Secure</h3>
-                  <p className="text-sm text-blue-100">Shop with confidence</p>
-                </div>
-              </div>
+            </div>
+
+            {/* Illustration */}
+            <div className="relative mt-8 h-64 w-full max-w-md self-end">
+              <img
+                src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=80"
+                alt="Person shopping"
+                className="absolute inset-0 h-full w-full object-cover rounded-2xl shadow-2xl border border-white/20"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-blue-900/60 to-transparent" />
             </div>
           </div>
         </div>
@@ -94,8 +72,9 @@ export default function RegisterPage() {
 
               {/* Header */}
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-1">Create Account</h2>
-                <p className="text-gray-600">Start your shopping journey</p>
+                <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 mb-3">Create your account</div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">Sign up</h2>
+                <p className="text-gray-600">Set your style and start shopping</p>
               </div>
 
               <RegisterForm />
@@ -105,7 +84,7 @@ export default function RegisterPage() {
                   Already have an account?{" "}
                   <Link
                     href="/login"
-                    className="font-semibold text-emerald-600 hover:text-emerald-700"
+                    className="font-semibold text-blue-600 hover:text-blue-700"
                   >
                     Sign in
                   </Link>
