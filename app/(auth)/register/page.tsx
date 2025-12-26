@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import RegisterForm from "../(_components)/registerform";
 
 export default function RegisterPage() {
@@ -74,24 +75,27 @@ export default function RegisterPage() {
         </div>
 
         {/* Right Side - Register Form */}
-        <div className="flex w-full lg:w-1/2 items-center justify-center p-6 lg:p-12">
-          <div className={`w-full max-w-md transition-all duration-700 delay-300 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-            <div className="rounded-3xl bg-white p-8 lg:p-10 shadow-2xl">
+        <div className="flex w-full lg:w-1/2 items-center justify-center p-6">
+          <div className="w-full max-w-md">
+            <div className="rounded-2xl bg-white p-8 shadow-lg border border-gray-200">
               {/* Mobile Logo */}
-              <div className="lg:hidden mb-8 text-center">
+              <div className="lg:hidden mb-6 text-center">
                 <div className="inline-flex items-center gap-3 mb-2">
-                  <div className="h-10 w-10 rounded-xl bg-blue-600 flex items-center justify-center text-2xl font-bold text-white">
-                    T
-                  </div>
-                  <span className="text-2xl font-bold tracking-tight text-gray-900">TAPTO</span>
+                  <Image
+                    src="/logo1.png"
+                    alt="TAPTO"
+                    width={40}
+                    height={40}
+                    className="h-10 w-10"
+                  />
+                  <span className="text-2xl font-bold text-gray-900">TAPTO</span>
                 </div>
-                <p className="text-sm text-gray-600">Create Your Account</p>
               </div>
 
-              {/* Desktop Header */}
-              <div className="hidden lg:block mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
-                <p className="text-gray-600">Start your shopping journey today</p>
+              {/* Header */}
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">Create Account</h2>
+                <p className="text-gray-600">Start your shopping journey</p>
               </div>
 
               <RegisterForm />
@@ -101,7 +105,7 @@ export default function RegisterPage() {
                   Already have an account?{" "}
                   <Link
                     href="/login"
-                    className="font-semibold text-blue-600 hover:text-blue-700 transition"
+                    className="font-semibold text-emerald-600 hover:text-emerald-700"
                   >
                     Sign in
                   </Link>
@@ -110,10 +114,10 @@ export default function RegisterPage() {
             </div>
 
             {/* Back to Home Link */}
-            <div className="mt-6 text-center">
+            <div className="mt-4 text-center">
               <Link
                 href="/landingpage"
-                className="inline-flex items-center gap-2 text-sm text-white/80 hover:text-white transition"
+                className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
               >
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />

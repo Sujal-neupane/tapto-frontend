@@ -47,7 +47,7 @@ export default function LoginForm() {
           id="email"
           type="email"
           {...register("email")}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
           placeholder="Enter your email"
         />
         {errors.email && (
@@ -66,7 +66,7 @@ export default function LoginForm() {
           id="password"
           type="password"
           {...register("password")}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
           placeholder="Enter your password"
         />
         {errors.password && (
@@ -78,11 +78,11 @@ export default function LoginForm() {
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
-            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
           />
           <span className="text-gray-600">Remember me</span>
         </label>
-        <a href="#" className="font-medium text-blue-600 hover:text-blue-700">
+        <a href="#" className="font-medium text-emerald-600 hover:text-emerald-700">
           Forgot Password?
         </a>
       </div>
@@ -90,7 +90,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-lg bg-emerald-600 px-4 py-3 font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {isLoading ? (
           <span className="flex items-center justify-center gap-2">

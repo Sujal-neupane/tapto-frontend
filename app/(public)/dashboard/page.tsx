@@ -296,7 +296,7 @@ export default function DashboardPage() {
 
               <button
                 onClick={() => handleSwipe("right")}
-                className="group flex h-16 w-16 items-center justify-center rounded-full border-4 border-green-500 bg-white text-green-500 shadow-lg transition-all hover:scale-110 hover:bg-green-500 hover:text-white active:scale-95"
+                className="group flex h-16 w-16 items-center justify-center rounded-full border-4 border-emerald-500 bg-white text-emerald-500 shadow-lg transition-all hover:scale-110 hover:bg-emerald-500 hover:text-white active:scale-95"
               >
                 <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
