@@ -1,32 +1,52 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import LoginForm from "../(_components)/loginform";
 
 export default function LoginPage() {
-  const [isVisible] = useState(true);
-
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="flex min-h-screen">
         {/* Left Side - Branding */}
-        <div className="hidden lg:flex lg:w-1/2 bg-emerald-600 relative overflow-hidden">
-          <div className="relative z-10 flex flex-col justify-center px-12 text-white">
-            <div className="mb-8">
-              <div className="flex items-center gap-3 mb-6">
-                <Image
-                  src="/logo1.png"
-                  alt="TAPTO"
-                  width={48}
-                  height={48}
-                  className="h-12 w-12 bg-white rounded-xl p-2"
-                />
-                <span className="text-3xl font-bold">TAPTO</span>
+        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500 text-white">
+          {/* background accents */}
+          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_20%,white,transparent_35%),radial-gradient(circle_at_80%_10%,white,transparent_35%),radial-gradient(circle_at_50%_80%,white,transparent_35%)]" />
+          <div className="relative z-10 flex flex-col justify-center px-12 py-10">
+            <div className="flex items-center gap-3 mb-8">
+              <Image
+                src="/logo1.png"
+                alt="TAPTO"
+                width={52}
+                height={52}
+                className="h-12 w-12 bg-white rounded-xl p-2 shadow-md"
+              />
+              <div>
+                <div className="text-3xl font-bold">TAPTO</div>
+                <div className="text-sm text-blue-100">Swipe. Shop. Smile.</div>
               </div>
-              <h1 className="text-4xl font-bold mb-4">Welcome Back!</h1>
-              <p className="text-xl text-emerald-50">Sign in to continue shopping</p>
+            </div>
+
+            <div className="space-y-4 max-w-xl">
+              <h1 className="text-4xl font-bold leading-tight">Welcome back, trendsetter.</h1>
+              <p className="text-lg text-blue-100">Sign in and keep your cart, favorites, and orders in sync.</p>
+              <div className="flex items-center gap-3 text-sm text-blue-100">
+                
+              </div>
+              <div className="flex items-center gap-3 text-sm text-blue-100">
+           
+              </div>
+            </div>
+
+            {/* Illustration */}
+            <div className="relative mt-8 h-64 w-full max-w-md self-end">
+              <img
+                src="https://media.gettyimages.com/id/1383701480/vector/woman-with-shopping-bags-buying-online.jpg?s=612x612&w=0&k=20&c=do34OGzKkW9k3qz9AukLWaBTT2CxQCxDe3oD_oBbAGw="
+                alt="Person shopping"
+                className="absolute inset-0 h-full w-full object-cover rounded-2xl shadow-2xl border border-white/20"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-blue-900/60 to-transparent" />
             </div>
           </div>
         </div>
@@ -51,6 +71,7 @@ export default function LoginPage() {
 
               {/* Header */}
               <div className="mb-6">
+                <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 mb-3">Secure Login</div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-1">Sign In</h2>
                 <p className="text-gray-600">Welcome back to TAPTO</p>
               </div>
@@ -62,7 +83,7 @@ export default function LoginPage() {
                   Don&apos;t have an account?{" "}
                   <Link
                     href="/register"
-                    className="font-semibold text-emerald-600 hover:text-emerald-700"
+                    className="font-semibold text-blue-600 hover:text-blue-700"
                   >
                     Create account
                   </Link>
