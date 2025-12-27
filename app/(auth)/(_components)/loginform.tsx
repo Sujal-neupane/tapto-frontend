@@ -30,6 +30,7 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const emailValue = watch("email");
   const passwordValue = watch("password");
 
@@ -158,10 +159,10 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={isLoading}
-        className="group relative w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3.5 font-bold text-white transition-all hover:from-blue-700 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 shadow-lg shadow-blue-600/30 hover:shadow-xl hover:shadow-blue-600/40 hover:-translate-y-0.5 disabled:hover:translate-y-0 overflow-hidden"
+        className="group relative w-full rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 px-4 py-3.5 font-bold text-white transition-all hover:from-blue-700 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 shadow-lg shadow-blue-600/30 hover:shadow-xl hover:shadow-blue-600/40 hover:-translate-y-0.5 disabled:hover:translate-y-0 overflow-hidden"
       >
         {!isLoading && (
-          <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
+          <span className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
         )}
         {isLoading ? (
           <span className="flex items-center justify-center gap-2">
