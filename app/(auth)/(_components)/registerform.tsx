@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,287 +24,275 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 export default function RegisterForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedPreference, setSelectedPreference] = useState<"men" | "women" | undefined>();
+  const [step, setStep] = useState(0);
   const {
     register,
     handleSubmit,
+    trigger,
     watch,
+    getValues,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
+    mode: "onBlur",
   });
 
-  useEffect(() => {
-    const subscription = watch((data) => {
-      setSelectedPreference(data.shoppingPreference as "men" | "women" | undefined);
-    });
-    return () => subscription.unsubscribe();
-  }, [watch]);
+  const preference = watch("shoppingPreference");
+
+  const goNext = async () => {
+    if (step === 0) {
+      const ok = await trigger(["fullName", "email", "password", "confirmPassword"]);
+      if (ok) setStep(1);
+      return;
+    }
+    if (step === 1) {
+      const ok = await trigger(["shoppingPreference"]);
+      if (ok) setStep(2);
+      return;
+    }
+  };
+
+  const goBack = () => setStep((s) => Math.max(0, s - 1));
 
   const onSubmit = async (data: RegisterFormData) => {
+    if (step < 2) return; // guard; final step only
     setIsLoading(true);
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
     console.log("Register data:", data);
-    // Navigate to dashboard
     router.push("/dashboard");
     setIsLoading(false);
   };
 
+  const steps = [
+    { title: "Account", desc: "Basic info" },
+    { title: "Style", desc: "Pick your vibe" },
+    { title: "Finish", desc: "Review & join" },
+  ];
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-5">
-      <div className="space-y-2">
-        <label
-          htmlFor="fullName"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Full Name
-        </label>
-        <input
-          id="fullName"
-          type="text"
-          {...register("fullName")}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-          placeholder="Enter your full name"
-        />
-        {errors.fullName && (
-          <p className="text-sm text-red-500">{errors.fullName.message}</p>
-        )}
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6">
+      {/* Progress */}
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+            Step {step + 1} of 3
+          </div>
+          <div className="text-lg font-semibold text-gray-900">{steps[step].title}</div>
+          <div className="text-sm text-gray-500">{steps[step].desc}</div>
+        </div>
+        <div className="flex items-center gap-2">
+          {steps.map((_, i) => (
+            <span
+              key={i}
+              className={`h-2 w-10 rounded-full transition-all ${
+                i <= step ? "bg-blue-600" : "bg-gray-200"
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="space-y-2">
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Email address
-        </label>
-        <input
-          id="email"
-          type="email"
-          {...register("email")}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-          placeholder="Enter your email"
-        />
-        {errors.email && (
-          <p className="text-sm text-red-500">{errors.email.message}</p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <label
-          htmlFor="password"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          {...register("password")}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-          placeholder="Create a password"
-        />
-        {errors.password && (
-          <p className="text-sm text-red-500">{errors.password.message}</p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <label
-          htmlFor="confirmPassword"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Confirm Password
-        </label>
-        <input
-          id="confirmPassword"
-          type="password"
-          {...register("confirmPassword")}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-          placeholder="Confirm your password"
-        />
-        {errors.confirmPassword && (
-          <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
-        )}
-      </div>
-
-      <div className="space-y-3">
-        <label className="block text-sm font-medium text-gray-700">
-          Shopping Preference
-        </label>
-        <div className="grid grid-cols-2 gap-3">
-          <label
-            className={`group relative cursor-pointer overflow-hidden rounded-xl border-2 transition-all ${
-              selectedPreference === "men"
-                ? "border-blue-600 bg-blue-50"
-                : "border-gray-200 bg-white hover:border-gray-300"
-            }`}
-          >
+      {step === 0 && (
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+              Full Name
+            </label>
             <input
-              type="radio"
-              value="men"
-              {...register("shoppingPreference")}
-              className="sr-only"
+              id="fullName"
+              type="text"
+              {...register("fullName")}
+              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              placeholder="Alex Carter"
             />
-            <div className="p-4 text-center">
-              <div className="mb-2 text-4xl">👔</div>
-              <div className="font-semibold text-gray-900">Men&apos;s Fashion</div>
-              <div className="mt-1 text-xs text-gray-500">
-                Suits, Shirts & More
-              </div>
-            </div>
-            {selectedPreference === "men" && (
-              <div className="absolute right-2 top-2 h-6 w-6 rounded-full bg-blue-600 flex items-center justify-center">
-                <svg
-                  className="h-4 w-4 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              </div>
-            )}
-          </label>
+            {errors.fullName && <p className="text-sm text-red-500">{errors.fullName.message}</p>}
+          </div>
 
-          <label
-            className={`group relative cursor-pointer overflow-hidden rounded-xl border-2 transition-all ${
-              selectedPreference === "women"
-                ? "border-blue-600 bg-blue-50"
-                : "border-gray-200 bg-white hover:border-gray-300"
-            }`}
-          >
+          <div className="space-y-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email address
+            </label>
             <input
-              type="radio"
-              value="women"
-              {...register("shoppingPreference")}
-              className="sr-only"
+              id="email"
+              type="email"
+              {...register("email")}
+              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              placeholder="you@example.com"
             />
-            <div className="p-4 text-center">
-              <div className="mb-2 text-4xl">👗</div>
-              <div className="font-semibold text-gray-900">Women&apos;s Fashion</div>
-              <div className="mt-1 text-xs text-gray-500">
-                Dresses, Tops & More
-              </div>
+            {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                {...register("password")}
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                placeholder="••••••••"
+              />
+              {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
             </div>
-            {selectedPreference === "women" && (
-              <div className="absolute right-2 top-2 h-6 w-6 rounded-full bg-blue-600 flex items-center justify-center">
-                <svg
-                  className="h-4 w-4 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              </div>
-            )}
+            <div className="space-y-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                type="password"
+                {...register("confirmPassword")}
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                placeholder="••••••••"
+              />
+              {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {step === 1 && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 bg-blue-50 rounded-xl p-3 text-blue-800">
+            <span className="text-xl">🎨</span>
+            <div>
+              <div className="font-semibold">Pick your shopping vibe</div>
+              <div className="text-sm text-blue-700">We’ll tune recommendations to your style.</div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { key: "men", icon: "👔", title: "Men", desc: "Suits, sneakers, street" },
+              { key: "women", icon: "👗", title: "Women", desc: "Dresses, tops, chic" },
+            ].map((item) => (
+              <label
+                key={item.key}
+                className={`group relative cursor-pointer overflow-hidden rounded-xl border-2 transition-all ${
+                  preference === item.key ? "border-blue-600 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
+                }`}
+              >
+                <input
+                  type="radio"
+                  value={item.key}
+                  {...register("shoppingPreference")}
+                  className="sr-only"
+                />
+                <div className="p-4 text-center space-y-2">
+                  <div className="text-4xl">{item.icon}</div>
+                  <div className="font-semibold text-gray-900">{item.title}</div>
+                  <div className="text-xs text-gray-500">{item.desc}</div>
+                </div>
+                {preference === item.key && (
+                  <div className="absolute right-2 top-2 h-6 w-6 rounded-full bg-blue-600 flex items-center justify-center">
+                    <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                )}
+              </label>
+            ))}
+          </div>
+          {errors.shoppingPreference && <p className="text-sm text-red-500">{errors.shoppingPreference.message}</p>}
+        </div>
+      )}
+
+      {step === 2 && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 bg-green-50 rounded-xl p-3 text-green-800">
+            <span className="text-xl">✅</span>
+            <div>
+              <div className="font-semibold">Ready to roll</div>
+              <div className="text-sm text-green-700">Quick review before we create your account.</div>
+            </div>
+          </div>
+
+          <div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600">Name</span>
+              <span className="font-semibold text-gray-900">{getValues("fullName") || "Your name"}</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600">Email</span>
+              <span className="font-semibold text-gray-900">{getValues("email") || "you@example.com"}</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600">Preference</span>
+              <span className="font-semibold text-gray-900">
+                {preference === "men" && "Men"}
+                {preference === "women" && "Women"}
+                {!preference && "Not set"}
+              </span>
+            </div>
+          </div>
+
+          <label className="flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-4">
+            <input
+              id="terms"
+              type="checkbox"
+              required
+              className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            <span className="text-sm text-gray-700">
+              I agree to the {""}
+              <a href="#" className="font-semibold text-blue-600 hover:text-blue-700">Terms</a> and {""}
+              <a href="#" className="font-semibold text-blue-600 hover:text-blue-700">Privacy Policy</a>.
+            </span>
           </label>
         </div>
-        {errors.shoppingPreference && (
-          <p className="text-sm text-red-500">{errors.shoppingPreference.message}</p>
-        )}
-      </div>
+      )}
 
-      <div className="flex items-start gap-2">
-        <input
-          id="terms"
-          type="checkbox"
-          required
-          className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-        />
-        <label htmlFor="terms" className="text-sm text-gray-600">
-          I agree to the{" "}
-          <a href="#" className="font-medium text-blue-600 hover:text-blue-700">
-            Terms and Conditions
-          </a>{" "}
-          and{" "}
-          <a href="#" className="font-medium text-blue-600 hover:text-blue-700">
-            Privacy Policy
-          </a>
-        </label>
-      </div>
-
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {isLoading ? (
-          <span className="flex items-center justify-center gap-2">
-            <svg
-              className="h-5 w-5 animate-spin"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            Creating Account...
-          </span>
-        ) : (
-          "Create Account"
-        )}
-      </button>
-
-      <div className="relative py-4">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-200"></div>
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="bg-white px-4 text-gray-500">Or sign up with</span>
-        </div>
-      </div>
-
-      <button
-        type="button"
-        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition hover:bg-gray-50"
-      >
-        <span className="flex items-center justify-center gap-3">
-          <svg className="h-5 w-5" viewBox="0 0 24 24">
-            <path
-              fill="currentColor"
-              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-            />
-            <path
-              fill="currentColor"
-              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-            />
-            <path
-              fill="currentColor"
-              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-            />
-            <path
-              fill="currentColor"
-              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-            />
+      {/* Actions */}
+      <div className="flex items-center justify-between pt-2">
+        <button
+          type="button"
+          onClick={goBack}
+          disabled={step === 0}
+          className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          Continue with Google
-        </span>
-      </button>
+          Back
+        </button>
+
+        {step < 2 ? (
+          <button
+            type="button"
+            onClick={goNext}
+            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+          >
+            Next
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        ) : (
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {isLoading ? (
+              <>
+                <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" strokeWidth="4" />
+                  <path className="opacity-75" d="M4 12a8 8 0 018-8V2.5" strokeWidth="4" />
+                </svg>
+                Creating...
+              </>
+            ) : (
+              <>
+                Create Account
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </>
+            )}
+          </button>
+        )}
+      </div>
     </form>
   );
 }

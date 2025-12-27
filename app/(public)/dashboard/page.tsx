@@ -157,8 +157,6 @@ export default function DashboardPage() {
   };
 
   const getCardTransform = () => {
-    if (swipeDirection === "left") return "animate-swipeLeft";
-    if (swipeDirection === "right") return "animate-swipeRight";
     if (dragStart && dragCurrent) {
       const diffX = dragCurrent.x - dragStart.x;
       const rotation = diffX / 20;
@@ -167,8 +165,14 @@ export default function DashboardPage() {
     return {};
   };
 
+  const getCardClass = () => {
+    if (swipeDirection === "left") return "animate-swipeLeft";
+    if (swipeDirection === "right") return "animate-swipeRight";
+    return "";
+  };
+
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="mx-auto max-w-7xl px-4 py-4">
@@ -178,6 +182,7 @@ export default function DashboardPage() {
                 T
               </div>
               <span className="text-2xl font-bold tracking-tight text-gray-900">TAPTO</span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">⚡ Streak 3</span>
             </div>
 
             <div className="flex items-center gap-4">
@@ -196,13 +201,32 @@ export default function DashboardPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </button>
+              <div className="hidden sm:flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                🎁 Daily drop ready
+              </div>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="mx-auto max-w-md px-4 py-8">
+      <div className="mx-auto max-w-md px-4 py-8 space-y-6">
+        {/* Fun stats strip */}
+        <div className="grid grid-cols-3 gap-3 text-sm">
+          <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-3 text-center">
+            <div className="text-xs text-gray-500">Likes</div>
+            <div className="text-xl font-bold text-blue-700">{liked.length}</div>
+          </div>
+          <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-3 text-center">
+            <div className="text-xs text-gray-500">Passed</div>
+            <div className="text-xl font-bold text-gray-700">{passed.length}</div>
+          </div>
+          <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-3 text-center">
+            <div className="text-xs text-gray-500">Left</div>
+            <div className="text-xl font-bold text-emerald-600">{products.length - currentIndex}</div>
+          </div>
+        </div>
+
         {currentIndex < products.length ? (
           <div className="space-y-6">
             {/* Progress Bar */}
@@ -212,10 +236,10 @@ export default function DashboardPage() {
             </div>
 
             {/* Swipe Card */}
-            <div className="relative h-[600px] touch-none">
+            <div className="relative h-150 touch-none">
               <div
                 ref={cardRef}
-                className={`absolute inset-0 ${swipeDirection ? getCardTransform() : ""}`}
+                className={`absolute inset-0 ${getCardClass()}`}
                 style={!swipeDirection && dragStart && dragCurrent ? getCardTransform() : undefined}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
@@ -228,7 +252,7 @@ export default function DashboardPage() {
                 <div className="relative h-full w-full cursor-grab active:cursor-grabbing">
                   <div className="h-full rounded-3xl bg-white shadow-2xl overflow-hidden">
                     {/* Product Image Area */}
-                    <div className="relative h-2/3 bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+                    <div className="relative h-2/3 bg-linear-to-br from-blue-50 to-blue-100 flex items-center justify-center">
                       <div className="text-9xl animate-float">{currentProduct.image}</div>
                       
                       {/* Swipe Indicators */}
@@ -296,7 +320,7 @@ export default function DashboardPage() {
 
               <button
                 onClick={() => handleSwipe("right")}
-                className="group flex h-16 w-16 items-center justify-center rounded-full border-4 border-emerald-500 bg-white text-emerald-500 shadow-lg transition-all hover:scale-110 hover:bg-emerald-500 hover:text-white active:scale-95"
+                className="group flex h-16 w-16 items-center justify-center rounded-full border-4 border-green-500 bg-white text-green-500 shadow-lg transition-all hover:scale-110 hover:bg-green-500 hover:text-white active:scale-95"
               >
                 <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />

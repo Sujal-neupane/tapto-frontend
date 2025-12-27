@@ -31,17 +31,23 @@ export default function LoginPage() {
               <h1 className="text-4xl font-bold leading-tight">Welcome back, trendsetter.</h1>
               <p className="text-lg text-blue-100">Sign in and keep your cart, favorites, and orders in sync.</p>
               <div className="flex items-center gap-3 text-sm text-blue-100">
-                
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm">💳</span>
+                <span>Quick checkout with your saved cards.</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-blue-100">
-           
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm">💡</span>
+                <span>Smart picks based on your recent likes.</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-blue-100">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm">🎯</span>
+                <span>Keep your streaks to unlock surprise drops.</span>
               </div>
             </div>
 
             {/* Illustration */}
             <div className="relative mt-8 h-64 w-full max-w-md self-end">
               <img
-                src="https://media.gettyimages.com/id/1383701480/vector/woman-with-shopping-bags-buying-online.jpg?s=612x612&w=0&k=20&c=do34OGzKkW9k3qz9AukLWaBTT2CxQCxDe3oD_oBbAGw="
+                src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80"
                 alt="Person shopping"
                 className="absolute inset-0 h-full w-full object-cover rounded-2xl shadow-2xl border border-white/20"
                 loading="lazy"
@@ -89,6 +95,7 @@ export default function LoginPage() {
                   </Link>
                 </p>
               </div>
+
             </div>
 
             {/* Back to Home Link */}
