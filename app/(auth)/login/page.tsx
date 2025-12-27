@@ -6,10 +6,7 @@ import LoginForm from "../(_components)/loginform";
 import { 
   CreditCard, 
   Sparkles, 
-  Target, 
   Heart,
-  TrendingUp,
-  ShoppingBag,
   ArrowLeft,
   Zap,
   Lock,
@@ -18,7 +15,7 @@ import {
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
+    <main className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 -left-20 w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
@@ -28,9 +25,9 @@ export default function LoginPage() {
 
       <div className="flex min-h-screen relative z-10">
         {/* Left Side - Branding with creative elements */}
-        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white">
+        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700 text-white">
           {/* Animated grid pattern */}
-          <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+          <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-size-[4rem_4rem]"></div>
           
           {/* Floating shapes */}
           <div className="absolute top-20 left-20 w-24 h-24 border-4 border-white/20 rounded-3xl rotate-12 animate-pulse"></div>
@@ -76,7 +73,7 @@ export default function LoginPage() {
                 <div className="grid gap-4 mt-8">
                   <div className="group bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/15 transition-all hover:scale-[1.02]">
                     <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center shadow-lg">
+                      <div className="shrink-0 w-12 h-12 rounded-xl bg-linear-to-br from-emerald-400 to-green-500 flex items-center justify-center shadow-lg">
                         <CreditCard className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex-1">
@@ -88,7 +85,7 @@ export default function LoginPage() {
 
                   <div className="group bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/15 transition-all hover:scale-[1.02]">
                     <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center shadow-lg">
+                      <div className="shrink-0 w-12 h-12 rounded-xl bg-linear-to-br from-pink-400 to-rose-500 flex items-center justify-center shadow-lg">
                         <Heart className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex-1">
@@ -100,7 +97,7 @@ export default function LoginPage() {
 
                   <div className="group bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/15 transition-all hover:scale-[1.02]">
                     <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
+                      <div className="shrink-0 w-12 h-12 rounded-xl bg-linear-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
                         <Zap className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex-1">
@@ -150,8 +147,8 @@ export default function LoginPage() {
             {/* Main Form Card */}
             <div className="relative">
               {/* Decorative elements */}
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full blur-2xl opacity-20"></div>
-              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full blur-2xl opacity-20"></div>
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-linear-to-br from-yellow-400 to-orange-500 rounded-full blur-2xl opacity-20"></div>
+              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-linear-to-br from-blue-400 to-indigo-500 rounded-full blur-2xl opacity-20"></div>
 
               <div className="relative rounded-3xl bg-white p-8 shadow-2xl border border-gray-100 backdrop-blur-sm">
                 {/* Mobile Logo */}
@@ -164,14 +161,14 @@ export default function LoginPage() {
                       height={40}
                       className="h-10 w-10"
                     />
-                    <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">TAPTO</span>
+                    <span className="text-2xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">TAPTO</span>
                   </div>
                 </div>
 
                 {/* Header */}
                 <div className="mb-8">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-2 text-xs font-semibold text-blue-700 border border-blue-100">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-blue-50 to-indigo-50 px-4 py-2 text-xs font-semibold text-blue-700 border border-blue-100">
                       <Lock className="w-3 h-3" />
                       Secure Login
                     </div>
