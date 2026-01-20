@@ -3,16 +3,15 @@
             import Link from "next/link";
             import Image from "next/image";
             import RegisterForm from "../(_components)/registerform";
+            import {handleRegister} from  "../../../lib/actions/auth-action"
             import {
               Sparkles,
               Gift,
               ShoppingBag,
-              Heart,
               Shield,
               Zap,
               ArrowLeft,
               ChevronRight,
-              Star
             } from "lucide-react";
 
             export default function RegisterPage() {
