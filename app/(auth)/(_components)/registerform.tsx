@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useRouter } from "next/navigation";
 import {
   Mail,
@@ -17,29 +16,16 @@ import {
   Heart,
   ArrowLeft,
   ArrowRight,
-  Loader2
+  Loader2,
+  Phone,
 } from "lucide-react";
-
-const registerSchema = z
-  .object({
-    fullName: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string(),
-    shoppingPreference: z.enum(["men", "women"], {
-      message: "Please select your shopping preference",
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-type RegisterFormData = z.infer<typeof registerSchema>;
+import { RegisterFormData, registerSchema } from "../../../lib/validations/auth";
+import { handleRegister } from "../../../lib/actions/auth-action";
 
 export default function RegisterForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [step, setStep] = useState(0);
@@ -48,14 +34,12 @@ export default function RegisterForm() {
     handleSubmit,
     trigger,
     watch,
-    getValues,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     mode: "onBlur",
   });
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const preference = watch("shoppingPreference");
 
   const goNext = async () => {
@@ -65,7 +49,7 @@ export default function RegisterForm() {
       return;
     }
     if (step === 1) {
-      const ok = await trigger(["shoppingPreference"]);
+      const ok = await trigger(["countryCode", "phoneNumber"]);
       if (ok) setStep(2);
       return;
     }
@@ -76,20 +60,49 @@ export default function RegisterForm() {
   const onSubmit = async (data: RegisterFormData) => {
     if (step < 2) return;
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log("Register data:", data);
-    router.push("/dashboard");
-    setIsLoading(false);
+    setServerError(null);
+    
+    try {
+      // Combine country code and phone number
+      const fullPhoneNumber = `${data.countryCode}${data.phoneNumber}`;
+      
+      const result = await handleRegister({
+        fullName: data.fullName,
+        email: data.email,
+        password: data.password,
+        phoneNumber: fullPhoneNumber,
+        shoppingPreference: data.shoppingPreference,
+      });
+      
+      if (result.success) {
+        router.push(result.redirect || "/dashboard");
+        router.refresh();
+      } else {
+        setServerError(result.message || "Registration failed");
+      }
+    } catch (error: any) {
+      setServerError(error.message || "An error occurred during registration");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const steps = [
     { title: "Account", desc: "Basic info" },
-    { title: "Style", desc: "Pick your vibe" },
-    { title: "Finish", desc: "Review & join" },
+    { title: "Contact", desc: "Phone number" },
+    { title: "Style", desc: "Shopping preference" },
   ];
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6">
+      {/* Server Error Message */}
+      {serverError && (
+        <div className="rounded-lg bg-red-50 border-2 border-red-200 p-4 text-sm text-red-700 animate-in slide-in-from-top">
+          <p className="font-semibold">Registration Failed</p>
+          <p className="text-red-600">{serverError}</p>
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
@@ -215,35 +228,94 @@ export default function RegisterForm() {
       {step === 1 && (
         <div className="space-y-4">
           <div className="flex items-center gap-3 bg-blue-50 rounded-xl p-3 text-blue-800">
+            <Phone className="w-5 h-5" />
+            <div>
+              <div className="font-semibold">Add your phone number</div>
+              <div className="text-sm text-blue-700">We'll use this for account security and updates.</div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="countryCode" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+              <Phone className="w-4 h-4 text-blue-600" /> Country Code
+            </label>
+            <select
+              id="countryCode"
+              {...register("countryCode")}
+              className={`w-full rounded-xl border-2 px-4 py-3 text-gray-900 transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 ${
+                errors.countryCode ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-blue-500"
+              }`}
+            >
+              <option value="">Select country code</option>
+              <option value="+1">🇺🇸 United States (+1)</option>
+              <option value="+44">🇬🇧 United Kingdom (+44)</option>
+              <option value="+91">🇮🇳 India (+91)</option>
+              <option value="+977">🇳🇵 Nepal (+977)</option>
+              <option value="+86">🇨🇳 China (+86)</option>
+              <option value="+81">🇯🇵 Japan (+81)</option>
+              <option value="+82">🇰🇷 South Korea (+82)</option>
+              <option value="+61">🇦🇺 Australia (+61)</option>
+              <option value="+49">🇩🇪 Germany (+49)</option>
+              <option value="+33">🇫🇷 France (+33)</option>
+            </select>
+            {errors.countryCode && <p className="flex items-center gap-1 text-sm text-red-500"><span>⚠</span>{errors.countryCode.message}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="phoneNumber" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+              <Phone className="w-4 h-4 text-blue-600" /> Phone Number
+            </label>
+            <div className="relative">
+              <input
+                id="phoneNumber"
+                type="tel"
+                {...register("phoneNumber")}
+                className={`w-full rounded-xl border-2 px-4 py-3 pl-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 ${
+                  errors.phoneNumber ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-blue-500"
+                }`}
+                placeholder="1234567890"
+              />
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                <Phone className="w-5 h-5" />
+              </div>
+            </div>
+            {errors.phoneNumber && <p className="flex items-center gap-1 text-sm text-red-500"><span>⚠</span>{errors.phoneNumber.message}</p>}
+          </div>
+        </div>
+      )}
+
+      {step === 2 && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 bg-purple-50 rounded-xl p-3 text-purple-800">
             <Sparkles className="w-5 h-5" />
             <div>
-              <div className="font-semibold">Pick your shopping vibe</div>
-              <div className="text-sm text-blue-700">We’ll tune recommendations to your style.</div>
+              <div className="font-semibold">Choose your fashion preference</div>
+              <div className="text-sm text-purple-700">Help us personalize your shopping experience.</div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { key: "men", icon: <Shirt className="w-6 h-6" />, title: "Men", desc: "Suits, sneakers, street" },
-              { key: "women", icon: <Heart className="w-6 h-6" />, title: "Women", desc: "Dresses, tops, chic" },
+              { key: "Mens Fashion", icon: <Shirt className="w-6 h-6" />, title: "Men's Fashion", desc: "Suits, casual wear, accessories" },
+              { key: "Womens Fashion", icon: <Heart className="w-6 h-6" />, title: "Women's Fashion", desc: "Dresses, tops, accessories" },
             ].map((item) => (
               <label
                 key={item.key}
                 className={`group relative cursor-pointer overflow-hidden rounded-xl border-2 transition-all ${
-                  preference === item.key ? "border-blue-600 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
+                  preference === item.key ? "border-purple-600 bg-purple-50" : "border-gray-200 bg-white hover:border-gray-300"
                 }`}
               >
                 <input type="radio" value={item.key} {...register("shoppingPreference")!} className="sr-only" />
                 <div className="p-4 text-center space-y-2">
                   <div className={`mx-auto flex h-12 w-12 items-center justify-center rounded-xl ${
                     preference === item.key
-                      ? "bg-linear-to-br from-blue-500 to-indigo-600 text-white"
+                      ? "bg-linear-to-br from-purple-500 to-pink-600 text-white"
                       : "bg-gray-100 text-gray-700"
                   }`}>{item.icon}</div>
                   <div className="font-semibold text-gray-900">{item.title}</div>
                   <div className="text-xs text-gray-500">{item.desc}</div>
                 </div>
                 {preference === item.key && (
-                  <div className="absolute right-2 top-2 h-6 w-6 rounded-full bg-blue-600 flex items-center justify-center text-white">
+                  <div className="absolute right-2 top-2 h-6 w-6 rounded-full bg-purple-600 flex items-center justify-center text-white">
                     <CheckCircle2 className="w-4 h-4" />
                   </div>
                 )}
@@ -251,50 +323,6 @@ export default function RegisterForm() {
             ))}
           </div>
           {errors.shoppingPreference && <p className="text-sm text-red-500">{errors.shoppingPreference.message}</p>}
-        </div>
-      )}
-
-      {step === 2 && (
-        <div className="space-y-4">
-          <div className="flex items-center gap-3 bg-green-50 rounded-xl p-3 text-green-800">
-            <CheckCircle2 className="w-5 h-5" />
-            <div>
-              <div className="font-semibold">Ready to roll</div>
-              <div className="text-sm text-green-700">Quick review before we create your account.</div>
-            </div>
-          </div>
-
-          <div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">Name</span>
-              <span className="font-semibold text-gray-900">{getValues("fullName") || "Your name"}</span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">Email</span>
-              <span className="font-semibold text-gray-900">{getValues("email") || "you@example.com"}</span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">Preference</span>
-              <span className="font-semibold text-gray-900">
-                {preference === "men" && "Men"}
-                {preference === "women" && "Women"}
-                {!preference && "Not set"}
-              </span>
-            </div>
-          </div>
-
-          <label className="flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-4">
-            <input
-              id="terms"
-              type="checkbox"
-              required
-              className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            <span className="text-sm text-gray-700">
-              I agree to the <a href="#" className="font-semibold text-blue-600 hover:text-blue-700">Terms</a> and {""}
-              <a href="#" className="font-semibold text-blue-600 hover:text-blue-700">Privacy Policy</a>.
-            </span>
-          </label>
         </div>
       )}
 
@@ -322,7 +350,7 @@ export default function RegisterForm() {
           <button
             type="submit"
             disabled={isLoading}
-            className="group inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-blue-700 hover:to-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed shadow-md"
+            className="group inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-purple-600 to-pink-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-purple-700 hover:to-pink-700 disabled:opacity-60 disabled:cursor-not-allowed shadow-md"
           >
             {isLoading ? (
               <>

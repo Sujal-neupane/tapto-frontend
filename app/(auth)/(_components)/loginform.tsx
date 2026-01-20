@@ -3,20 +3,15 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, Loader2, Sparkles } from "lucide-react";
-
-const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
+import { loginSchema, type LoginFormData } from "..//..//../lib/validations/auth";
+import { handleLogin } from "../../../lib/actions/auth-action";
 
 export default function LoginForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
@@ -30,22 +25,40 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const emailValue = watch("email");
   const passwordValue = watch("password");
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log("Login data:", data);
-    // Navigate to dashboard
-    router.push("/dashboard");
-    setIsLoading(false);
+    setServerError(null);
+    
+    try {
+      const result = await handleLogin(data);
+      
+      if (result.success) {
+        // Redirect to dashboard after successful login
+        router.push(result.redirect || "/dashboard");
+        router.refresh();
+      } else {
+        setServerError(result.message || "Login failed");
+      }
+    } catch (error: any) {
+      setServerError(error.message || "An error occurred during login");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-5">
+      {/* Server Error Message */}
+      {serverError && (
+        <div className="rounded-lg bg-red-50 border-2 border-red-200 p-4 text-sm text-red-700 animate-in slide-in-from-top">
+          <p className="font-semibold">Login Failed</p>
+          <p className="text-red-600">{serverError}</p>
+        </div>
+      )}
+
       {/* Email Field */}
       <div className="space-y-2">
         <label
@@ -149,7 +162,7 @@ export default function LoginForm() {
           />
           <span className="text-gray-600 group-hover:text-gray-900 transition">Remember me</span>
         </label>
-        <a href="#" className="group font-semibold text-blue-600 hover:text-blue-700 transition flex items-center gap-1">
+        <a href="/forgotpassword" className="group font-semibold text-blue-600 hover:text-blue-700 transition flex items-center gap-1">
           <span>Forgot Password?</span>
           <Lock className="w-3 h-3 group-hover:rotate-12 transition-transform" />
         </a>
@@ -216,3 +229,4 @@ export default function LoginForm() {
     </form>
   );
 }
+  
