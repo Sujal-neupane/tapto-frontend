@@ -70,11 +70,16 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Rewrites removed - frontend calls backend API directly via axios
+  async rewrites() {
+    return [
+      {
+        source: "/uploads/:path*",
+        destination: "http://localhost:4000/uploads/:path*",
+      },
+    ];
+  },
 
-  // Environment variables - removed to use .env.local instead
-
-  // Logging
+  
   logging: {
     fetches: {
       fullUrl: true,

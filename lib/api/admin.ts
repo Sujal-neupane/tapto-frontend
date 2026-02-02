@@ -1,0 +1,133 @@
+// Admin API service
+import axiosInstance from './axios';
+import { API } from './endpoints';
+
+export interface User {
+  _id: string;
+  fullName: string;
+  email: string;
+  role: 'user' | 'admin';
+  phoneNumber?: string;
+  shoppingPreference?: string;
+  profilePicture?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+
+export interface UsersResponse {
+  success: boolean;
+  data: User[];
+  pagination: PaginationInfo;
+  message?: string;
+}
+
+export interface UserResponse {
+  success: boolean;
+  data: User;
+  message?: string;
+}
+
+export interface AdminQueryParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  role?: string;
+}
+
+// Get all users with pagination
+export const getAdminUsers = async (params: AdminQueryParams = {}): Promise<UsersResponse> => {
+  try {
+    const queryParams = new URLSearchParams();
+    if (params.page) queryParams.append('page', params.page.toString());
+    if (params.limit) queryParams.append('limit', params.limit.toString());
+    if (params.search) queryParams.append('search', params.search);
+    if (params.role) queryParams.append('role', params.role);
+
+    const url = `${API.ADMIN.USERS.GET_ALL}?${queryParams.toString()}`;
+    const response = await axiosInstance.get<UsersResponse>(url);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch users');
+  }
+};
+
+// Get user by ID
+export const getAdminUserById = async (id: string): Promise<UserResponse> => {
+  try {
+    const response = await axiosInstance.get<UserResponse>(API.ADMIN.USERS.GET_BY_ID(id));
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch user');
+  }
+};
+
+// Create user (with FormData for image upload)
+export const createAdminUser = async (formData: FormData): Promise<UserResponse> => {
+  try {
+    const response = await axiosInstance.post<UserResponse>(API.ADMIN.USERS.CREATE, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to create user');
+  }
+};
+
+// Update user (with FormData for image upload)
+export const updateAdminUser = async (id: string, formData: FormData): Promise<UserResponse> => {
+  try {
+    const response = await axiosInstance.put<UserResponse>(API.ADMIN.USERS.UPDATE(id), formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to update user');
+  }
+};
+
+// Delete user
+export const deleteAdminUser = async (id: string): Promise<{ success: boolean; message: string }> => {
+  try {
+    const response = await axiosInstance.delete(API.ADMIN.USERS.DELETE(id));
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to delete user');
+  }
+};
+
+// Update user profile (with FormData for image upload)
+export const updateUserProfile = async (id: string, formData: FormData): Promise<UserResponse> => {
+  try {
+    const response = await axiosInstance.put<UserResponse>(API.AUTH.UPDATE_BY_ID(id), formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to update profile');
+  }
+};
+
+// Get dashboard stats
+export const getDashboardStats = async () => {
+  try {
+    const response = await axiosInstance.get(API.ADMIN.DASHBOARD);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch dashboard stats');
+  }
+};

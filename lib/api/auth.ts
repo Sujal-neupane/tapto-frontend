@@ -10,6 +10,13 @@ interface AuthResponse {
     token?: string;
 }
 
+const normalizeUser = (user: any) => {
+    if (user && !user._id && user.id) {
+        return { ...user, _id: user.id };
+    }
+    return user;
+};
+
 export const register = async (registerData: any): Promise<AuthResponse> => {
     try {
         const response = await axiosInstance.post<AuthResponse>(
@@ -18,6 +25,7 @@ export const register = async (registerData: any): Promise<AuthResponse> => {
         );
         
         if (response.data.success && response.data.token) {
+            const normalizedUser = normalizeUser(response.data.data);
             // Store token and user data in cookies and localStorage
             if (typeof window !== 'undefined') {
                 // Store in cookies (preferred for security)
@@ -26,7 +34,7 @@ export const register = async (registerData: any): Promise<AuthResponse> => {
                     path: '/',
                     sameSite: 'lax',
                 });
-                setCookie('user', JSON.stringify(response.data.data), {
+                setCookie('user', JSON.stringify(normalizedUser), {
                     maxAge: 7 * 24 * 60 * 60,
                     path: '/',
                     sameSite: 'lax',
@@ -34,7 +42,7 @@ export const register = async (registerData: any): Promise<AuthResponse> => {
                 
                 // Also store in localStorage as backup
                 localStorage.setItem('authToken', response.data.token);
-                localStorage.setItem('user', JSON.stringify(response.data.data));
+                localStorage.setItem('user', JSON.stringify(normalizedUser));
             }
         }
         
@@ -56,6 +64,7 @@ export const login = async (loginData: any): Promise<AuthResponse> => {
         );
         
         if (response.data.success && response.data.token) {
+            const normalizedUser = normalizeUser(response.data.data);
             // Store token and user data in cookies and localStorage
             if (typeof window !== 'undefined') {
                 // Store in cookies (preferred for security)
@@ -64,7 +73,7 @@ export const login = async (loginData: any): Promise<AuthResponse> => {
                     path: '/',
                     sameSite: 'lax',
                 });
-                setCookie('user', JSON.stringify(response.data.data), {
+                setCookie('user', JSON.stringify(normalizedUser), {
                     maxAge: 7 * 24 * 60 * 60,
                     path: '/',
                     sameSite: 'lax',
@@ -72,7 +81,7 @@ export const login = async (loginData: any): Promise<AuthResponse> => {
                 
                 // Also store in localStorage as backup
                 localStorage.setItem('authToken', response.data.token);
-                localStorage.setItem('user', JSON.stringify(response.data.data));
+                localStorage.setItem('user', JSON.stringify(normalizedUser));
             }
         }
         
@@ -88,13 +97,17 @@ export const login = async (loginData: any): Promise<AuthResponse> => {
 
 export const logout = () => {
     if (typeof window !== 'undefined') {
-        // Clear cookies
-        deleteCookie('authToken');
-        deleteCookie('user');
+        // Clear cookies with the same path used when setting
+        deleteCookie('authToken', { path: '/' });
+        deleteCookie('user', { path: '/' });
         
         // Clear localStorage
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
+        
+        // Also try to clear without path for any stale cookies
+        deleteCookie('authToken');
+        deleteCookie('user');
     }
 };
 
@@ -104,7 +117,7 @@ export const getStoredUser = () => {
         const userCookie = getCookie('user');
         if (userCookie) {
             try {
-                return JSON.parse(userCookie as string);
+                return normalizeUser(JSON.parse(userCookie as string));
             } catch (e) {
                 console.error('Error parsing user cookie:', e);
             }
@@ -112,7 +125,7 @@ export const getStoredUser = () => {
         
         // Fallback to localStorage
         const user = localStorage.getItem('user');
-        return user ? JSON.parse(user) : null;
+        return user ? normalizeUser(JSON.parse(user)) : null;
     }
     return null;
 };

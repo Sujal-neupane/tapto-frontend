@@ -31,14 +31,18 @@ export default function LoginForm() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     setServerError(null);
-    
     try {
       const result = await handleLogin(data);
-      
       if (result.success) {
-        // Redirect to dashboard after successful login
-        router.push(result.redirect || "/dashboard");
-        router.refresh();
+        const user = result.data;
+        if (user && user.role === "admin") {
+          router.push("/admin/dashboard");
+          router.refresh();
+        } else {
+          router.push("/dashboard");
+          router.refresh();
+        }
+        return;
       } else {
         setServerError(result.message || "Login failed");
       }
@@ -229,4 +233,4 @@ export default function LoginForm() {
     </form>
   );
 }
-  
+
