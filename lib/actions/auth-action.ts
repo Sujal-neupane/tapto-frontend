@@ -19,7 +19,7 @@ export const handleRegister = async (formData: any) => {
             });
             
             // Store user data (non-sensitive) as a regular cookie
-            cookieStore.set('userData', JSON.stringify(result.data), {
+            cookieStore.set('user', JSON.stringify(result.data), {
                 httpOnly: false, // Allow client-side access
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
@@ -65,7 +65,7 @@ export const handleLogin = async (formData: any) => {
             });
             
             // Store user data (non-sensitive) as a regular cookie
-            cookieStore.set('userData', JSON.stringify(result.data), {
+            cookieStore.set('user', JSON.stringify(result.data), {
                 httpOnly: false, // Allow client-side access
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
@@ -99,7 +99,7 @@ export const handleLogout = async () => {
     try {
         const cookieStore = await cookies();
         cookieStore.delete('authToken');
-        cookieStore.delete('userData');
+        cookieStore.delete('user');
         
         return {
             success: true,

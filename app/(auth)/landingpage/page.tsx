@@ -44,13 +44,13 @@ export default function LandingPage() {
             {/* Nav Actions */}
             <div className="flex items-center gap-3">
               <Link
-                href="/login"
+                href="/auth/login"
                 className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-blue-600 transition"
               >
                 Login
               </Link>
               <Link
-                href="/register"
+                href="/auth/register"
                 className="px-6 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center gap-2"
               >
                 Get Started <ChevronRight className="w-4 h-4" />
@@ -85,7 +85,7 @@ export default function LandingPage() {
               
               <div className="flex flex-wrap gap-4">
                 <Link
-                  href="/register"
+                  href="/auth/register"
                   className="group bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-10 py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-2xl shadow-blue-600/40 hover:shadow-3xl hover:-translate-y-0.5 flex items-center gap-2 relative overflow-hidden"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
@@ -313,13 +313,13 @@ export default function LandingPage() {
             
             <div className="flex flex-wrap justify-center gap-4 pt-4">
               <Link
-                href="/register"
+                href="/auth/register"
                 className="bg-white text-blue-600 px-10 py-4 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-2xl hover:shadow-3xl hover:-translate-y-0.5 flex items-center gap-2 text-lg"
               >
                 Get Started Free <ChevronRight className="w-5 h-5" />
               </Link>
               <Link
-                href="/login"
+                href="/auth/login"
                 className="border-2 border-white/30 text-white px-10 py-4 rounded-xl font-bold hover:bg-white/10 transition-all flex items-center gap-2 text-lg backdrop-blur-sm"
               >
                 Sign In
@@ -355,7 +355,7 @@ export default function LandingPage() {
                   alt="TAPTO Logo"
                   width={40}
                   height={40}
-                  className="h-10 w-10"
+                  className="h-10 w-10  "
                 />
                 <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">TAPTO</div>
               </div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import LoginForm from "../(_components)/loginform";
+import LoginForm from "../../(auth)/(_components)/loginform";
 import { 
   CreditCard, 
   Sparkles, 
@@ -196,7 +196,7 @@ export default function LoginPage() {
 
                 {/* Sign Up Link */}
                 <Link
-                  href="/register"
+                  href="/auth/register"
                   className="group w-full flex items-center justify-center gap-2 rounded-xl border-2 border-gray-200 px-4 py-3 font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all"
                 >
                   Create an account
