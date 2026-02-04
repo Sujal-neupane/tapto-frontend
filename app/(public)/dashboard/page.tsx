@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import ProfileDropdown from "./ProfileDropdown";
 import { getProducts, Product } from "@/lib/api/products";
 
@@ -11,6 +12,7 @@ const productCatalog: Product[] = [];
 type ViewMode = "browse" | "favorites" | "cart";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

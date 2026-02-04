@@ -289,8 +289,8 @@ export default function CheckoutPage() {
                     type="radio"
                     name="payment"
                     value="card"
-                    checked={paymentMethod === 'card'}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    checked={paymentMethod.type === 'card'}
+                    onChange={(e) => setPaymentMethod(prev => ({ ...prev, type: e.target.value }))}
                     className="text-indigo-600 focus:ring-indigo-500"
                   />
                   <span className="ml-2 text-gray-700">Credit/Debit Card</span>
@@ -300,8 +300,8 @@ export default function CheckoutPage() {
                     type="radio"
                     name="payment"
                     value="paypal"
-                    checked={paymentMethod === 'paypal'}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    checked={paymentMethod.type === 'paypal'}
+                    onChange={(e) => setPaymentMethod(prev => ({ ...prev, type: e.target.value }))}
                     className="text-indigo-600 focus:ring-indigo-500"
                   />
                   <span className="ml-2 text-gray-700">PayPal</span>
@@ -311,8 +311,8 @@ export default function CheckoutPage() {
                     type="radio"
                     name="payment"
                     value="cod"
-                    checked={paymentMethod === 'cod'}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    checked={paymentMethod.type === 'cod'}
+                    onChange={(e) => setPaymentMethod(prev => ({ ...prev, type: e.target.value }))}
                     className="text-indigo-600 focus:ring-indigo-500"
                   />
                   <span className="ml-2 text-gray-700">Cash on Delivery</span>

@@ -163,7 +163,7 @@ export default function UserCartPage() {
         {/* Header */}
         <div className="mb-8">
           <Link
-            href="/user"
+            href="/dashboard"
             className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
