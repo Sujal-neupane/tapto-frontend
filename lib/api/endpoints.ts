@@ -27,6 +27,7 @@ export const API = {
         },
         ORDERS: {
             GET_ALL: '/api/admin/orders',
+            GET_BY_ID: (id: string) => `/api/admin/orders/${id}`,
             UPDATE_STATUS: (id: string) => `/api/admin/orders/${id}/status`,
         },
     },

@@ -271,3 +271,13 @@ export const updateAdminOrderStatus = async (orderId: string, status: string): P
     throw new Error(error.response?.data?.message || 'Failed to update order status');
   }
 };
+
+// Get single order by ID
+export const getAdminOrderById = async (orderId: string): Promise<{ success: boolean; data: AdminOrder; message?: string }> => {
+  try {
+    const response = await axiosInstance.get(API.ADMIN.ORDERS.GET_BY_ID(orderId));
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch order details');
+  }
+};
