@@ -1,20 +1,47 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { getDashboardStats } from "@/lib/api/admin";
 import LogoutButton from "../../_components/logout-button";
+import {
+  Users,
+  ShoppingBag,
+  Package,
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
+  RefreshCw,
+  BarChart3,
+  Activity,
+} from "lucide-react";
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const stats = [
-    { label: "Total Users", value: "2,847", change: "+12.5%", trend: "up" },
-    { label: "Active Sessions", value: "1,234", change: "+8.2%", trend: "up" },
-    { label: "New Signups", value: "156", change: "-3.1%", trend: "down" },
-    { label: "Revenue", value: "$45.2K", change: "+23.1%", trend: "up" },
-  ];
+  const fetchStats = async (showRefreshing = false) => {
+    if (showRefreshing) setRefreshing(true);
+    try {
+      const response = await getDashboardStats();
+      if (response.success) {
+        setStats(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch dashboard stats:", error);
+    } finally {
+      setLoading(false);
+      if (showRefreshing) setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
   const recentUsers = [
     { id: 1, name: "Sarah Johnson", email: "sarah.j@example.com", role: "User", status: "Active", joined: "2 hours ago" },
@@ -159,34 +186,78 @@ export default function AdminDashboard() {
         <main className="flex-1 p-6 lg:p-8">
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-slate-600 mb-1">{stat.label}</p>
-                    <p className="text-3xl font-bold text-slate-900 mb-2">{stat.value}</p>
-                    <div className="flex items-center gap-1">
-                      <span className={`text-sm font-semibold ${stat.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
-                        {stat.change}
-                      </span>
-                      <svg className={`w-4 h-4 ${stat.trend === 'up' ? 'text-green-600' : 'text-red-600 rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className={`p-3 rounded-lg ${stat.trend === 'up' ? 'bg-green-50' : 'bg-red-50'}`}>
-                    <svg className={`w-6 h-6 ${stat.trend === 'up' ? 'text-green-600' : 'text-red-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
+            {loading ? (
+              // Loading skeleton
+              Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+                  <div className="animate-pulse">
+                    <div className="h-4 bg-slate-200 rounded mb-2"></div>
+                    <div className="h-8 bg-slate-200 rounded mb-2"></div>
+                    <div className="h-4 bg-slate-200 rounded w-16"></div>
                   </div>
                 </div>
+              ))
+            ) : stats ? (
+              [
+                {
+                  label: "Total Users",
+                  value: stats.totalUsers?.toLocaleString() || "0",
+                  icon: Users,
+                  color: "bg-blue-50 text-blue-600",
+                },
+                {
+                  label: "Total Orders",
+                  value: stats.totalOrders?.toLocaleString() || "0",
+                  icon: ShoppingBag,
+                  color: "bg-green-50 text-green-600",
+                },
+                {
+                  label: "Total Products",
+                  value: stats.totalProducts?.toLocaleString() || "0",
+                  icon: Package,
+                  color: "bg-purple-50 text-purple-600",
+                },
+                {
+                  label: "Total Revenue",
+                  value: `$${(stats.totalRevenue || 0).toLocaleString()}`,
+                  icon: DollarSign,
+                  color: "bg-yellow-50 text-yellow-600",
+                },
+              ].map((stat, index) => (
+                <div key={index} className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-slate-600 mb-1">{stat.label}</p>
+                      <p className="text-3xl font-bold text-slate-900 mb-2">{stat.value}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-slate-500">Live data</span>
+                        <div className={`w-2 h-2 rounded-full bg-green-500 animate-pulse`}></div>
+                      </div>
+                    </div>
+                    <div className={`p-3 rounded-lg ${stat.color}`}>
+                      <stat.icon className="w-6 h-6" />
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <BarChart3 className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-slate-900 mb-2">Failed to load stats</h3>
+                <button
+                  onClick={() => fetchStats(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                  <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                  Retry
+                </button>
               </div>
-            ))}
+            )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
             {/* Recent Users */}
-            <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
               <div className="p-6 border-b border-slate-200 flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold text-slate-900">Recent Users</h2>
@@ -248,6 +319,56 @@ export default function AdminDashboard() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </div>
+
+            {/* Recent Orders */}
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
+              <div className="p-6 border-b border-slate-200 flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900">Recent Orders</h2>
+                  <p className="text-sm text-slate-600 mt-1">Latest customer orders</p>
+                </div>
+                <a href="/admin/orders" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
+                  View All
+                </a>
+              </div>
+              <div className="p-6">
+                {stats?.recentOrders && stats.recentOrders.length > 0 ? (
+                  <div className="space-y-4">
+                    {stats.recentOrders.slice(0, 5).map((order: any, index: number) => (
+                      <div key={index} className="flex items-center gap-4 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+                        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                          <ShoppingBag className="w-5 h-5 text-indigo-600" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium text-slate-900">Order #{order._id?.slice(-8)}</p>
+                          <p className="text-sm text-slate-600">
+                            {order.userId?.name || 'Unknown User'} • ${order.total?.toFixed(2)}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                            order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                            order.status === 'confirmed' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {order.status}
+                          </span>
+                          <p className="text-xs text-slate-500 mt-1">
+                            {new Date(order.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                    <p className="text-slate-600">No recent orders</p>
+                  </div>
+                )}
               </div>
             </div>
 
