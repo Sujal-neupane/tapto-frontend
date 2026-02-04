@@ -208,7 +208,7 @@ const AdminOrderDetailsPage = () => {
                 <DollarSign className="w-5 h-5 text-slate-600" />
                 <div>
                   <div className="text-sm text-slate-600">Total Amount</div>
-                  <div className="font-bold text-slate-900 text-lg">${order.totalAmount.toFixed(2)}</div>
+                  <div className="font-bold text-slate-900 text-lg">${order.total?.toFixed(2)}</div>
                 </div>
               </div>
             </div>
@@ -245,9 +245,11 @@ const AdminOrderDetailsPage = () => {
                 Shipping Address
               </h2>
               <div className="space-y-1 text-slate-700">
+                <div className="font-medium">{order.shippingAddress.fullName}</div>
                 <div>{order.shippingAddress.street}</div>
                 <div>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}</div>
                 <div>{order.shippingAddress.country}</div>
+                <div className="text-sm text-slate-600 mt-2">Phone: {order.shippingAddress.phone}</div>
               </div>
             </div>
           </div>
@@ -259,13 +261,13 @@ const AdminOrderDetailsPage = () => {
               {order.items.map((item, index) => (
                 <div key={index} className="flex items-center gap-4 p-4 border border-slate-200 rounded-lg">
                   <img
-                    src={`http://localhost:4000${item.product.images[0]}`}
-                    alt={item.product.name}
+                    src={`http://localhost:4000${item.productId.images[0]}`}
+                    alt={item.productId.name}
                     className="w-16 h-16 object-cover rounded-lg"
                   />
                   <div className="flex-1">
-                    <h3 className="font-medium text-slate-900">{item.product.name}</h3>
-                    <p className="text-sm text-slate-600">Product ID: {item.product._id.slice(-8)}</p>
+                    <h3 className="font-medium text-slate-900">{item.productId.name}</h3>
+                    <p className="text-sm text-slate-600">Product ID: {item.productId._id.slice(-8)}</p>
                   </div>
                   <div className="text-right">
                     <div className="text-sm text-slate-600">Quantity: {item.quantity}</div>
@@ -282,11 +284,11 @@ const AdminOrderDetailsPage = () => {
                 <div className="w-64">
                   <div className="flex justify-between text-sm text-slate-600 mb-2">
                     <span>Subtotal ({order.items.length} items)</span>
-                    <span>${order.totalAmount.toFixed(2)}</span>
+                    <span>${order.total?.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-lg font-bold text-slate-900 pt-2 border-t border-slate-200">
                     <span>Total</span>
-                    <span>${order.totalAmount.toFixed(2)}</span>
+                    <span>${order.total?.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

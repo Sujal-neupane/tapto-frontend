@@ -237,9 +237,11 @@ const AdminOrdersPage = () => {
                         Shipping Address
                       </h3>
                       <div className="text-sm text-slate-600">
+                        <div>{order.shippingAddress.fullName}</div>
                         <div>{order.shippingAddress.street}</div>
                         <div>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}</div>
                         <div>{order.shippingAddress.country}</div>
+                        <div className="text-xs text-slate-500 mt-1">{order.shippingAddress.phone}</div>
                       </div>
                     </div>
 
@@ -259,7 +261,7 @@ const AdminOrdersPage = () => {
                           <span>Total:</span>
                           <span className="flex items-center gap-1">
                             <DollarSign className="w-4 h-4" />
-                            {order.totalAmount.toFixed(2)}
+                            {order.total?.toFixed(2)}
                           </span>
                         </div>
                       </div>
