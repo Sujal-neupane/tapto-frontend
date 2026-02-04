@@ -96,8 +96,8 @@ const AdminOrdersPage = () => {
   const filteredOrders = orders.filter(order => {
     const matchesSearch =
       order._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.user.email.toLowerCase().includes(searchTerm.toLowerCase());
+      order.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.userId?.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === "all" || order.status.toLowerCase() === statusFilter.toLowerCase();
 
@@ -225,8 +225,8 @@ const AdminOrdersPage = () => {
                         Customer
                       </h3>
                       <div className="space-y-1 text-sm">
-                        <div className="font-medium text-slate-900">{order.user.fullName}</div>
-                        <div className="text-slate-600">{order.user.email}</div>
+                        <div className="font-medium text-slate-900">{order.userId?.name || 'Unknown User'}</div>
+                        <div className="text-slate-600">{order.userId?.email || 'No email'}</div>
                       </div>
                     </div>
 

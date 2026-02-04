@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getDashboardStats } from "@/lib/api/admin";
+import { getDashboardStats, getRecentUsers } from "@/lib/api/admin";
 import LogoutButton from "../../_components/logout-button";
 import {
   Users,
@@ -15,24 +15,39 @@ import {
   RefreshCw,
   BarChart3,
   Activity,
+  AlertTriangle,
+  Clock,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [stats, setStats] = useState<any>(null);
+  const [recentUsers, setRecentUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchStats = async (showRefreshing = false) => {
     if (showRefreshing) setRefreshing(true);
+    setError(null);
     try {
-      const response = await getDashboardStats();
-      if (response.success) {
-        setStats(response.data);
+      const [statsResponse, usersResponse] = await Promise.all([
+        getDashboardStats(),
+        getRecentUsers(5)
+      ]);
+
+      if (statsResponse.success) {
+        setStats(statsResponse.data);
+      }
+      if (usersResponse.success) {
+        setRecentUsers(usersResponse.data);
       }
     } catch (error: any) {
-      console.error("Failed to fetch dashboard stats:", error);
+      console.error("Failed to fetch dashboard data:", error);
+      setError(error.message || "Failed to load dashboard data");
     } finally {
       setLoading(false);
       if (showRefreshing) setRefreshing(false);
@@ -43,19 +58,39 @@ export default function AdminDashboard() {
     fetchStats();
   }, []);
 
-  const recentUsers = [
-    { id: 1, name: "Sarah Johnson", email: "sarah.j@example.com", role: "User", status: "Active", joined: "2 hours ago" },
-    { id: 2, name: "Michael Chen", email: "m.chen@example.com", role: "Admin", status: "Active", joined: "5 hours ago" },
-    { id: 3, name: "Emily Rodriguez", email: "emily.r@example.com", role: "User", status: "Inactive", joined: "1 day ago" },
-    { id: 4, name: "David Kim", email: "d.kim@example.com", role: "User", status: "Active", joined: "2 days ago" },
-  ];
+  // Generate activity log from recent data
+  const generateActivityLog = () => {
+    const activities: any[] = [];
 
-  const activityLog = [
-    { action: "User created", user: "Sarah Johnson", time: "2 hours ago", type: "create" },
-    { action: "Profile updated", user: "Michael Chen", time: "4 hours ago", type: "update" },
-    { action: "User deleted", user: "John Doe", time: "1 day ago", type: "delete" },
-    { action: "Role changed", user: "Emily Rodriguez", time: "2 days ago", type: "update" },
-  ];
+    // Add recent user registrations
+    recentUsers.slice(0, 2).forEach((user) => {
+      activities.push({
+        action: "New user registered",
+        user: user.fullName || user.name,
+        time: new Date(user.createdAt).toLocaleString(),
+        type: "create"
+      });
+    });
+
+    // Add recent orders
+    if (stats?.recentOrders) {
+      stats.recentOrders.slice(0, 2).forEach((order: any) => {
+        activities.push({
+          action: `Order #${order._id?.slice(-8)} placed`,
+          user: order.userId?.name || "Unknown User",
+          time: new Date(order.createdAt).toLocaleString(),
+          type: "create"
+        });
+      });
+    }
+
+    // Sort by time (most recent first) and limit to 5
+    return activities
+      .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+      .slice(0, 5);
+  };
+
+  const activityLog = generateActivityLog();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
@@ -186,12 +221,32 @@ export default function AdminDashboard() {
         <main className="flex-1 p-6 lg:p-8">
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {loading ? (
+            {error ? (
+              <div className="col-span-full bg-red-50 border border-red-200 rounded-xl p-6">
+                <div className="flex items-center gap-3">
+                  <XCircle className="w-8 h-8 text-red-600" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-red-900">Error Loading Dashboard</h3>
+                    <p className="text-red-700 mt-1">{error}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => fetchStats(true)}
+                  className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                  Try Again
+                </button>
+              </div>
+            ) : loading ? (
               // Loading skeleton
               Array.from({ length: 4 }).map((_, index) => (
                 <div key={index} className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
                   <div className="animate-pulse">
-                    <div className="h-4 bg-slate-200 rounded mb-2"></div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="h-4 bg-slate-200 rounded w-20"></div>
+                      <div className="w-10 h-10 bg-slate-200 rounded-lg"></div>
+                    </div>
                     <div className="h-8 bg-slate-200 rounded mb-2"></div>
                     <div className="h-4 bg-slate-200 rounded w-16"></div>
                   </div>
@@ -203,40 +258,56 @@ export default function AdminDashboard() {
                   label: "Total Users",
                   value: stats.totalUsers?.toLocaleString() || "0",
                   icon: Users,
-                  color: "bg-blue-50 text-blue-600",
+                  color: "bg-blue-50 text-blue-600 border-blue-200",
+                  change: "+12%",
+                  changeType: "positive"
                 },
                 {
                   label: "Total Orders",
                   value: stats.totalOrders?.toLocaleString() || "0",
                   icon: ShoppingBag,
-                  color: "bg-green-50 text-green-600",
+                  color: "bg-green-50 text-green-600 border-green-200",
+                  change: "+8%",
+                  changeType: "positive"
                 },
                 {
                   label: "Total Products",
                   value: stats.totalProducts?.toLocaleString() || "0",
                   icon: Package,
-                  color: "bg-purple-50 text-purple-600",
+                  color: "bg-purple-50 text-purple-600 border-purple-200",
+                  change: "+5%",
+                  changeType: "positive"
                 },
                 {
                   label: "Total Revenue",
                   value: `$${(stats.totalRevenue || 0).toLocaleString()}`,
                   icon: DollarSign,
-                  color: "bg-yellow-50 text-yellow-600",
+                  color: "bg-yellow-50 text-yellow-600 border-yellow-200",
+                  change: "+15%",
+                  changeType: "positive"
                 },
               ].map((stat, index) => (
-                <div key={index} className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-start justify-between">
-                    <div>
+                <div key={index} className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
                       <p className="text-sm font-medium text-slate-600 mb-1">{stat.label}</p>
                       <p className="text-3xl font-bold text-slate-900 mb-2">{stat.value}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-slate-500">Live data</span>
-                        <div className={`w-2 h-2 rounded-full bg-green-500 animate-pulse`}></div>
+                        <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                          stat.changeType === 'positive' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                        }`}>
+                          {stat.change}
+                        </span>
+                        <span className="text-xs text-slate-500">vs last month</span>
                       </div>
                     </div>
-                    <div className={`p-3 rounded-lg ${stat.color}`}>
+                    <div className={`p-3 rounded-lg border ${stat.color} shadow-sm`}>
                       <stat.icon className="w-6 h-6" />
                     </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-xs text-slate-500">Live data</span>
                   </div>
                 </div>
               ))
@@ -257,15 +328,23 @@ export default function AdminDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
             {/* Recent Users */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
               <div className="p-6 border-b border-slate-200 flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900">Recent Users</h2>
-                  <p className="text-sm text-slate-600 mt-1">Latest registered users</p>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <Users className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-slate-900">Recent Users</h2>
+                    <p className="text-sm text-slate-600">Latest registered users</p>
+                  </div>
                 </div>
-                <a href="/admin/users" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
+                <Link href="/admin/users" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm flex items-center gap-1">
                   View All
-                </a>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
@@ -279,59 +358,73 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200">
-                    {recentUsers.map((user) => (
-                      <tr key={user.id} className="hover:bg-slate-50 transition-colors">
+                    {recentUsers.length > 0 ? recentUsers.map((user) => (
+                      <tr key={user._id} className="hover:bg-slate-50 transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-semibold">
-                              {user.name.split(' ').map(n => n[0]).join('')}
+                              {(user.fullName || user.name || 'U').split(' ').map((n: string) => n[0]).join('').toUpperCase()}
                             </div>
                             <div>
-                              <p className="font-medium text-slate-900">{user.name}</p>
+                              <p className="font-medium text-slate-900">{user.fullName || user.name}</p>
                               <p className="text-sm text-slate-500">{user.email}</p>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            user.role === 'Admin' ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-700'
+                            user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-700'
                           }`}>
-                            {user.role}
+                            {user.role === 'admin' ? 'Admin' : 'User'}
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            user.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                          }`}>
-                            {user.status}
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                            Active
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-sm text-slate-600">{user.joined}</td>
+                        <td className="px-6 py-4 text-sm text-slate-600">
+                          {new Date(user.createdAt).toLocaleDateString()}
+                        </td>
                         <td className="px-6 py-4">
                           <a
-                            href={`/admin/users/${user.id}`}
+                            href={`/admin/users/${user._id}`}
                             className="text-indigo-600 hover:text-indigo-700 font-medium text-sm"
                           >
                             View
                           </a>
                         </td>
                       </tr>
-                    ))}
+                    )) : (
+                      <tr>
+                        <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
+                          No users found
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
             </div>
 
             {/* Recent Orders */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
               <div className="p-6 border-b border-slate-200 flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900">Recent Orders</h2>
-                  <p className="text-sm text-slate-600 mt-1">Latest customer orders</p>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <ShoppingBag className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-slate-900">Recent Orders</h2>
+                    <p className="text-sm text-slate-600">Latest customer orders</p>
+                  </div>
                 </div>
-                <a href="/admin/orders" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
+                <Link href="/admin/orders" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm flex items-center gap-1">
                   View All
-                </a>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
               </div>
               <div className="p-6">
                 {stats?.recentOrders && stats.recentOrders.length > 0 ? (
@@ -373,62 +466,126 @@ export default function AdminDashboard() {
             </div>
 
             {/* Product Analytics */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
               <div className="p-6 border-b border-slate-200">
-                <h2 className="text-xl font-bold text-slate-900">Product Analytics</h2>
-                <p className="text-sm text-slate-600 mt-1">Inventory and category insights</p>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <Package className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-slate-900">Product Analytics</h2>
+                    <p className="text-sm text-slate-600">Inventory and performance insights</p>
+                  </div>
+                </div>
               </div>
               <div className="p-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-4 bg-red-50 rounded-lg border border-red-200">
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="text-center p-4 bg-red-50 rounded-lg border border-red-200 hover:bg-red-100 transition-colors">
+                    <div className="flex items-center justify-center mb-2">
+                      <AlertTriangle className="w-5 h-5 text-red-600" />
+                    </div>
                     <div className="text-2xl font-bold text-red-600">{stats?.lowStockProducts || 0}</div>
                     <div className="text-sm text-red-700 font-medium">Low Stock Items</div>
                     <div className="text-xs text-red-600 mt-1">Stock ≤ 10</div>
                   </div>
-                  <div className="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <div className="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200 hover:bg-yellow-100 transition-colors">
+                    <div className="flex items-center justify-center mb-2">
+                      <Clock className="w-5 h-5 text-yellow-600" />
+                    </div>
                     <div className="text-2xl font-bold text-yellow-600">{stats?.pendingOrders || 0}</div>
                     <div className="text-sm text-yellow-700 font-medium">Pending Orders</div>
                     <div className="text-xs text-yellow-600 mt-1">Awaiting fulfillment</div>
                   </div>
                 </div>
-                <div className="mt-4 text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200 hover:bg-green-100 transition-colors">
+                  <div className="flex items-center justify-center mb-2">
+                    <TrendingUp className="w-5 h-5 text-green-600" />
+                  </div>
                   <div className="text-2xl font-bold text-green-600">${(stats?.todayRevenue || 0).toLocaleString()}</div>
                   <div className="text-sm text-green-700 font-medium">Today's Revenue</div>
                   <div className="text-xs text-green-600 mt-1">Real-time earnings</div>
                 </div>
               </div>
             </div>
-              <div className="p-6 space-y-4">
-                {activityLog.map((activity, index) => (
-                  <div key={index} className="flex gap-4">
-                    <div className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${
-                      activity.type === 'create' ? 'bg-green-500' : 
-                      activity.type === 'update' ? 'bg-blue-500' : 'bg-red-500'
-                    }`}></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-slate-900">{activity.action}</p>
-                      <p className="text-sm text-slate-600">{activity.user}</p>
-                      <p className="text-xs text-slate-500 mt-1">{activity.time}</p>
-                    </div>
+            {/* Activity Log */}
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <div className="p-6 border-b border-slate-200">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-indigo-100 rounded-lg">
+                    <Activity className="w-5 h-5 text-indigo-600" />
                   </div>
-                ))}
+                  <div>
+                    <h2 className="text-xl font-bold text-slate-900">Activity Log</h2>
+                    <p className="text-sm text-slate-600">Recent system activities</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-6">
+                {activityLog.length > 0 ? (
+                  <div className="space-y-4">
+                    {activityLog.map((activity, index) => (
+                      <div key={index} className="flex gap-4 p-3 rounded-lg hover:bg-slate-50 transition-colors">
+                        <div className={`w-3 h-3 mt-1 rounded-full flex-shrink-0 ${
+                          activity.type === 'create' ? 'bg-green-500' : 
+                          activity.type === 'update' ? 'bg-blue-500' : 'bg-red-500'
+                        }`}></div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-slate-900">{activity.action}</p>
+                          <p className="text-sm text-slate-600">{activity.user}</p>
+                          <p className="text-xs text-slate-500 mt-1">
+                            {new Date(activity.time).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Activity className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                    <p className="text-slate-600">No recent activities</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           {/* Quick Actions */}
-          <div className="mt-6 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-xl font-bold mb-2">Quick Actions</h3>
-                <p className="text-indigo-100">Manage your system efficiently</p>
+          <div className="mt-8 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-xl p-8 text-white shadow-lg hover:shadow-xl transition-shadow">
+            <div className="flex items-center justify-between flex-wrap gap-6">
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold mb-2">Quick Actions</h3>
+                <p className="text-indigo-100 text-lg">Manage your system efficiently with powerful tools</p>
+                <div className="flex flex-wrap gap-3 mt-4">
+                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2">
+                    <CheckCircle className="w-4 h-4" />
+                    <span className="text-sm">Real-time Analytics</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2">
+                    <Users className="w-4 h-4" />
+                    <span className="text-sm">User Management</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2">
+                    <Package className="w-4 h-4" />
+                    <span className="text-sm">Product Control</span>
+                  </div>
+                </div>
               </div>
-              <a
-                href="/admin/users/create"
-                className="px-6 py-3 bg-white text-indigo-600 rounded-lg font-semibold hover:bg-indigo-50 transition-colors shadow-lg"
-              >
-                Create New User
-              </a>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link
+                  href="/admin/users/create"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-indigo-600 rounded-lg font-semibold hover:bg-indigo-50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  <Users className="w-5 h-5" />
+                  Create New User
+                </Link>
+                <Link
+                  href="/admin/products/create"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm text-white border border-white/20 rounded-lg font-semibold hover:bg-white/20 transition-all duration-200"
+                >
+                  <Package className="w-5 h-5" />
+                  Add Product
+                </Link>
+              </div>
             </div>
           </div>
         </main>
@@ -436,3 +593,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+            

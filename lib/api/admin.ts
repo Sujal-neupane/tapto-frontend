@@ -132,6 +132,16 @@ export const getDashboardStats = async () => {
   }
 };
 
+// Get recent users for dashboard
+export const getRecentUsers = async (limit: number = 5): Promise<UsersResponse> => {
+  try {
+    const response = await axiosInstance.get(`${API.ADMIN.USERS.GET_ALL}?limit=${limit}&page=1`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch recent users');
+  }
+};
+
 // Product interfaces
 export interface AdminProduct {
   _id: string;
@@ -221,9 +231,9 @@ export interface AdminOrderItem {
 
 export interface AdminOrder {
   _id: string;
-  user: {
+  userId: {
     _id: string;
-    fullName: string;
+    name: string;
     email: string;
   };
   items: AdminOrderItem[];

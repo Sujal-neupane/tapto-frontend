@@ -32,6 +32,7 @@ const AdminUsersPage = () => {
   const [limit] = useState(10);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [bulkActionLoading, setBulkActionLoading] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);

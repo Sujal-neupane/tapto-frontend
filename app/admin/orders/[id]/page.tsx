@@ -225,15 +225,15 @@ const AdminOrderDetailsPage = () => {
               <div className="space-y-3">
                 <div>
                   <div className="text-sm text-slate-600">Full Name</div>
-                  <div className="font-medium text-slate-900">{order.user.fullName}</div>
+                  <div className="font-medium text-slate-900">{order.userId?.name || 'Unknown User'}</div>
                 </div>
                 <div>
                   <div className="text-sm text-slate-600">Email</div>
-                  <div className="font-medium text-slate-900">{order.user.email}</div>
+                  <div className="font-medium text-slate-900">{order.userId?.email || 'No email'}</div>
                 </div>
                 <div>
                   <div className="text-sm text-slate-600">User ID</div>
-                  <div className="font-mono text-sm text-slate-700">{order.user._id}</div>
+                  <div className="font-mono text-sm text-slate-700">{order.userId?._id || 'N/A'}</div>
                 </div>
               </div>
             </div>
