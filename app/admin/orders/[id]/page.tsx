@@ -201,7 +201,9 @@ const AdminOrderDetailsPage = () => {
                 <CreditCard className="w-5 h-5 text-slate-600" />
                 <div>
                   <div className="text-sm text-slate-600">Payment Method</div>
-                  <div className="font-medium text-slate-900">{order.paymentMethod}</div>
+                  <div className="font-medium text-slate-900">
+                    {order.paymentMethod ? `${order.paymentMethod.type} ending in ****${order.paymentMethod.last4}` : 'N/A'}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -261,13 +263,13 @@ const AdminOrderDetailsPage = () => {
               {order.items.map((item, index) => (
                 <div key={index} className="flex items-center gap-4 p-4 border border-slate-200 rounded-lg">
                   <img
-                    src={`http://localhost:4000${item.productId.images[0]}`}
-                    alt={item.productId.name}
+                    src={item.productImage ? `http://localhost:4000${item.productImage}` : '/default-avatar.svg'}
+                    alt={item.productName || 'Product'}
                     className="w-16 h-16 object-cover rounded-lg"
                   />
                   <div className="flex-1">
-                    <h3 className="font-medium text-slate-900">{item.productId.name}</h3>
-                    <p className="text-sm text-slate-600">Product ID: {item.productId._id.slice(-8)}</p>
+                    <h3 className="font-medium text-slate-900">{item.productName || 'Unknown Product'}</h3>
+                    <p className="text-sm text-slate-600">Product ID: {item.productId?.slice(-8) || 'N/A'}</p>
                   </div>
                   <div className="text-right">
                     <div className="text-sm text-slate-600">Quantity: {item.quantity}</div>

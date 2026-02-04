@@ -178,7 +178,7 @@ const AdminOrdersPage = () => {
                 placeholder="Search by order ID, customer name, or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-slate-900"
+                className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
               />
             </div>
           </div>
@@ -270,7 +270,9 @@ const AdminOrdersPage = () => {
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-slate-600">Payment:</span>
-                          <span className="font-medium">{order.paymentMethod}</span>
+                          <span className="font-medium">
+                            {order.paymentMethod ? `${order.paymentMethod.type} ****${order.paymentMethod.last4}` : 'N/A'}
+                          </span>
                         </div>
                         <div className="flex justify-between text-lg font-bold text-slate-900 border-t border-slate-200 pt-2">
                           <span>Total:</span>
@@ -290,12 +292,12 @@ const AdminOrdersPage = () => {
                       {order.items.slice(0, 3).map((item, index) => (
                         <div key={index} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
                           <img
-                            src={`http://localhost:4000${item.productId.images[0]}`}
-                            alt={item.productId.name}
+                            src={item.productImage ? `http://localhost:4000${item.productImage}` : '/default-avatar.svg'}
+                            alt={item.productName || 'Product'}
                             className="w-12 h-12 object-cover rounded"
                           />
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-slate-900 truncate">{item.productId.name}</div>
+                            <div className="font-medium text-slate-900 truncate">{item.productName || 'Unknown Product'}</div>
                             <div className="text-sm text-slate-600">Qty: {item.quantity} × ${item.price.toFixed(2)}</div>
                           </div>
                         </div>

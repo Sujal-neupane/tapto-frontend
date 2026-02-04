@@ -72,3 +72,16 @@ export const getProductsByCategory = async (category: string): Promise<Product[]
         throw error;
     }
 };
+
+export const getPersonalizedProducts = async (limit?: number): Promise<Product[]> => {
+    try {
+        const params = new URLSearchParams();
+        if (limit) params.append('limit', limit.toString());
+
+        const response = await axiosInstance.get(`${API.PRODUCTS.PERSONALIZED}?${params}`);
+        return response.data.data || response.data;
+    } catch (error) {
+        console.error('Error fetching personalized products:', error);
+        throw error;
+    }
+};

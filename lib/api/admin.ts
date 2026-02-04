@@ -219,14 +219,13 @@ export const deleteAdminProduct = async (id: string): Promise<{ success: boolean
 
 // Order interfaces
 export interface AdminOrderItem {
-  productId: {
-    _id: string;
-    name: string;
-    price: number;
-    images: string[];
-  };
+  productId: string;
+  productName: string;
+  productImage: string;
   quantity: number;
   price: number;
+  size?: string;
+  color?: string;
 }
 
 export interface AdminOrder {
@@ -239,7 +238,11 @@ export interface AdminOrder {
   items: AdminOrderItem[];
   total: number;
   status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'outForDelivery' | 'delivered' | 'cancelled' | 'refunded';
-  paymentMethod: string;
+  paymentMethod: {
+    id: string;
+    type: string;
+    last4: string;
+  };
   shippingAddress: {
     id: string;
     fullName: string;

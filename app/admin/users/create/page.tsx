@@ -151,7 +151,7 @@ const AdminUserCreatePage = () => {
                   type="text"
                   value={form.fullName}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition ${
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition text-gray-900 placeholder-gray-500 ${
                     errors.fullName ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-blue-500"
                   }`}
                   placeholder="Enter full name"
@@ -170,7 +170,7 @@ const AdminUserCreatePage = () => {
                   type="email"
                   value={form.email}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition ${
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition text-gray-900 placeholder-gray-500 ${
                     errors.email ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-blue-500"
                   }`}
                   placeholder="Enter email address"
@@ -189,7 +189,7 @@ const AdminUserCreatePage = () => {
                   type="password"
                   value={form.password}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition ${
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition text-gray-900 placeholder-gray-500 ${
                     errors.password ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-blue-500"
                   }`}
                   placeholder="Enter password"
@@ -208,7 +208,7 @@ const AdminUserCreatePage = () => {
                   type="password"
                   value={form.confirmPassword}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition ${
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition text-gray-900 placeholder-gray-500 ${
                     errors.confirmPassword ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-blue-500"
                   }`}
                   placeholder="Confirm password"
@@ -227,7 +227,7 @@ const AdminUserCreatePage = () => {
                   type="text"
                   value={form.phoneNumber}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition text-gray-900 placeholder-gray-500"
                   placeholder="Enter phone number"
                 />
               </div>
@@ -259,7 +259,7 @@ const AdminUserCreatePage = () => {
                   name="shoppingPreference"
                   value={form.shoppingPreference}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition bg-white"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition text-gray-900"
                 >
                   <option value="">Select preference</option>
                   <option value="Mens Fashion">Men&apos;s Fashion</option>
