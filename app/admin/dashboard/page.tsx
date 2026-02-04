@@ -372,12 +372,32 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Activity Log */}
+            {/* Product Analytics */}
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
               <div className="p-6 border-b border-slate-200">
-                <h2 className="text-xl font-bold text-slate-900">Activity Log</h2>
-                <p className="text-sm text-slate-600 mt-1">Recent system activities</p>
+                <h2 className="text-xl font-bold text-slate-900">Product Analytics</h2>
+                <p className="text-sm text-slate-600 mt-1">Inventory and category insights</p>
               </div>
+              <div className="p-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-4 bg-red-50 rounded-lg border border-red-200">
+                    <div className="text-2xl font-bold text-red-600">{stats?.lowStockProducts || 0}</div>
+                    <div className="text-sm text-red-700 font-medium">Low Stock Items</div>
+                    <div className="text-xs text-red-600 mt-1">Stock ≤ 10</div>
+                  </div>
+                  <div className="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                    <div className="text-2xl font-bold text-yellow-600">{stats?.pendingOrders || 0}</div>
+                    <div className="text-sm text-yellow-700 font-medium">Pending Orders</div>
+                    <div className="text-xs text-yellow-600 mt-1">Awaiting fulfillment</div>
+                  </div>
+                </div>
+                <div className="mt-4 text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                  <div className="text-2xl font-bold text-green-600">${(stats?.todayRevenue || 0).toLocaleString()}</div>
+                  <div className="text-sm text-green-700 font-medium">Today's Revenue</div>
+                  <div className="text-xs text-green-600 mt-1">Real-time earnings</div>
+                </div>
+              </div>
+            </div>
               <div className="p-6 space-y-4">
                 {activityLog.map((activity, index) => (
                   <div key={index} className="flex gap-4">
