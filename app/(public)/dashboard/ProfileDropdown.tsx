@@ -43,6 +43,15 @@ export default function ProfileDropdown() {
             className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
             onClick={() => {
               setOpen(false);
+              router.push("/orders");
+            }}
+          >
+            My Orders
+          </button>
+          <button
+            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+            onClick={() => {
+              setOpen(false);
               router.push("/user");
             }}
           >

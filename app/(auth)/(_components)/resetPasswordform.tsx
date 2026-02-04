@@ -52,7 +52,7 @@ export default function ResetPasswordForm({
                         type="password"
                         id="password"
                         {...register("password")}
-                        className="w-full border border-gray-300 p-2 rounded"
+                        className="w-full border border-gray-300 p-2 rounded text-gray-900"
                     />
                     {errors.password && (
                         <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
@@ -66,7 +66,7 @@ export default function ResetPasswordForm({
                         type="password"
                         id="confirmPassword"
                         {...register("confirmPassword")}
-                        className="w-full border border-gray-300 p-2 rounded"
+                        className="w-full border border-gray-300 p-2 rounded text-gray-900"
                     />
                     {errors.confirmPassword && (
                         <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
