@@ -1,145 +1,22 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import ProfileDropdown from "./ProfileDropdown";
+import { getProducts, Product } from "@/lib/api/products";
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  category: string;
-  description: string;
-  tags?: string[];
-  discount?: number;
-  rating?: number;
-  reviews?: number;
-}
-
-// Product catalog
-const productCatalog: Product[] = [
-  {
-    id: 1,
-    name: "Classic White Shirt",
-    price: 49.99,
-    image: "/api/placeholder/400/400",
-    category: "Men",
-    description: "Premium cotton blend for everyday comfort",
-    tags: ["casual", "formal"],
-    rating: 4.5,
-    reviews: 128,
-  },
-  {
-    id: 2,
-    name: "Elegant Evening Dress",
-    price: 129.99,
-    image: "/api/placeholder/400/400",
-    category: "Women",
-    description: "Perfect for special occasions",
-    tags: ["formal", "party"],
-    discount: 15,
-    rating: 4.8,
-    reviews: 95,
-  },
-  {
-    id: 3,
-    name: "Casual Denim Jacket",
-    price: 79.99,
-    image: "/api/placeholder/400/400",
-    category: "Men",
-    description: "Timeless style with modern fit",
-    tags: ["casual", "outdoor"],
-    rating: 4.6,
-    reviews: 203,
-  },
-  {
-    id: 4,
-    name: "Summer Floral Blouse",
-    price: 39.99,
-    image: "/api/placeholder/400/400",
-    category: "Women",
-    description: "Light and breezy for warm days",
-    tags: ["casual", "summer"],
-    discount: 10,
-    rating: 4.3,
-    reviews: 67,
-  },
-  {
-    id: 5,
-    name: "Smart Watch Pro",
-    price: 299.99,
-    image: "/api/placeholder/400/400",
-    category: "Accessories",
-    description: "Track your style and fitness",
-    tags: ["tech", "premium"],
-    rating: 4.7,
-    reviews: 412,
-  },
-  {
-    id: 6,
-    name: "Designer Sunglasses",
-    price: 159.99,
-    image: "/api/placeholder/400/400",
-    category: "Accessories",
-    description: "UV protection with premium style",
-    tags: ["summer", "premium"],
-    rating: 4.4,
-    reviews: 89,
-  },
-  {
-    id: 7,
-    name: "Leather Messenger Bag",
-    price: 189.99,
-    image: "/api/placeholder/400/400",
-    category: "Accessories",
-    description: "Genuine leather, timeless design",
-    tags: ["formal", "premium"],
-    discount: 20,
-    rating: 4.9,
-    reviews: 156,
-  },
-  {
-    id: 8,
-    name: "Running Sneakers",
-    price: 89.99,
-    image: "/api/placeholder/400/400",
-    category: "Shoes",
-    description: "Comfort meets performance",
-    tags: ["sport", "casual"],
-    rating: 4.5,
-    reviews: 234,
-  },
-  {
-    id: 9,
-    name: "Wool Winter Coat",
-    price: 199.99,
-    image: "/api/placeholder/400/400",
-    category: "Men",
-    description: "Stay warm in style",
-    tags: ["winter", "formal"],
-    rating: 4.7,
-    reviews: 145,
-  },
-  {
-    id: 10,
-    name: "Silk Scarf",
-    price: 59.99,
-    image: "/api/placeholder/400/400",
-    category: "Accessories",
-    description: "Luxurious touch to any outfit",
-    tags: ["formal", "premium"],
-    rating: 4.2,
-    reviews: 78,
-  },
-];
+// Product catalog - now fetched from API
+const productCatalog: Product[] = [];
 
 type ViewMode = "browse" | "favorites" | "cart";
 
 export default function DashboardPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [products] = useState(productCatalog);
-  const [favorites, setFavorites] = useState<number[]>([]);
-  const [cart, setCart] = useState<number[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [cart, setCart] = useState<string[]>([]);
   const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | null>(null);
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
   const [dragCurrent, setDragCurrent] = useState<{ x: number; y: number } | null>(null);
@@ -150,9 +27,59 @@ export default function DashboardPage() {
   const [sortBy, setSortBy] = useState<string>("featured");
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Fetch products on component mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const fetchedProducts = await getProducts();
+        setProducts(fetchedProducts);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch products:', err);
+        setError('Failed to load products. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Load favorites and cart from localStorage
+  useEffect(() => {
+    const savedFavorites = localStorage.getItem('favorites');
+    const savedCart = localStorage.getItem('cart');
+    
+    if (savedFavorites) {
+      try {
+        setFavorites(JSON.parse(savedFavorites));
+      } catch (err) {
+        console.error('Error parsing saved favorites:', err);
+      }
+    }
+    
+    if (savedCart) {
+      try {
+        setCart(JSON.parse(savedCart));
+      } catch (err) {
+        console.error('Error parsing saved cart:', err);
+      }
+    }
+  }, []);
+
+  // Save favorites and cart to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+
   const currentProduct = products[currentIndex];
-  const favoriteProducts = products.filter(p => favorites.includes(p.id));
-  const cartProducts = products.filter(p => cart.includes(p.id));
+  const favoriteProducts = products.filter(p => favorites.includes(p._id));
+  const cartProducts = products.filter(p => cart.includes(p._id));
 
   const handleSwipe = (direction: "left" | "right") => {
     if (currentIndex >= products.length) return;
@@ -161,8 +88,8 @@ export default function DashboardPage() {
     
     setTimeout(() => {
       if (direction === "right") {
-        if (!favorites.includes(currentProduct.id)) {
-          setFavorites([...favorites, currentProduct.id]);
+        if (!favorites.includes(currentProduct._id)) {
+          setFavorites([...favorites, currentProduct._id]);
         }
       }
       setCurrentIndex(currentIndex + 1);
@@ -240,7 +167,7 @@ export default function DashboardPage() {
     return product.price.toFixed(2);
   };
 
-  const toggleFavorite = (productId: number) => {
+  const toggleFavorite = (productId: string) => {
     if (favorites.includes(productId)) {
       setFavorites(favorites.filter(id => id !== productId));
     } else {
@@ -248,7 +175,7 @@ export default function DashboardPage() {
     }
   };
 
-  const toggleCart = (productId: number) => {
+  const toggleCart = (productId: string) => {
     if (cart.includes(productId)) {
       setCart(cart.filter(id => id !== productId));
     } else {
@@ -258,19 +185,45 @@ export default function DashboardPage() {
 
   const categories = ["All", "Men", "Women", "Accessories", "Shoes"];
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading products...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 mb-4">{error}</div>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
+        {/* Header */}
+        <header className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="h-10 w-10 rounded-lg bg-indigo-600 flex items-center justify-center">
-                <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-              </div>
-              <span className="text-xl font-semibold text-gray-900">TAPTO Store</span>
+              <img
+                src="/logo1.png"
+                alt="TAPTO Logo"
+                className="h-10 w-auto"
+              />
             </div>
 
             <nav className="hidden md:flex items-center gap-6">
@@ -311,7 +264,7 @@ export default function DashboardPage() {
               </button>
 
               <button
-                onClick={() => setViewMode("favorites")}
+                onClick={() => router.push('/user/wishlist')}
                 className="relative p-2 rounded-lg hover:bg-gray-100 transition"
               >
                 <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -325,7 +278,7 @@ export default function DashboardPage() {
               </button>
 
               <button
-                onClick={() => setViewMode("cart")}
+                onClick={() => router.push('/user/cart')}
                 className="relative p-2 rounded-lg hover:bg-gray-100 transition"
               >
                 <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -443,9 +396,17 @@ export default function DashboardPage() {
                       <div className="h-full rounded-2xl bg-white shadow-xl overflow-hidden border border-gray-200">
                         {/* Product Image Area */}
                         <div className="relative h-3/5 bg-gray-100">
-                          <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
-                            Product Image
-                          </div>
+                          {currentProduct.images && currentProduct.images.length > 0 ? (
+                            <img
+                              src={`http://localhost:4000${currentProduct.images[0]}`}
+                              alt={currentProduct.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
+                              No Image
+                            </div>
+                          )}
 
                           {/* Discount Badge */}
                           {currentProduct.discount && (
@@ -563,7 +524,7 @@ export default function DashboardPage() {
 
                   <button
                     onClick={() => {
-                      toggleCart(currentProduct.id);
+                      toggleCart(currentProduct._id);
                       handleSwipe("right");
                     }}
                     className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg transition-all hover:scale-105 hover:bg-indigo-700 active:scale-95"
@@ -646,62 +607,80 @@ export default function DashboardPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {favoriteProducts.map(product => (
-                  <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition group">
-                    <div className="aspect-square bg-gray-100 relative">
-                      <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
-                        Product Image
-                      </div>
-                      {product.discount && (
-                        <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold">
-                          {product.discount}% OFF
-                        </div>
-                      )}
-                      <button
-                        onClick={() => toggleFavorite(product.id)}
-                        className="absolute top-3 left-3 p-2 bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
-                      >
-                        <svg className="h-5 w-5 text-red-500 fill-current" viewBox="0 0 24 24">
-                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                        </svg>
-                      </button>
-                    </div>
-                    <div className="p-4 space-y-3">
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{product.name}</h3>
-                        <p className="text-sm text-gray-600 mt-1">{product.description}</p>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          {product.discount ? (
-                            <div className="flex items-center gap-2">
-                              <span className="text-lg font-bold text-gray-900">
-                                ${getDiscountedPrice(product)}
-                              </span>
-                              <span className="text-sm text-gray-400 line-through">
-                                ${product.price.toFixed(2)}
-                              </span>
-                            </div>
-                          ) : (
-                            <span className="text-lg font-bold text-gray-900">
-                              ${product.price.toFixed(2)}
-                            </span>
-                          )}
-                        </div>
+                  <Link key={product._id} href={`/product/${product._id}`} className="block">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition group">
+                      <div className="aspect-square bg-gray-100 relative">
+                        {product.images && product.images.length > 0 ? (
+                          <img
+                            src={`http://localhost:4000${product.images[0]}`}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
+                            No Image
+                          </div>
+                        )}
+                        {product.discount && (
+                          <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold">
+                            {product.discount}% OFF
+                          </div>
+                        )}
                         <button
-                          onClick={() => toggleCart(product.id)}
-                          className={`p-2 rounded-lg transition ${
-                            cart.includes(product.id)
-                              ? "bg-indigo-600 text-white"
-                              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                          }`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleFavorite(product._id);
+                          }}
+                          className="absolute top-3 left-3 p-2 bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
                         >
-                          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                          <svg className="h-5 w-5 text-red-500 fill-current" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                           </svg>
                         </button>
                       </div>
+                      <div className="p-4 space-y-3">
+                        <div>
+                          <h3 className="font-semibold text-gray-900">{product.name}</h3>
+                          <p className="text-sm text-gray-600 mt-1">{product.description}</p>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            {product.discount ? (
+                              <div className="flex items-center gap-2">
+                                <span className="text-lg font-bold text-gray-900">
+                                  ${getDiscountedPrice(product)}
+                                </span>
+                                <span className="text-sm text-gray-400 line-through">
+                                  ${product.price.toFixed(2)}
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="text-lg font-bold text-gray-900">
+                                ${product.price.toFixed(2)}
+                              </span>
+                            )}
+                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              toggleCart(product._id);
+                            }}
+                            className={`p-2 rounded-lg transition ${
+                              cart.includes(product._id)
+                                ? "bg-indigo-600 text-white"
+                                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                            }`}
+                          >
+                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
@@ -736,39 +715,53 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-4">
                 {cartProducts.map(product => (
-                  <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex gap-4">
-                    <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs flex-shrink-0">
-                      Product
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900">{product.name}</h3>
-                      <p className="text-sm text-gray-600 mt-1">{product.description}</p>
-                      <div className="mt-2">
-                        {product.discount ? (
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold text-gray-900">
-                              ${getDiscountedPrice(product)}
-                            </span>
-                            <span className="text-sm text-gray-400 line-through">
-                              ${product.price.toFixed(2)}
-                            </span>
-                          </div>
+                  <Link key={product._id} href={`/product/${product._id}`} className="block">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex gap-4">
+                      <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs flex-shrink-0">
+                        {product.images && product.images.length > 0 ? (
+                          <img
+                            src={`http://localhost:4000${product.images[0]}`}
+                            alt={product.name}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
                         ) : (
-                          <span className="text-lg font-bold text-gray-900">
-                            ${product.price.toFixed(2)}
-                          </span>
+                          <span>No Image</span>
                         )}
                       </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900">{product.name}</h3>
+                        <p className="text-sm text-gray-600 mt-1">{product.description}</p>
+                        <div className="mt-2">
+                          {product.discount ? (
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg font-bold text-gray-900">
+                                ${getDiscountedPrice(product)}
+                              </span>
+                              <span className="text-sm text-gray-400 line-through">
+                                ${product.price.toFixed(2)}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-lg font-bold text-gray-900">
+                              ${product.price.toFixed(2)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toggleCart(product._id);
+                        }}
+                        className="p-2 h-10 text-gray-400 hover:text-red-600 transition flex-shrink-0"
+                      >
+                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
                     </div>
-                    <button
-                      onClick={() => toggleCart(product.id)}
-                      className="p-2 h-10 text-gray-400 hover:text-red-600 transition flex-shrink-0"
-                    >
-                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  </div>
+                  </Link>
                 ))}
 
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
@@ -778,9 +771,11 @@ export default function DashboardPage() {
                       ${cartProducts.reduce((sum, p) => sum + (p.discount ? Number(getDiscountedPrice(p)) : p.price), 0).toFixed(2)}
                     </span>
                   </div>
-                  <button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
-                    Proceed to Checkout
-                  </button>
+                  <Link href="/checkout" className="block">
+                    <button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                      Proceed to Checkout
+                    </button>
+                  </Link>
                 </div>
               </div>
             )}
