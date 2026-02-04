@@ -30,7 +30,8 @@ const AdminUsersPage = () => {
   const [roleFilter, setRoleFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [limit] = useState(10);
-  const [deleting, setDeleting] = useState<string | null>(null);
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [bulkActionLoading, setBulkActionLoading] = useState(false);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -78,6 +79,41 @@ const AdminUsersPage = () => {
       toast.error(error.message || "Failed to delete user");
     } finally {
       setDeleting(null);
+    }
+  };
+
+  const handleSelectUser = (userId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedUsers(prev => [...prev, userId]);
+    } else {
+      setSelectedUsers(prev => prev.filter(id => id !== userId));
+    }
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedUsers(users.map(user => user._id));
+    } else {
+      setSelectedUsers([]);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedUsers.length === 0) return;
+
+    if (!confirm(`Are you sure you want to delete ${selectedUsers.length} user(s)?`)) return;
+
+    setBulkActionLoading(true);
+    try {
+      const deletePromises = selectedUsers.map(userId => deleteAdminUser(userId));
+      await Promise.all(deletePromises);
+      toast.success(`${selectedUsers.length} user(s) deleted successfully`);
+      setSelectedUsers([]);
+      fetchUsers();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete users");
+    } finally {
+      setBulkActionLoading(false);
     }
   };
 
@@ -164,6 +200,39 @@ const AdminUsersPage = () => {
           </div>
         </div>
 
+        {/* Bulk Actions */}
+        {selectedUsers.length > 0 && (
+          <div className="bg-blue-50 border-b border-blue-200 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-blue-900">
+                  {selectedUsers.length} user(s) selected
+                </span>
+                <button
+                  onClick={() => setSelectedUsers([])}
+                  className="text-sm text-blue-700 hover:text-blue-900 underline"
+                >
+                  Clear selection
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleBulkDelete}
+                  disabled={bulkActionLoading}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                >
+                  {bulkActionLoading ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
+                  Delete Selected
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Table */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
           {loading ? (
@@ -181,6 +250,14 @@ const AdminUsersPage = () => {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <input
+                        type="checkbox"
+                        checked={selectedUsers.length === users.length && users.length > 0}
+                        onChange={(e) => handleSelectAll(e.target.checked)}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       #
                     </th>
@@ -207,6 +284,14 @@ const AdminUsersPage = () => {
                       key={user._id}
                       className="hover:bg-gray-50 transition"
                     >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          checked={selectedUsers.includes(user._id)}
+                          onChange={(e) => handleSelectUser(user._id, e.target.checked)}
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {((currentPage - 1) * limit) + idx + 1}
                       </td>
