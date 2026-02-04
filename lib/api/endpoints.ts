@@ -27,6 +27,7 @@ export const API = {
         },
         ORDERS: {
             GET_ALL: '/api/admin/orders',
+            GET_BY_ID: (id: string) => `/api/admin/orders/${id}`,
             UPDATE_STATUS: (id: string) => `/api/admin/orders/${id}/status`,
         },
     },
@@ -37,6 +38,9 @@ export const API = {
         UPDATE: (id: string) => `/api/products/${id}`,
         DELETE: (id: string) => `/api/products/${id}`,
         SEARCH: '/api/products/search',
+        PERSONALIZED: '/api/products/personalized',
+        CATEGORIES: '/api/products/categories',
+        GET_BY_CATEGORY: (category: string) => `/api/products/category/${category}`,
     },
     ORDERS: {
         CREATE: '/api/orders',

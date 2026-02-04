@@ -166,7 +166,7 @@ const AdminUserEditPage = () => {
                   value={form.fullName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition text-gray-900 placeholder-gray-500"
                   placeholder="Enter full name"
                 />
               </div>
@@ -183,7 +183,7 @@ const AdminUserEditPage = () => {
                   value={form.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition text-gray-900 placeholder-gray-500"
                   placeholder="Enter email address"
                 />
               </div>
@@ -199,7 +199,7 @@ const AdminUserEditPage = () => {
                   type="text"
                   value={form.phoneNumber}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition text-gray-900 placeholder-gray-500"
                   placeholder="Enter phone number"
                 />
               </div>
@@ -214,7 +214,7 @@ const AdminUserEditPage = () => {
                   name="role"
                   value={form.role}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition bg-white"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition bg-white text-gray-900"
                 >
                   <option value="user">User</option>
                   <option value="admin">Admin</option>
@@ -231,7 +231,7 @@ const AdminUserEditPage = () => {
                   name="shoppingPreference"
                   value={form.shoppingPreference}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition bg-white"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition bg-white text-gray-900"
                 >
                   <option value="">Select preference</option>
                   <option value="Mens Fashion">Men&apos;s Fashion</option>

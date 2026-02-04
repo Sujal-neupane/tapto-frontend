@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ProfileDropdown from "./ProfileDropdown";
-import { getProducts, Product } from "@/lib/api/products";
+import { getProducts, getPersonalizedProducts, Product } from "@/lib/api/products";
 
 // Product catalog - now fetched from API
 const productCatalog: Product[] = [];
@@ -34,7 +34,14 @@ export default function DashboardPage() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const fetchedProducts = await getProducts();
+        // Try personalized products first, fallback to all products if not authenticated
+        let fetchedProducts: Product[];
+        try {
+          fetchedProducts = await getPersonalizedProducts(50);
+        } catch (personalizedError) {
+          console.log('User not authenticated or personalized products failed, fetching all products');
+          fetchedProducts = await getProducts();
+        }
         setProducts(fetchedProducts);
         setError(null);
       } catch (err) {

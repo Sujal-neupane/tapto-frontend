@@ -131,3 +131,169 @@ export const getDashboardStats = async () => {
     throw new Error(error.response?.data?.message || 'Failed to fetch dashboard stats');
   }
 };
+
+// Get recent users for dashboard
+export const getRecentUsers = async (limit: number = 5): Promise<UsersResponse> => {
+  try {
+    const response = await axiosInstance.get(`${API.ADMIN.USERS.GET_ALL}?limit=${limit}&page=1`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch recent users');
+  }
+};
+
+// Product interfaces
+export interface AdminProduct {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  images: string[];
+  tags?: string[];
+  discount?: number;
+  stock: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProductsResponse {
+  success: boolean;
+  data: AdminProduct[];
+  message?: string;
+}
+
+export interface ProductResponse {
+  success: boolean;
+  data: AdminProduct;
+  message?: string;
+}
+
+// Get all products
+export const getAdminProducts = async (): Promise<ProductsResponse> => {
+  try {
+    const response = await axiosInstance.get(API.ADMIN.PRODUCTS.GET_ALL);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch products');
+  }
+};
+
+// Create product (with FormData for image upload)
+export const createAdminProduct = async (formData: FormData): Promise<ProductResponse> => {
+  try {
+    const response = await axiosInstance.post<ProductResponse>(API.ADMIN.PRODUCTS.CREATE, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to create product');
+  }
+};
+
+// Update product (with FormData for image upload)
+export const updateAdminProduct = async (id: string, formData: FormData): Promise<ProductResponse> => {
+  try {
+    const response = await axiosInstance.put<ProductResponse>(API.ADMIN.PRODUCTS.UPDATE(id), formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to update product');
+  }
+};
+
+// Delete product
+export const deleteAdminProduct = async (id: string): Promise<{ success: boolean; message: string }> => {
+  try {
+    const response = await axiosInstance.delete(API.ADMIN.PRODUCTS.DELETE(id));
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to delete product');
+  }
+};
+
+// Order interfaces
+export interface AdminOrderItem {
+  productId: string;
+  productName: string;
+  productImage: string;
+  quantity: number;
+  price: number;
+  size?: string;
+  color?: string;
+}
+
+export interface AdminOrder {
+  _id: string;
+  userId: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  items: AdminOrderItem[];
+  total: number;
+  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'outForDelivery' | 'delivered' | 'cancelled' | 'refunded';
+  paymentMethod: {
+    id: string;
+    type: string;
+    last4: string;
+  };
+  shippingAddress: {
+    id: string;
+    fullName: string;
+    phone: string;
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
+  tracking: Array<{
+    status: string;
+    description: string;
+    timestamp: string;
+  }>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface OrdersResponse {
+  success: boolean;
+  data: AdminOrder[];
+  message?: string;
+}
+
+// Get all orders
+export const getAdminOrders = async (): Promise<OrdersResponse> => {
+  try {
+    const response = await axiosInstance.get(API.ADMIN.ORDERS.GET_ALL);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch orders');
+  }
+};
+
+// Update order status
+export const updateAdminOrderStatus = async (orderId: string, status: string): Promise<{ success: boolean; message: string }> => {
+  try {
+    const response = await axiosInstance.patch(API.ADMIN.ORDERS.UPDATE_STATUS(orderId), { status });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to update order status');
+  }
+};
+
+// Get single order by ID
+export const getAdminOrderById = async (orderId: string): Promise<{ success: boolean; data: AdminOrder; message?: string }> => {
+  try {
+    const response = await axiosInstance.get(API.ADMIN.ORDERS.GET_BY_ID(orderId));
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch order details');
+  }
+};
