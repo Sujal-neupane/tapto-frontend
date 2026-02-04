@@ -13,9 +13,11 @@ import {
 	RefreshCw,
 } from "lucide-react";
 import {
-	forgotPasswordSchema,
-	type ForgotPasswordFormData,
-} from "../../../lib/validations";
+    forgotPasswordSchema,
+    type ForgotPasswordFormData,
+} from "../../../lib/validations/auth";
+import { toast } from "react-toastify/unstyled";
+import { requestPasswordReset } from "@/lib/api/auth";
 
 export default function ForgotPasswordForm() {
 	const [isLoading, setIsLoading] = useState(false);
@@ -32,11 +34,16 @@ export default function ForgotPasswordForm() {
 	const [emailValue, setEmailValue] = useState("");
 
 	const onSubmit = async (data: ForgotPasswordFormData) => {
-		setIsLoading(true);
-		await new Promise((resolve) => setTimeout(resolve, 1200));
-		console.log("Forgot password:", data);
-		setSent(true);
-		setIsLoading(false);
+		try{
+            const response = await requestPasswordReset(data.email);
+            if (response.success) {
+                toast.success('Password reset link sent to your email.');
+            }else{
+                toast.error(response.message || 'Failed to request password reset.');
+            }
+        }catch(error){
+            toast.error((error as Error).message || 'Failed to request password reset.');
+        }
 	};
 
 	return (
