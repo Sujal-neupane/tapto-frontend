@@ -134,7 +134,7 @@ export default function UserOrdersPage() {
                       {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                     </span>
                     <p className="text-lg font-bold text-gray-900 mt-1">
-                      ${order.totalAmount.toFixed(2)}
+                      ${order.total.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -145,12 +145,12 @@ export default function UserOrdersPage() {
                     {order.items.map((item, index) => (
                       <div key={index} className="flex items-center space-x-4">
                         <img
-                          src={item.image || '/api/placeholder/60/60'}
-                          alt={item.name}
+                          src={item.productImage ? `http://localhost:4000${item.productImage}` : '/api/placeholder/60/60'}
+                          alt={item.productName}
                           className="w-12 h-12 object-cover rounded-lg"
                         />
                         <div className="flex-1">
-                          <h4 className="font-medium text-gray-900">{item.name}</h4>
+                          <h4 className="font-medium text-gray-900">{item.productName}</h4>
                           <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
                         </div>
                         <div className="text-right">

@@ -128,7 +128,7 @@ export default function OrdersPage() {
                         {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                       </span>
                       <p className="text-lg font-bold text-gray-900 mt-1">
-                        ${order.totalAmount.toFixed(2)}
+                        ${order.total.toFixed(2)}
                       </p>
                     </div>
                   </div>

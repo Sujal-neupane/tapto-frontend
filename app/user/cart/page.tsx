@@ -200,13 +200,13 @@ export default function UserCartPage() {
                 <div key={item.productId} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="flex items-center space-x-4">
                     <img
-                      src={item.image}
-                      alt={item.name}
+                      src={item.productImage ? `http://localhost:4000${item.productImage}` : '/api/placeholder/80/80'}
+                      alt={item.productName}
                       className="w-20 h-20 object-cover rounded-lg"
                     />
 
                     <div className="flex-1">
-                      <h3 className="font-medium text-gray-900">{item.name}</h3>
+                      <h3 className="font-medium text-gray-900">{item.productName}</h3>
                       <div className="flex items-center space-x-2 mt-1">
                         <span className="text-lg font-bold text-gray-900">
                           ${item.price.toFixed(2)}

@@ -156,8 +156,8 @@ export default function UserWishlistPage() {
               <div key={item.productId} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div className="aspect-square relative">
                   <img
-                    src={item.image}
-                    alt={item.name}
+                    src={item.productImage ? `http://localhost:4000${item.productImage}` : '/api/placeholder/200/200'}
+                    alt={item.productName}
                     className="w-full h-full object-cover"
                   />
                   {item.discount && (
@@ -174,7 +174,7 @@ export default function UserWishlistPage() {
                 </div>
 
                 <div className="p-4">
-                  <h3 className="font-medium text-gray-900 mb-2 line-clamp-2">{item.name}</h3>
+                  <h3 className="font-medium text-gray-900 mb-2 line-clamp-2">{item.productName}</h3>
 
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-2">

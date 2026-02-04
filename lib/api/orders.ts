@@ -4,30 +4,42 @@ import { API } from './endpoints';
 
 export interface OrderItem {
     productId: string;
+    productName: string;
+    productImage: string;
     quantity: number;
-    name?: string;
-    price?: number;
-    image?: string;
+    price: number;
+    size?: string;
+    color?: string;
 }
 
 export interface Order {
     _id: string;
     userId: string;
     items: OrderItem[];
-    totalAmount: number;
-    status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+    subtotal: number;
+    shippingFee: number;
+    tax: number;
+    total: number;
+    status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'outForDelivery' | 'delivered' | 'cancelled' | 'refunded';
     shippingAddress: {
+        id: string;
+        fullName: string;
+        phone: string;
         street: string;
         city: string;
         state: string;
         zipCode: string;
         country: string;
     };
-    paymentMethod: string;
+    paymentMethod: {
+        id: string;
+        type: string;
+        last4?: string;
+    };
     createdAt: string;
     updatedAt: string;
     trackingNumber?: string;
-    estimatedDelivery?: string;
+    tracking?: any[];
 }
 
 export interface CreateOrderData {

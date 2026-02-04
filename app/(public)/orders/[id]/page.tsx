@@ -180,12 +180,12 @@ export default function OrderDetailsPage() {
                 {order.items.map((item, index) => (
                   <div key={index} className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg">
                     <img
-                      src={item.image ? `http://localhost:4000${item.image}` : '/api/placeholder/80/80'}
-                      alt={item.name}
+                      src={item.productImage ? `http://localhost:4000${item.productImage}` : '/api/placeholder/80/80'}
+                      alt={item.productName}
                       className="w-20 h-20 object-cover rounded-lg"
                     />
                     <div className="flex-1">
-                      <h3 className="font-medium text-gray-900">{item.name}</h3>
+                      <h3 className="font-medium text-gray-900">{item.productName}</h3>
                       <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
                     </div>
                     <div className="text-right">
@@ -218,12 +218,12 @@ export default function OrderDetailsPage() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Payment Method</span>
-                  <span className="text-gray-900 capitalize">{order.paymentMethod}</span>
+                  <span className="text-gray-900 capitalize">{order.paymentMethod.type}</span>
                 </div>
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between text-lg font-semibold">
                     <span className="text-gray-900">Total</span>
-                    <span className="text-gray-900">${order.totalAmount.toFixed(2)}</span>
+                    <span className="text-gray-900">${order.total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

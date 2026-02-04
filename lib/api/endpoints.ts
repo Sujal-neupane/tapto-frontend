@@ -41,7 +41,7 @@ export const API = {
     ORDERS: {
         CREATE: '/api/orders',
         GET_BY_ID: (id: string) => `/api/orders/${id}`,
-        GET_USER_ORDERS: '/api/orders/user',
+        GET_USER_ORDERS: '/api/orders/my-orders',
         UPDATE_STATUS: (id: string) => `/api/orders/${id}/status`,
     },
 } as const;
