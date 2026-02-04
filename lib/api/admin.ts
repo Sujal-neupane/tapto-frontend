@@ -238,7 +238,7 @@ export interface AdminOrder {
   };
   items: AdminOrderItem[];
   total: number;
-  status: 'Order Placed' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'outForDelivery' | 'delivered' | 'cancelled' | 'refunded';
   paymentMethod: string;
   shippingAddress: {
     id: string;

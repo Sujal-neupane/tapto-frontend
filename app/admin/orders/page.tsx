@@ -61,16 +61,22 @@ const AdminOrdersPage = () => {
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'order placed':
-        return 'bg-blue-100 text-blue-800';
-      case 'confirmed':
+      case 'pending':
         return 'bg-yellow-100 text-yellow-800';
-      case 'shipped':
+      case 'confirmed':
+        return 'bg-blue-100 text-blue-800';
+      case 'processing':
         return 'bg-purple-100 text-purple-800';
+      case 'shipped':
+        return 'bg-indigo-100 text-indigo-800';
+      case 'outfordelivery':
+        return 'bg-orange-100 text-orange-800';
       case 'delivered':
         return 'bg-green-100 text-green-800';
       case 'cancelled':
         return 'bg-red-100 text-red-800';
+      case 'refunded':
+        return 'bg-gray-100 text-gray-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -78,15 +84,21 @@ const AdminOrdersPage = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'order placed':
+      case 'pending':
         return <Clock className="w-4 h-4" />;
       case 'confirmed':
         return <CheckCircle className="w-4 h-4" />;
+      case 'processing':
+        return <RefreshCw className="w-4 h-4" />;
       case 'shipped':
         return <Truck className="w-4 h-4" />;
+      case 'outfordelivery':
+        return <Package className="w-4 h-4" />;
       case 'delivered':
         return <CheckCircle className="w-4 h-4" />;
       case 'cancelled':
+        return <XCircle className="w-4 h-4" />;
+      case 'refunded':
         return <XCircle className="w-4 h-4" />;
       default:
         return <Package className="w-4 h-4" />;
@@ -106,11 +118,14 @@ const AdminOrdersPage = () => {
 
   const statusOptions = [
     { value: "all", label: "All Status" },
-    { value: "Order Placed", label: "Order Placed" },
+    { value: "pending", label: "Pending" },
     { value: "confirmed", label: "Confirmed" },
+    { value: "processing", label: "Processing" },
     { value: "shipped", label: "Shipped" },
+    { value: "outForDelivery", label: "Out for Delivery" },
     { value: "delivered", label: "Delivered" },
     { value: "cancelled", label: "Cancelled" },
+    { value: "refunded", label: "Refunded" },
   ];
 
   return (
