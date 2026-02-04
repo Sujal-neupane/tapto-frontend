@@ -275,12 +275,12 @@ const AdminOrdersPage = () => {
                       {order.items.slice(0, 3).map((item, index) => (
                         <div key={index} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
                           <img
-                            src={`http://localhost:4000${item.product.images[0]}`}
-                            alt={item.product.name}
+                            src={`http://localhost:4000${item.productId.images[0]}`}
+                            alt={item.productId.name}
                             className="w-12 h-12 object-cover rounded"
                           />
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-slate-900 truncate">{item.product.name}</div>
+                            <div className="font-medium text-slate-900 truncate">{item.productId.name}</div>
                             <div className="text-sm text-slate-600">Qty: {item.quantity} × ${item.price.toFixed(2)}</div>
                           </div>
                         </div>
