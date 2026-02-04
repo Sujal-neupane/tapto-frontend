@@ -206,3 +206,68 @@ export const deleteAdminProduct = async (id: string): Promise<{ success: boolean
     throw new Error(error.response?.data?.message || 'Failed to delete product');
   }
 };
+
+// Order interfaces
+export interface AdminOrderItem {
+  product: {
+    _id: string;
+    name: string;
+    price: number;
+    images: string[];
+  };
+  quantity: number;
+  price: number;
+}
+
+export interface AdminOrder {
+  _id: string;
+  user: {
+    _id: string;
+    fullName: string;
+    email: string;
+  };
+  items: AdminOrderItem[];
+  totalAmount: number;
+  status: 'Order Placed' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  paymentMethod: string;
+  shippingAddress: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
+  tracking: Array<{
+    status: string;
+    description: string;
+    timestamp: string;
+  }>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface OrdersResponse {
+  success: boolean;
+  data: AdminOrder[];
+  message?: string;
+}
+
+// Get all orders
+export const getAdminOrders = async (): Promise<OrdersResponse> => {
+  try {
+    const response = await axiosInstance.get(API.ADMIN.ORDERS.GET_ALL);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch orders');
+  }
+};
+
+// Update order status
+export const updateAdminOrderStatus = async (orderId: string, status: string): Promise<{ success: boolean; message: string }> => {
+  try {
+    const response = await axiosInstance.patch(API.ADMIN.ORDERS.UPDATE_STATUS(orderId), { status });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to update order status');
+  }
+};
