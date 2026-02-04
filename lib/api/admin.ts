@@ -131,3 +131,78 @@ export const getDashboardStats = async () => {
     throw new Error(error.response?.data?.message || 'Failed to fetch dashboard stats');
   }
 };
+
+// Product interfaces
+export interface AdminProduct {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  images: string[];
+  tags?: string[];
+  discount?: number;
+  stock: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProductsResponse {
+  success: boolean;
+  data: AdminProduct[];
+  message?: string;
+}
+
+export interface ProductResponse {
+  success: boolean;
+  data: AdminProduct;
+  message?: string;
+}
+
+// Get all products
+export const getAdminProducts = async (): Promise<ProductsResponse> => {
+  try {
+    const response = await axiosInstance.get(API.ADMIN.PRODUCTS.GET_ALL);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch products');
+  }
+};
+
+// Create product (with FormData for image upload)
+export const createAdminProduct = async (formData: FormData): Promise<ProductResponse> => {
+  try {
+    const response = await axiosInstance.post<ProductResponse>(API.ADMIN.PRODUCTS.CREATE, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to create product');
+  }
+};
+
+// Update product (with FormData for image upload)
+export const updateAdminProduct = async (id: string, formData: FormData): Promise<ProductResponse> => {
+  try {
+    const response = await axiosInstance.put<ProductResponse>(API.ADMIN.PRODUCTS.UPDATE(id), formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to update product');
+  }
+};
+
+// Delete product
+export const deleteAdminProduct = async (id: string): Promise<{ success: boolean; message: string }> => {
+  try {
+    const response = await axiosInstance.delete(API.ADMIN.PRODUCTS.DELETE(id));
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to delete product');
+  }
+};

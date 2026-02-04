@@ -161,14 +161,7 @@ export default function OrderDetailsPage() {
                     </svg>
                     Tracking Number: <span className="font-mono">{order.trackingNumber}</span>
                   </div>
-                  {order.estimatedDelivery && (
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
-                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Estimated Delivery: {new Date(order.estimatedDelivery).toLocaleDateString()}
-                    </div>
-                  )}
+                  {/* Estimated Delivery removed: property does not exist on Order type */}
                 </div>
               )}
             </div>
