@@ -412,13 +412,6 @@ const AdminOrdersPage = () => {
                         <Eye className="w-4 h-4 mr-2" />
                         View Details
                       </Link>
-
-                      {order.trackingNumber && (
-                        <div className="flex items-center px-3 py-1 bg-gray-100 rounded-lg">
-                          <Truck className="w-4 h-4 mr-2 text-gray-600" />
-                          <span className="text-sm text-gray-700">{order.trackingNumber}</span>
-                        </div>
-                      )}
                     </div>
 
                     {/* Status Update */}
