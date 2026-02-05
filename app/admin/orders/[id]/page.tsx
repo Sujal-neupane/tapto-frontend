@@ -68,37 +68,62 @@ const AdminOrderDetailsPage = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusConfig = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'order placed':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'pending':
+        return {
+          color: 'bg-orange-100 text-orange-800 border-orange-200',
+          icon: Clock,
+          label: 'Pending'
+        };
       case 'confirmed':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return {
+          color: 'bg-blue-100 text-blue-800 border-blue-200',
+          icon: CheckCircle,
+          label: 'Confirmed'
+        };
+      case 'processing':
+        return {
+          color: 'bg-purple-100 text-purple-800 border-purple-200',
+          icon: RefreshCw,
+          label: 'Processing'
+        };
       case 'shipped':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
+        return {
+          color: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+          icon: Truck,
+          label: 'Shipped'
+        };
+      case 'outfordelivery':
+        return {
+          color: 'bg-teal-100 text-teal-800 border-teal-200',
+          icon: Truck,
+          label: 'Out for Delivery'
+        };
       case 'delivered':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return {
+          color: 'bg-green-100 text-green-800 border-green-200',
+          icon: CheckCircle,
+          label: 'Delivered'
+        };
       case 'cancelled':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return {
+          color: 'bg-red-100 text-red-800 border-red-200',
+          icon: XCircle,
+          label: 'Cancelled'
+        };
+      case 'refunded':
+        return {
+          color: 'bg-gray-100 text-gray-800 border-gray-200',
+          icon: XCircle,
+          label: 'Refunded'
+        };
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'order placed':
-        return <Clock className="w-5 h-5" />;
-      case 'confirmed':
-        return <CheckCircle className="w-5 h-5" />;
-      case 'shipped':
-        return <Truck className="w-5 h-5" />;
-      case 'delivered':
-        return <CheckCircle className="w-5 h-5" />;
-      case 'cancelled':
-        return <XCircle className="w-5 h-5" />;
-      default:
-        return <Package className="w-5 h-5" />;
+        return {
+          color: 'bg-gray-100 text-gray-800 border-gray-200',
+          icon: Package,
+          label: 'Unknown'
+        };
     }
   };
 
@@ -159,24 +184,27 @@ const AdminOrderDetailsPage = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${getStatusColor(order.status)}`}>
-                {getStatusIcon(order.status)}
-                <span className="font-medium">{order.status}</span>
+              <div className={`inline-flex items-center px-4 py-2 rounded-lg border ${getStatusConfig(order.status).color}`}>
+                {React.createElement(getStatusConfig(order.status).icon, { className: "w-4 h-4 mr-2" })}
+                <span className="font-medium">{getStatusConfig(order.status).label}</span>
               </div>
               <select
                 value={order.status}
                 onChange={(e) => handleStatusUpdate(e.target.value)}
                 disabled={updatingStatus}
-                className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-900 disabled:opacity-50"
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm disabled:opacity-50"
               >
-                <option value="Order Placed">Order Placed</option>
+                <option value="pending">Pending</option>
                 <option value="confirmed">Confirmed</option>
+                <option value="processing">Processing</option>
                 <option value="shipped">Shipped</option>
+                <option value="outForDelivery">Out for Delivery</option>
                 <option value="delivered">Delivered</option>
                 <option value="cancelled">Cancelled</option>
+                <option value="refunded">Refunded</option>
               </select>
               {updatingStatus && (
-                <RefreshCw className="w-5 h-5 animate-spin text-indigo-600" />
+                <RefreshCw className="w-5 h-5 animate-spin text-blue-600" />
               )}
             </div>
           </div>
