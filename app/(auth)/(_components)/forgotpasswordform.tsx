@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import {
 	Mail,
 	Sparkles,
@@ -22,6 +23,7 @@ import { requestPasswordReset } from "@/lib/api/auth";
 export default function ForgotPasswordForm() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [sent, setSent] = useState(false);
+	const router = useRouter();
 
 	const {
 		register,
@@ -37,7 +39,8 @@ export default function ForgotPasswordForm() {
 		try{
             const response = await requestPasswordReset(data.email);
             if (response.success) {
-                toast.success('Password reset link sent to your email.');
+                toast.success('OTP sent to your email. Please check your email and enter the OTP to reset your password.');
+                router.push(`/reset-password?email=${encodeURIComponent(data.email)}`);
             }else{
                 toast.error(response.message || 'Failed to request password reset.');
             }

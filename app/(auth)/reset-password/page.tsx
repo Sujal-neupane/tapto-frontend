@@ -1,37 +1,65 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { resetPassword } from '@/lib/api/auth';
+import { toast } from 'react-toastify';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [otp, setOtp] = useState('');
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    const emailParam = searchParams.get('email');
+    if (emailParam) {
+      setEmail(emailParam);
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess(false);
-    if (!password || !confirmPassword) {
+
+    if (!email || !otp || !password || !confirmPassword) {
       setError('Please fill in all fields.');
       return;
     }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
     }
+
     if (password.length < 8) {
       setError('Password must be at least 8 characters.');
       return;
     }
+
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await resetPassword(email, otp, password);
+      if (response.success) {
+        setSuccess(true);
+        toast.success('Password reset successfully!');
+        setTimeout(() => {
+          router.push('/auth/login');
+        }, 2000);
+      } else {
+        setError(response.message || 'Failed to reset password');
+      }
+    } catch (error: any) {
+      setError(error.message || 'Failed to reset password');
+    } finally {
       setLoading(false);
-      setSuccess(true);
-      setPassword('');
-      setConfirmPassword('');
-    }, 1500);
+    }
   };
 
   return (
@@ -40,10 +68,32 @@ export default function ResetPasswordPage() {
         <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">Reset Password</h2>
         {success ? (
           <div className="bg-green-100 text-green-700 p-4 rounded mb-4 text-center">
-            Your password has been reset successfully!
+            Your password has been reset successfully! Redirecting to login...
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input
+                type="email"
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">OTP</label>
+              <input
+                type="text"
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900"
+                value={otp}
+                onChange={e => setOtp(e.target.value)}
+                placeholder="Enter OTP from email"
+                required
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
               <input
