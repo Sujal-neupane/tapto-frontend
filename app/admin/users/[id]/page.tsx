@@ -16,6 +16,7 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { resolveImageUrl } from "@/lib/utils/image";
 
 const AdminUserDetailPage = () => {
   const params = useParams();
@@ -61,12 +62,7 @@ const AdminUserDetailPage = () => {
   };
 
   const normalizeImageSrc = (src: string | null | undefined) => {
-    if (!src) return "/default-avatar.svg";
-    const path = src.startsWith("/") ? src : `/${src}`;
-    if (path.startsWith("/uploads")) {
-      return `http://localhost:4000${path}`;
-    }
-    return src;
+    return resolveImageUrl(src);
   };
 
   const formatDate = (dateString: string | undefined) => {

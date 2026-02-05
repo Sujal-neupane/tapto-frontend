@@ -23,6 +23,7 @@ import {
   Phone,
   Mail,
   MoreVertical,
+  ArrowLeft,
   ArrowUpDown
 } from "lucide-react";
 import Link from "next/link";
@@ -204,12 +205,12 @@ const AdminOrdersPage = () => {
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <button
-                onClick={() => router.back()}
+              <Link
+                href="/admin/dashboard"
                 className="p-2 rounded-lg hover:bg-slate-100 transition-colors duration-200"
               >
-                <ChevronDown className="w-5 h-5 text-slate-600 rotate-90" />
-              </button>
+                <ArrowLeft className="w-5 h-5 text-slate-600" />
+              </Link>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg">
                   <ShoppingBag className="w-6 h-6 text-white" />

@@ -97,6 +97,17 @@ export default function UserHomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
+        {/* Back Button */}
+        <div className="mb-6">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-all duration-200 group bg-transparent border-none cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-medium">Back to Dashboard</span>
+          </Link>
+        </div>
+
         {/* Profile Header */}
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-12">

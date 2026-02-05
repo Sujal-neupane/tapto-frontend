@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/context/auth-context";
 import Link from "next/link";
+import { resolveImageUrl } from "../../../lib/utils/image";
 import {
   ArrowLeft,
   Package,
@@ -210,8 +211,67 @@ export default function OrderDetailsPage() {
     );
   }
 
-  const statusConfig = getStatusConfig(order.status);
-  const StatusIcon = statusConfig.icon;
+  const handleDownloadInvoice = () => {
+    // Create a simple invoice text
+    const invoiceContent = `
+ORDER INVOICE
+=============
+
+Order ID: ${order._id}
+Order Date: ${new Date(order.createdAt).toLocaleDateString()}
+Customer: ${order.shippingAddress.fullName}
+
+SHIPPING ADDRESS
+================
+${order.shippingAddress.fullName}
+${order.shippingAddress.street}
+${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}
+${order.shippingAddress.country}
+Phone: ${order.shippingAddress.phone}
+
+ORDER ITEMS
+===========
+${order.items.map(item => 
+  `${item.productName} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}`
+).join('\n')}
+
+ORDER SUMMARY
+=============
+Subtotal: $${order.subtotal.toFixed(2)}
+Shipping: $${order.shippingFee.toFixed(2)}
+Tax: $${order.tax.toFixed(2)}
+Total: $${order.total.toFixed(2)}
+
+Payment Method: ${order.paymentMethod.type.toUpperCase()}
+${order.paymentMethod.last4 ? `Card ending in ${order.paymentMethod.last4}` : ''}
+
+Thank you for your business!
+    `.trim();
+
+    // Create and download the file
+    const blob = new Blob([invoiceContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `invoice-${order._id.slice(-8)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast.success('Invoice downloaded successfully!');
+  };
+
+  const handleTrackPackage = () => {
+    if (order.trackingNumber) {
+      // Open tracking in a new tab (you can integrate with actual tracking services)
+      const trackingUrl = `https://www.ups.com/track?tracknum=${order.trackingNumber}`;
+      window.open(trackingUrl, '_blank');
+      toast.info('Opening tracking page...');
+    } else {
+      toast.error('No tracking number available for this order');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
@@ -228,13 +288,16 @@ export default function OrderDetailsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Order Details</h1>
-              <p className="text-gray-600 mt-2">Order #{order._id.slice(-8)}</p>
+              <p className="text-gray-700 mt-2">Order #{order._id.slice(-8)}</p>
             </div>
             <div className="flex items-center space-x-3">
               <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors duration-200">
                 <Share2 className="w-5 h-5" />
               </button>
-              <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors duration-200">
+              <button 
+                onClick={handleDownloadInvoice}
+                className="p-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+              >
                 <Download className="w-5 h-5" />
               </button>
             </div>
@@ -245,12 +308,17 @@ export default function OrderDetailsPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-gray-900">Order Status</h2>
-            <div className={`inline-flex items-center px-4 py-2 rounded-lg border ${statusConfig.color}`}>
-              <StatusIcon className="w-4 h-4 mr-2" />
-              <span className="font-medium">{statusConfig.label}</span>
-            </div>
+            {(() => {
+              const statusConfig = getStatusConfig(order.status);
+              return (
+                <div className={`inline-flex items-center px-4 py-2 rounded-lg border ${statusConfig.color}`}>
+                  <statusConfig.icon className="w-4 h-4 mr-2" />
+                  <span className="font-medium">{statusConfig.label}</span>
+                </div>
+              );
+            })()}
           </div>
-          <div className="flex items-center text-sm text-gray-600">
+          <div className="flex items-center text-sm text-gray-700">
             <Calendar className="w-4 h-4 mr-2" />
             Ordered on {new Date(order.createdAt).toLocaleDateString('en-US', {
               weekday: 'long',
@@ -270,21 +338,21 @@ export default function OrderDetailsPage() {
                 {order.items.map((item, index) => (
                   <div key={index} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
                     <img
-                      src={item.productImage ? `http://localhost:4000${item.productImage}` : '/api/placeholder/80/80'}
+                      src={item.productImage ? resolveImageUrl(item.productImage) : '/api/placeholder/80/80'}
                       alt={item.productName}
                       className="w-16 h-16 object-cover rounded-lg"
                     />
                     <div className="flex-1">
                       <h3 className="font-semibold text-gray-900">{item.productName}</h3>
                       <div className="flex items-center space-x-4 mt-1">
-                        <span className="text-sm text-gray-600">Qty: {item.quantity}</span>
-                        {item.size && <span className="text-sm text-gray-600">Size: {item.size}</span>}
-                        {item.color && <span className="text-sm text-gray-600">Color: {item.color}</span>}
+                        <span className="text-sm text-gray-700">Qty: {item.quantity}</span>
+                        {item.size && <span className="text-sm text-gray-700">Size: {item.size}</span>}
+                        {item.color && <span className="text-sm text-gray-700">Color: {item.color}</span>}
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
-                      <p className="text-sm text-gray-600">${item.price.toFixed(2)} each</p>
+                      <p className="text-sm text-gray-700">${item.price.toFixed(2)} each</p>
                     </div>
                   </div>
                 ))}
@@ -296,20 +364,20 @@ export default function OrderDetailsPage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Summary</h2>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">${order.subtotal.toFixed(2)}</span>
+                  <span className="text-gray-700">Subtotal</span>
+                  <span className="font-medium text-gray-900">${order.subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Shipping</span>
-                  <span className="font-medium">${order.shippingFee.toFixed(2)}</span>
+                  <span className="text-gray-700">Shipping</span>
+                  <span className="font-medium text-gray-900">${order.shippingFee.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Tax</span>
-                  <span className="font-medium">${order.tax.toFixed(2)}</span>
+                  <span className="text-gray-700">Tax</span>
+                  <span className="font-medium text-gray-900">${order.tax.toFixed(2)}</span>
                 </div>
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
+                    <span className="text-gray-900">Total</span>
                     <span className="text-blue-600">${order.total.toFixed(2)}</span>
                   </div>
                 </div>
@@ -327,14 +395,14 @@ export default function OrderDetailsPage() {
               </h3>
               <div className="space-y-2">
                 <p className="font-medium text-gray-900">{order.shippingAddress.fullName}</p>
-                <p className="text-gray-600">{order.shippingAddress.street}</p>
-                <p className="text-gray-600">
+                <p className="text-gray-700">{order.shippingAddress.street}</p>
+                <p className="text-gray-700">
                   {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}
                 </p>
-                <p className="text-gray-600">{order.shippingAddress.country}</p>
+                <p className="text-gray-700">{order.shippingAddress.country}</p>
                 <div className="flex items-center mt-3 pt-3 border-t border-gray-200">
                   <Phone className="w-4 h-4 mr-2 text-gray-500" />
-                  <span className="text-gray-600">{order.shippingAddress.phone}</span>
+                  <span className="text-gray-700">{order.shippingAddress.phone}</span>
                 </div>
               </div>
             </div>
@@ -348,7 +416,7 @@ export default function OrderDetailsPage() {
               <div className="space-y-2">
                 <p className="font-medium text-gray-900 capitalize">{order.paymentMethod.type}</p>
                 {order.paymentMethod.last4 && (
-                  <p className="text-gray-600">•••• •••• •••• {order.paymentMethod.last4}</p>
+                  <p className="text-gray-700">•••• •••• •••• {order.paymentMethod.last4}</p>
                 )}
               </div>
             </div>
@@ -362,7 +430,10 @@ export default function OrderDetailsPage() {
                 </h3>
                 <div className="space-y-2">
                   <p className="font-medium text-gray-900">{order.trackingNumber}</p>
-                  <button className="w-full mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                  <button 
+                    onClick={handleTrackPackage}
+                    className="w-full mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                  >
                     Track Package
                   </button>
                 </div>
@@ -393,7 +464,7 @@ export default function OrderDetailsPage() {
               <AlertTriangle className="w-6 h-6 text-orange-500 mr-3" />
               <h3 className="text-lg font-semibold text-gray-900">Cancel Order</h3>
             </div>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-700 mb-4">
               Are you sure you want to cancel this order? This action cannot be undone.
             </p>
             <div className="mb-4">

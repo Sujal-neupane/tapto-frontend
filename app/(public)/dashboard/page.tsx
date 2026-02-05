@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ProfileDropdown from "./ProfileDropdown";
 import { getProducts, getPersonalizedProducts, Product } from "@/lib/api/products";
+import { resolveImageUrl } from "@/lib/utils/image";
 
 // Product catalog - now fetched from API
 const productCatalog: Product[] = [];
@@ -407,7 +408,7 @@ export default function DashboardPage() {
                         <div className="relative h-3/5 bg-gray-100">
                           {currentProduct.images && currentProduct.images.length > 0 ? (
                             <img
-                              src={`http://localhost:4000${currentProduct.images[0]}`}
+                              src={resolveImageUrl(currentProduct.images[0])}
                               alt={currentProduct.name}
                               className="w-full h-full object-cover"
                             />
@@ -621,7 +622,7 @@ export default function DashboardPage() {
                       <div className="aspect-square bg-gray-100 relative">
                         {product.images && product.images.length > 0 ? (
                           <img
-                            src={`http://localhost:4000${product.images[0]}`}
+                            src={resolveImageUrl(product.images[0])}
                             alt={product.name}
                             className="w-full h-full object-cover"
                           />
@@ -729,7 +730,7 @@ export default function DashboardPage() {
                       <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs flex-shrink-0">
                         {product.images && product.images.length > 0 ? (
                           <img
-                            src={`http://localhost:4000${product.images[0]}`}
+                            src={resolveImageUrl(product.images[0])}
                             alt={product.name}
                             className="w-full h-full object-cover rounded-lg"
                           />

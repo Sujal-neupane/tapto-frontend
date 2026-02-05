@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { getAdminOrderById, updateAdminOrderStatus, AdminOrder } from "@/lib/api/admin";
+import { resolveImageUrl } from "../../../../lib/utils/image";
 import { toast } from "react-toastify";
 import {
   ShoppingBag,
@@ -291,7 +292,7 @@ const AdminOrderDetailsPage = () => {
               {order.items.map((item, index) => (
                 <div key={index} className="flex items-center gap-4 p-4 border border-slate-200 rounded-lg">
                   <img
-                    src={item.productImage ? `http://localhost:4000${item.productImage}` : '/default-avatar.svg'}
+                    src={item.productImage ? resolveImageUrl(item.productImage) : '/default-avatar.svg'}
                     alt={item.productName || 'Product'}
                     className="w-16 h-16 object-cover rounded-lg"
                   />

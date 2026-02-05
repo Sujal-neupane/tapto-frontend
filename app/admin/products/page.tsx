@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getAdminProducts, deleteAdminProduct, AdminProduct } from "@/lib/api/admin";
+import { resolveImageUrl } from "../../../lib/utils/image";
 import { toast } from "react-toastify";
 import {
   Package,
@@ -138,7 +139,7 @@ const AdminProductsPage = () => {
                 <div className="aspect-square relative bg-slate-100">
                   {product.images && product.images.length > 0 ? (
                     <img
-                      src={`http://localhost:4000${product.images[0]}`}
+                      src={resolveImageUrl(product.images[0])}
                       alt={product.name}
                       className="w-full h-full object-cover"
                     />

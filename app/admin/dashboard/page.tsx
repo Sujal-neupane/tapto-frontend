@@ -19,6 +19,7 @@ import {
   Clock,
   CheckCircle,
   XCircle,
+  ArrowLeft,
 } from "lucide-react";
 
 export default function AdminDashboard() {
@@ -99,6 +100,12 @@ export default function AdminDashboard() {
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
+              <Link
+                href="/dashboard"
+                className="p-2 rounded-lg hover:bg-slate-100 transition-colors duration-200"
+              >
+                <ArrowLeft className="w-5 h-5 text-slate-600" />
+              </Link>
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className="p-2 rounded-lg hover:bg-slate-100 transition-colors lg:hidden"

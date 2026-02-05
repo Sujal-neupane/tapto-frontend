@@ -121,7 +121,7 @@ const UserProfilePage = () => {
         {/* Header */}
         <div className="mb-8 animate-fadeIn">
           <button
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("/user")}
             className="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-all duration-200 group mb-6 bg-transparent border-none cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />

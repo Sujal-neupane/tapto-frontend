@@ -17,6 +17,7 @@ import {
   Loader2,
 } from "lucide-react";
 import Link from "next/link";
+import { resolveImageUrl } from "@/lib/utils/image";
 
 const EditProductPage = () => {
   const router = useRouter();
@@ -351,7 +352,7 @@ const EditProductPage = () => {
                       {existingImages.map((imageUrl, index) => (
                         <div key={`existing-${index}`} className="relative group">
                           <img
-                            src={`http://localhost:4000${imageUrl}`}
+                            src={resolveImageUrl(imageUrl)}
                             alt={`Existing ${index + 1}`}
                             className="w-full h-24 object-cover rounded-lg border border-slate-200"
                           />

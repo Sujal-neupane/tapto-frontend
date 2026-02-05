@@ -40,7 +40,7 @@ export default function ProfileDropdown() {
           <div className="px-4 py-2 text-xs text-gray-500">{user.email}</div>
           <hr />
           <button
-            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+            className="w-full text-black text-left px-4 py-2 hover:bg-gray-100 text-sm"
             onClick={() => {
               setOpen(false);
               router.push("/orders");
@@ -49,7 +49,7 @@ export default function ProfileDropdown() {
             My Orders
           </button>
           <button
-            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+            className="w-full text-black text-left px-4 py-2 hover:bg-gray-100 text-sm"
             onClick={() => {
               setOpen(false);
               router.push("/user");

@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/context/auth-context";
 import Link from "next/link";
 import { ShoppingCart, ArrowLeft, Trash2, Plus, Minus } from "lucide-react";
 import { toast } from "react-toastify";
 import { getProductById, Product } from "@/lib/api/products";
+import { resolveImageUrl } from "@/lib/utils/image";
 
 interface CartItem {
   productId: string;
@@ -18,6 +20,7 @@ interface CartItem {
 
 export default function UserCartPage() {
   const { user, isLoading: authLoading } = useAuth();
+  const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -162,13 +165,13 @@ export default function UserCartPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4"
+          <button
+            onClick={() => router.back()}
+            className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4 bg-transparent border-none cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
-          </Link>
+            Back
+          </button>
           <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
           <p className="text-gray-600 mt-2">
             {getTotalItems()} {getTotalItems() === 1 ? 'item' : 'items'} in your cart
@@ -201,7 +204,7 @@ export default function UserCartPage() {
                 <div key={item.productId} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="flex items-center space-x-4">
                     <img
-                      src={item.image ? `http://localhost:4000${item.image}` : '/api/placeholder/80/80'}
+                      src={resolveImageUrl(item.image) || '/api/placeholder/80/80'}
                       alt={item.name}
                       className="w-20 h-20 object-cover rounded-lg"
                     />
@@ -221,17 +224,17 @@ export default function UserCartPage() {
                     </div>
 
                     {/* Quantity Controls */}
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center text-black space-x-2">
                       <button
                         onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                        className="p-1 rounded-md border border-gray-300 hover:bg-gray-50"
+                        className="p-1 rounded-md border text-black border-gray-300 hover:bg-gray-50"
                       >
                         <Minus className="w-4 h-4" />
                       </button>
                       <span className="w-8 text-center">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                        className="p-1 rounded-md border border-gray-300 hover:bg-gray-50"
+                        className="p-1 rounded-md border border-gray-300 text-black hover:bg-gray-50"
                       >
                         <Plus className="w-4 h-4" />
                       </button>
@@ -264,22 +267,22 @@ export default function UserCartPage() {
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal ({getTotalItems()} items)</span>
-                    <span className="font-medium">${getTotalPrice().toFixed(2)}</span>
+                    <span className="font-medium text-black">${getTotalPrice().toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping</span>
-                    <span className="font-medium">
-                      {getTotalPrice() > 50 ? 'Free' : '$9.99'}
+                    <span className="font-medium text-black">
+                      {getTotalPrice() > 50 ? 'Free'  : '$9.99'}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Tax</span>
-                    <span className="font-medium">${(getTotalPrice() * 0.08).toFixed(2)}</span>
+                    <span className="font-medium text-black">${(getTotalPrice() * 0.08).toFixed(2)}</span>
                   </div>
                 </div>
 
                 <div className="border-t border-gray-200 pt-4 mb-6">
-                  <div className="flex justify-between text-lg font-bold">
+                  <div className="flex justify-between text-lg font-bold text-black">
                     <span>Total</span>
                     <span>${(getTotalPrice() + (getTotalPrice() > 50 ? 0 : 9.99) + (getTotalPrice() * 0.08)).toFixed(2)}</span>
                   </div>

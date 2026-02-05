@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/context/auth-context";
 import Link from "next/link";
 import { Heart, ShoppingCart, ArrowLeft, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { getProductById, Product } from "@/lib/api/products";
+import { resolveImageUrl } from "@/lib/utils/image";
 
 interface WishlistItem {
   productId: string;
@@ -17,6 +19,7 @@ interface WishlistItem {
 
 export default function UserWishlistPage() {
   const { user, isLoading: authLoading } = useAuth();
+  const router = useRouter();
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -122,13 +125,13 @@ export default function UserWishlistPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4"
+          <button
+            onClick={() => router.back()}
+            className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4 bg-transparent border-none cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
-          </Link>
+            Back
+          </button>
           <h1 className="text-3xl font-bold text-gray-900">My Wishlist</h1>
           <p className="text-gray-600 mt-2">Items you've saved for later</p>
         </div>
@@ -156,7 +159,7 @@ export default function UserWishlistPage() {
               <div key={item.productId} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div className="aspect-square relative">
                   <img
-                    src={item.image ? `http://localhost:4000${item.image}` : '/api/placeholder/200/200'}
+                    src={resolveImageUrl(item.image) || '/api/placeholder/200/200'}
                     alt={item.name}
                     className="w-full h-full object-cover"
                   />

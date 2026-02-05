@@ -127,7 +127,7 @@ export default function CheckoutPage() {
 
       // Clear cart and redirect
       localStorage.removeItem('cart');
-      router.push(`/orders/${order._id}`);
+      router.push(`/user/orders/${order._id}`);
     } catch (error) {
       console.error('Error creating order:', error);
       toast.error('Failed to place order. Please try again.');
