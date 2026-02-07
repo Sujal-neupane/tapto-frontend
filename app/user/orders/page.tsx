@@ -90,7 +90,7 @@ export default function UserOrdersPage() {
     }
 
     try {
-      await cancelOrder(cancellingOrderId);
+      await cancelOrder(cancellingOrderId, cancelReason);
       toast.success("Order cancelled successfully");
 
       // Update local state
@@ -119,7 +119,7 @@ export default function UserOrdersPage() {
         };
       case 'confirmed':
         return {
-          color: 'bg-blue-100 text-blue-800 border-blue-200',
+          color: 'bg-primary-100 text-primary-800 border-primary-200',
           icon: CheckCircle,
           label: 'Confirmed'
         };
@@ -131,7 +131,7 @@ export default function UserOrdersPage() {
         };
       case 'shipped':
         return {
-          color: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+          color: 'bg-primary-100 text-primary-800 border-primary-200',
           icon: Truck,
           label: 'Shipped'
         };
@@ -176,13 +176,13 @@ export default function UserOrdersPage() {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <Link
             href="/dashboard"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4 transition-colors duration-200"
+            className="inline-flex items-center text-primary-600 hover:text-primary-800 mb-4 transition-colors duration-200"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back 
@@ -200,7 +200,7 @@ export default function UserOrdersPage() {
                 placeholder="Search orders..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-64"
+                className="pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 w-full sm:w-64"
               />
               {searchQuery && (
                 <button
@@ -223,8 +223,8 @@ export default function UserOrdersPage() {
                 onClick={() => setSelectedFilter(filter.key)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   selectedFilter === filter.key
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-300 hover:bg-blue-50'
+                    ? 'bg-primary-600 text-white shadow-md'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-primary-300 hover:bg-primary-50'
                 }`}
               >
                 {filter.label} ({filter.count})
@@ -263,7 +263,7 @@ export default function UserOrdersPage() {
             <p className="text-gray-600">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200"
             >
               Try Again
             </button>
@@ -282,7 +282,7 @@ export default function UserOrdersPage() {
             {!searchQuery && (
               <Link
                 href="/dashboard"
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 inline-block"
+                className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200 inline-block"
               >
                 Start Shopping
               </Link>
@@ -299,8 +299,8 @@ export default function UserOrdersPage() {
                 <div key={order._id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Package className="w-5 h-5 text-blue-600" />
+                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                        <Package className="w-5 h-5 text-primary-600" />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900">
@@ -328,7 +328,7 @@ export default function UserOrdersPage() {
                       <span className="text-sm font-medium text-gray-700">
                         {order.items.length} item{order.items.length !== 1 ? 's' : ''}
                       </span>
-                      <span className="text-lg font-bold text-blue-600">${order.total.toFixed(2)}</span>
+                      <span className="text-lg font-bold text-primary-600">${order.total.toFixed(2)}</span>
                     </div>
                     <div className="space-y-2">
                       {order.items.slice(0, 2).map((item, index) => (
@@ -341,8 +341,8 @@ export default function UserOrdersPage() {
                       ))}
                       {order.items.length > 2 && (
                         <div className="flex items-center space-x-3">
-                          <div className="w-1 h-1 bg-blue-400 rounded-full" />
-                          <span className="text-sm text-blue-600 font-medium">
+                          <div className="w-1 h-1 bg-primary-400 rounded-full" />
+                          <span className="text-sm text-primary-600 font-medium">
                             +{order.items.length - 2} more item{order.items.length - 2 !== 1 ? 's' : ''}
                           </span>
                         </div>
@@ -391,42 +391,95 @@ export default function UserOrdersPage() {
 
       {/* Cancel Order Dialog */}
       {showCancelDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-            <div className="flex items-center mb-4">
-              <AlertTriangle className="w-6 h-6 text-orange-500 mr-3" />
-              <h3 className="text-lg font-semibold text-gray-900">Cancel Order</h3>
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "1rem",
+            zIndex: 50,
+          }}
+          onClick={() => { setShowCancelDialog(false); setCancellingOrderId(null); setCancelReason(''); }}
+        >
+          <div
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: "0.75rem",
+              boxShadow: "0 20px 25px -5px rgba(0,0,0,.1), 0 8px 10px -6px rgba(0,0,0,.1)",
+              width: "100%",
+              maxWidth: "28rem",
+              padding: "1.5rem",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", alignItems: "center", marginBottom: "1rem" }}>
+              <AlertTriangle style={{ width: "1.5rem", height: "1.5rem", color: "#f97316", marginRight: "0.75rem", flexShrink: 0 }} />
+              <h3 style={{ fontSize: "1.125rem", fontWeight: 600, color: "#111827" }}>Cancel Order</h3>
             </div>
-            <p className="text-gray-600 mb-4">
+            <p style={{ color: "#4b5563", marginBottom: "1rem", fontSize: "0.875rem", lineHeight: 1.5 }}>
               Are you sure you want to cancel this order? This action cannot be undone.
             </p>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div style={{ marginBottom: "1rem" }}>
+              <label style={{ display: "block", fontSize: "0.875rem", fontWeight: 500, color: "#374151", marginBottom: "0.5rem" }}>
                 Reason for cancellation *
               </label>
               <textarea
                 value={cancelReason}
                 onChange={(e) => setCancelReason(e.target.value)}
                 placeholder="e.g., Changed my mind, wrong item ordered..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                 rows={3}
+                style={{
+                  width: "100%",
+                  padding: "0.625rem 0.75rem",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "0.5rem",
+                  fontSize: "0.875rem",
+                  resize: "none",
+                  outline: "none",
+                  boxSizing: "border-box",
+                  color: "#111827",
+                }}
               />
             </div>
-            <div className="flex space-x-3">
+            <div style={{ display: "flex", gap: "0.75rem" }}>
               <button
                 onClick={() => {
                   setShowCancelDialog(false);
                   setCancellingOrderId(null);
                   setCancelReason('');
                 }}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                style={{
+                  flex: 1,
+                  padding: "0.625rem 1rem",
+                  border: "1px solid #d1d5db",
+                  color: "#374151",
+                  borderRadius: "0.5rem",
+                  backgroundColor: "#fff",
+                  cursor: "pointer",
+                  fontWeight: 500,
+                  fontSize: "0.875rem",
+                }}
               >
                 Keep Order
               </button>
               <button
                 onClick={handleCancelOrder}
                 disabled={!cancelReason.trim()}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                style={{
+                  flex: 1,
+                  padding: "0.625rem 1rem",
+                  backgroundColor: !cancelReason.trim() ? "#fca5a5" : "#dc2626",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "0.5rem",
+                  cursor: !cancelReason.trim() ? "not-allowed" : "pointer",
+                  opacity: !cancelReason.trim() ? 0.6 : 1,
+                  fontWeight: 500,
+                  fontSize: "0.875rem",
+                }}
               >
                 Cancel Order
               </button>

@@ -11,6 +11,8 @@ import {
   Package,
   CreditCard,
   LogOut,
+  ArrowLeft,
+  MapPin,
 } from "lucide-react";
 import LogoutButton from "../_components/logout-button";
 import { resolveImageUrl } from "../../lib/utils/image";
@@ -20,19 +22,19 @@ export default function UserHomePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
         <div className="text-center">
           <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-600">Could not load profile</h2>
-          <Link href="/auth/login" className="text-blue-600 hover:underline mt-2 inline-block">
+          <Link href="/auth/login" className="text-primary-600 hover:underline mt-2 inline-block">
             Please login again
           </Link>
         </div>
@@ -77,6 +79,13 @@ export default function UserHomePage() {
       color: "purple",
     },
     {
+      icon: MapPin,
+      label: "Addresses",
+      description: "Manage your shipping addresses",
+      href: "/user/addresses",
+      color: "teal",
+    },
+    {
       icon: Settings,
       label: "Settings",
       description: "Account settings and preferences",
@@ -86,22 +95,23 @@ export default function UserHomePage() {
   ];
 
   const colorClasses: Record<string, string> = {
-    blue: "bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white",
+    blue: "bg-primary-100 text-primary-600 group-hover:bg-primary-600 group-hover:text-white",
     green: "bg-green-100 text-green-600 group-hover:bg-green-600 group-hover:text-white",
     pink: "bg-pink-100 text-pink-600 group-hover:bg-pink-600 group-hover:text-white",
     orange: "bg-orange-100 text-orange-600 group-hover:bg-orange-600 group-hover:text-white",
     purple: "bg-purple-100 text-purple-600 group-hover:bg-purple-600 group-hover:text-white",
+    teal: "bg-teal-100 text-teal-600 group-hover:bg-teal-600 group-hover:text-white",
     gray: "bg-gray-100 text-gray-600 group-hover:bg-gray-600 group-hover:text-white",
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
         <div className="mb-6">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-all duration-200 group bg-transparent border-none cursor-pointer"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-primary-600 transition-all duration-200 group bg-transparent border-none cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             <span className="font-medium">Back to Dashboard</span>
@@ -109,8 +119,8 @@ export default function UserHomePage() {
         </div>
 
         {/* Profile Header */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-12">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-8">
+          <div className="bg-primary-600 px-8 py-12">
             <div className="flex flex-col md:flex-row items-center gap-6">
               <img
                 src={resolveImageUrl((user as any).profilePicture)}
@@ -120,7 +130,7 @@ export default function UserHomePage() {
               />
               <div className="text-center md:text-left">
                 <h1 className="text-3xl font-bold text-white">{user.fullName}</h1>
-                <p className="text-blue-100 mt-1">{user.email}</p>
+                <p className="text-primary-100 mt-1">{user.email}</p>
                 <div className="flex items-center justify-center md:justify-start gap-3 mt-3">
                   <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold bg-white/20 text-white">
                     {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
@@ -158,13 +168,13 @@ export default function UserHomePage() {
             <Link
               key={item.label}
               href={item.href}
-              className="group bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition flex items-start gap-4"
+              className="group bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition flex items-start gap-4"
             >
               <div className={`p-3 rounded-xl transition ${colorClasses[item.color]}`}>
                 <item.icon className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">
+                <h3 className="font-semibold text-gray-900 group-hover:text-primary-600 transition">
                   {item.label}
                 </h3>
                 <p className="text-sm text-gray-500 mt-1">{item.description}</p>

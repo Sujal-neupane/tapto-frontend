@@ -50,19 +50,19 @@ export default function UserPaymentsPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
         <div className="text-center">
           <CreditCard className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-600">Please login to manage payment methods</h2>
-          <Link href="/auth/login" className="text-blue-600 hover:underline mt-2 inline-block">
+          <Link href="/auth/login" className="text-primary-600 hover:underline mt-2 inline-block">
             Login
           </Link>
         </div>
@@ -71,13 +71,13 @@ export default function UserPaymentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <Link
             href="/user"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4"
+            className="inline-flex items-center text-primary-600 hover:text-primary-800 mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
@@ -89,11 +89,11 @@ export default function UserPaymentsPage() {
         {/* Payment Methods List */}
         <div className="space-y-4 mb-8">
           {paymentMethods.map((method) => (
-            <div key={method.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div key={method.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-blue-100 rounded-lg">
-                    <CreditCard className="w-6 h-6 text-blue-600" />
+                  <div className="p-3 bg-primary-100 rounded-lg">
+                    <CreditCard className="w-6 h-6 text-primary-600" />
                   </div>
 
                   <div>
@@ -125,7 +125,7 @@ export default function UserPaymentsPage() {
                   {!method.isDefault && (
                     <button
                       onClick={() => setAsDefault(method.id)}
-                      className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 border border-blue-600 rounded-md hover:bg-blue-50"
+                      className="px-3 py-1 text-sm text-primary-600 hover:text-primary-800 border border-primary-600 rounded-md hover:bg-primary-50"
                     >
                       Set as Default
                     </button>
@@ -147,13 +147,13 @@ export default function UserPaymentsPage() {
         {!showAddForm ? (
           <button
             onClick={() => setShowAddForm(true)}
-            className="w-full flex items-center justify-center px-6 py-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors"
+            className="w-full flex items-center justify-center px-6 py-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-400 hover:bg-primary-50 transition-colors"
           >
             <Plus className="w-5 h-5 mr-2 text-gray-400" />
             <span className="text-gray-600">Add New Payment Method</span>
           </button>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Add Payment Method</h3>
 
             <form className="space-y-4">
@@ -168,7 +168,7 @@ export default function UserPaymentsPage() {
                       name="paymentType"
                       value="card"
                       defaultChecked
-                      className="text-blue-600 focus:ring-blue-500"
+                      className="text-primary-600 focus:ring-primary-500"
                     />
                     <span className="ml-2">Credit/Debit Card</span>
                   </label>
@@ -177,7 +177,7 @@ export default function UserPaymentsPage() {
                       type="radio"
                       name="paymentType"
                       value="paypal"
-                      className="text-blue-600 focus:ring-blue-500"
+                      className="text-primary-600 focus:ring-primary-500"
                     />
                     <span className="ml-2">PayPal</span>
                   </label>
@@ -192,7 +192,7 @@ export default function UserPaymentsPage() {
                   <input
                     type="text"
                     placeholder="1234 5678 9012 3456"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900"
                   />
                 </div>
 
@@ -203,7 +203,7 @@ export default function UserPaymentsPage() {
                   <input
                     type="text"
                     placeholder="John Doe"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900"
                   />
                 </div>
 
@@ -214,7 +214,7 @@ export default function UserPaymentsPage() {
                   <input
                     type="text"
                     placeholder="MM/YY"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900"
                   />
                 </div>
 
@@ -225,7 +225,7 @@ export default function UserPaymentsPage() {
                   <input
                     type="text"
                     placeholder="123"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900"
                   />
                 </div>
               </div>
@@ -233,7 +233,7 @@ export default function UserPaymentsPage() {
               <div className="flex items-center space-x-4 pt-4">
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
                 >
                   Add Payment Method
                 </button>
@@ -250,12 +250,12 @@ export default function UserPaymentsPage() {
         )}
 
         {/* Security Notice */}
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="mt-8 bg-primary-50 border border-primary-200 rounded-lg p-4">
           <div className="flex">
-            <CreditCard className="w-5 h-5 text-blue-600 mt-0.5 mr-3" />
+            <CreditCard className="w-5 h-5 text-primary-600 mt-0.5 mr-3" />
             <div>
-              <h4 className="text-sm font-medium text-blue-800">Secure Payment</h4>
-              <p className="text-sm text-blue-700 mt-1">
+              <h4 className="text-sm font-medium text-primary-800">Secure Payment</h4>
+              <p className="text-sm text-primary-700 mt-1">
                 Your payment information is encrypted and secure. We never store your full card details.
               </p>
             </div>

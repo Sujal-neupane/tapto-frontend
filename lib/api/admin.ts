@@ -297,3 +297,35 @@ export const getAdminOrderById = async (orderId: string): Promise<{ success: boo
     throw new Error(error.response?.data?.message || 'Failed to fetch order details');
   }
 };
+
+// Delivery Driver interfaces
+export interface DeliveryDriver {
+  _id: string;
+  name: string;
+  phone: string;
+  email: string;
+  vehicleNumber: string;
+  isActive: boolean;
+  avatarUrl?: string;
+  createdAt: string;
+}
+
+// Get all delivery drivers
+export const getDeliveryDrivers = async (): Promise<DeliveryDriver[]> => {
+  try {
+    const response = await axiosInstance.get(API.DRIVERS.GET_ALL);
+    return response.data.data || response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch drivers');
+  }
+};
+
+// Assign a delivery driver to an order
+export const assignDriverToOrder = async (orderId: string, driverId: string): Promise<{ success: boolean; data: AdminOrder; message?: string }> => {
+  try {
+    const response = await axiosInstance.patch(API.ADMIN.ORDERS.ASSIGN_DRIVER(orderId), { driverId });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to assign driver');
+  }
+};

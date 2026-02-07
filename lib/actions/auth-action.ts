@@ -130,9 +130,9 @@ export const handleRequestPasswordReset = async (email: string) => {
     }
 };
 
-export const handleResetPassword = async (token: string, newPassword: string) => {
+export const handleResetPassword = async (email: string, otp: string, newPassword: string) => {
     try {
-        const response = await resetPassword(token, newPassword);
+        const response = await resetPassword(email, otp, newPassword);
         if (response.success) {
             return {
                 success: true,

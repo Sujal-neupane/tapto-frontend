@@ -53,7 +53,7 @@ export default function ForgotPasswordForm() {
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 			<div className="flex items-center justify-between">
 				<div className="space-y-1">
-					<div className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-blue-50 to-indigo-50 px-4 py-1.5 text-xs font-semibold text-blue-700 border border-blue-100">
+					<div className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-primary-50 to-primary-50 px-4 py-1.5 text-xs font-semibold text-primary-700 border border-primary-100">
 						<ShieldCheck className="w-4 h-4" />
 						Reset access
 					</div>
@@ -68,7 +68,7 @@ export default function ForgotPasswordForm() {
 
 			<div className="space-y-2">
 				<label htmlFor="email" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-					<Mail className="w-4 h-4 text-blue-600" />
+					<Mail className="w-4 h-4 text-primary-600" />
 					Account email
 				</label>
 				<div className="relative group">
@@ -76,13 +76,13 @@ export default function ForgotPasswordForm() {
 						id="email"
 						type="email"
 						{...register("email", { onChange: (e) => setEmailValue(e.target.value) })}
-						className={`w-full rounded-xl border-2 px-4 py-3 pl-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 bg-white ${
-							errors.email ? "border-red-300 focus:border-red-500" : emailValue ? "border-blue-500" : "border-gray-200"
+						className={`w-full rounded-xl border-2 px-4 py-3 pl-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-primary-500/10 bg-white ${
+							errors.email ? "border-red-300 focus:border-red-500" : emailValue ? "border-primary-500" : "border-gray-200"
 						}`}
 						placeholder="you@example.com"
 					/>
 					<div className={`absolute left-4 top-1/2 -translate-y-1/2 transition-all ${
-						emailValue ? "text-blue-600 scale-110" : "text-gray-400"
+						emailValue ? "text-primary-600 scale-110" : "text-gray-400"
 					}`}>
 						<Mail className="w-5 h-5" />
 					</div>
@@ -102,9 +102,9 @@ export default function ForgotPasswordForm() {
 				)}
 			</div>
 
-			<div className="space-y-3 rounded-2xl border border-gray-100 bg-gradient-to-br from-blue-50/70 via-white to-indigo-50/70 p-4">
+			<div className="space-y-3 rounded-2xl border border-gray-100 bg-gradient-to-br from-primary-50/70 via-white to-primary-50/70 p-4">
 				<div className="flex items-center gap-3">
-					<div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg">
+					<div className="h-10 w-10 rounded-xl bg-primary-600 flex items-center justify-center text-white shadow-lg">
 						{sent ? <CheckCircle2 className="w-5 h-5" /> : <Sparkles className="w-5 h-5" />}
 					</div>
 					<div className="space-y-0.5">
@@ -119,11 +119,11 @@ export default function ForgotPasswordForm() {
 						<div
 							key={label}
 							className={`rounded-lg border px-3 py-2 flex items-center gap-2 ${
-								sent || idx === 0 ? "border-blue-200 bg-white" : "border-gray-200 bg-gray-50"
+								sent || idx === 0 ? "border-primary-200 bg-white" : "border-gray-200 bg-gray-50"
 							}`}
 						>
 							<span className={`h-6 w-6 flex items-center justify-center rounded-full text-xs font-semibold ${
-								idx === 0 ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+								idx === 0 ? "bg-primary-600 text-white" : "bg-gray-200 text-gray-700"
 							}`}>
 								{idx + 1}
 							</span>
@@ -136,7 +136,7 @@ export default function ForgotPasswordForm() {
 			<button
 				type="submit"
 				disabled={isLoading}
-				className="group relative w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3.5 font-bold text-white transition-all hover:from-blue-700 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-60 shadow-lg shadow-blue-600/25 hover:shadow-xl hover:-translate-y-0.5 overflow-hidden"
+				className="group relative w-full rounded-xl bg-primary-600 px-4 py-3.5 font-bold text-white transition-all hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60 shadow-lg shadow-primary-600/25 hover:shadow-xl hover:-translate-y-0.5 overflow-hidden"
 			>
 				{!isLoading && (
 					<span className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>

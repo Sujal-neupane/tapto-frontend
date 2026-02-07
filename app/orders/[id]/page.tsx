@@ -69,7 +69,7 @@ export default function OrderDetailsPage() {
 
     try {
       setCancelling(true);
-      await cancelOrder(orderId);
+      await cancelOrder(orderId, cancelReason);
       toast.success("Order cancelled successfully");
 
       // Refresh order data
@@ -95,7 +95,7 @@ export default function OrderDetailsPage() {
         };
       case 'confirmed':
         return {
-          color: 'bg-blue-100 text-blue-800 border-blue-200',
+          color: 'bg-primary-100 text-primary-800 border-primary-200',
           icon: CheckCircle,
           label: 'Confirmed'
         };
@@ -107,7 +107,7 @@ export default function OrderDetailsPage() {
         };
       case 'shipped':
         return {
-          color: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+          color: 'bg-primary-100 text-primary-800 border-primary-200',
           icon: Truck,
           label: 'Shipped'
         };
@@ -146,19 +146,19 @@ export default function OrderDetailsPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-600">Please login to view order details</h2>
-          <Link href="/auth/login" className="text-blue-600 hover:underline mt-2 inline-block">
+          <Link href="/auth/login" className="text-primary-600 hover:underline mt-2 inline-block">
             Login
           </Link>
         </div>
@@ -168,7 +168,7 @@ export default function OrderDetailsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
+      <div className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded-lg mb-6 w-1/3" />
@@ -187,11 +187,11 @@ export default function OrderDetailsPage() {
 
   if (error || !order) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
+      <div className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="max-w-4xl mx-auto">
           <Link
             href="/user/orders"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6"
+            className="inline-flex items-center text-primary-600 hover:text-primary-800 mb-6"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Orders
@@ -201,7 +201,7 @@ export default function OrderDetailsPage() {
             <p className="text-gray-600">{error || 'Order not found'}</p>
             <Link
               href="/user/orders"
-              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 inline-block"
+              className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 inline-block"
             >
               Back to Orders
             </Link>
@@ -274,13 +274,13 @@ Thank you for your business!
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <Link
             href="/user/orders"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4 transition-colors duration-200"
+            className="inline-flex items-center text-primary-600 hover:text-primary-800 mb-4 transition-colors duration-200"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Orders
@@ -378,7 +378,7 @@ Thank you for your business!
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between text-lg font-bold">
                     <span className="text-gray-900">Total</span>
-                    <span className="text-blue-600">${order.total.toFixed(2)}</span>
+                    <span className="text-primary-600">${order.total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
@@ -421,6 +421,47 @@ Thank you for your business!
               </div>
             </div>
 
+            {/* Delivery Driver */}
+            {(order as any).deliveryPerson?.name && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Truck className="w-5 h-5 mr-2 text-teal-600" />
+                  Delivery Driver
+                </h3>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                  <div
+                    style={{
+                      width: "3rem",
+                      height: "3rem",
+                      borderRadius: "9999px",
+                      backgroundColor: "#0d9488",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#fff",
+                      fontWeight: 700,
+                      fontSize: "1rem",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {(order as any).deliveryPerson.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">{(order as any).deliveryPerson.name}</p>
+                    {(order as any).deliveryPerson.phone && (
+                      <div className="flex items-center mt-1">
+                        <Phone className="w-3.5 h-3.5 mr-1 text-gray-400" />
+                        <span className="text-sm text-gray-700">{(order as any).deliveryPerson.phone}</span>
+                      </div>
+                    )}
+                    {(order as any).deliveryPerson.vehicle && (
+                      <p className="text-sm text-gray-500 mt-0.5">Vehicle: {(order as any).deliveryPerson.vehicle}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Tracking */}
             {order.trackingNumber && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -432,7 +473,7 @@ Thank you for your business!
                   <p className="font-medium text-gray-900">{order.trackingNumber}</p>
                   <button 
                     onClick={handleTrackPackage}
-                    className="w-full mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                    className="w-full mt-3 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200"
                   >
                     Track Package
                   </button>
@@ -458,38 +499,91 @@ Thank you for your business!
 
       {/* Cancel Order Dialog */}
       {showCancelDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-            <div className="flex items-center mb-4">
-              <AlertTriangle className="w-6 h-6 text-orange-500 mr-3" />
-              <h3 className="text-lg font-semibold text-gray-900">Cancel Order</h3>
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "1rem",
+            zIndex: 50,
+          }}
+          onClick={() => setShowCancelDialog(false)}
+        >
+          <div
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: "0.75rem",
+              boxShadow: "0 20px 25px -5px rgba(0,0,0,.1), 0 8px 10px -6px rgba(0,0,0,.1)",
+              width: "100%",
+              maxWidth: "28rem",
+              padding: "1.5rem",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", alignItems: "center", marginBottom: "1rem" }}>
+              <AlertTriangle style={{ width: "1.5rem", height: "1.5rem", color: "#f97316", marginRight: "0.75rem", flexShrink: 0 }} />
+              <h3 style={{ fontSize: "1.125rem", fontWeight: 600, color: "#111827" }}>Cancel Order</h3>
             </div>
-            <p className="text-gray-700 mb-4">
+            <p style={{ color: "#374151", marginBottom: "1rem", fontSize: "0.875rem", lineHeight: 1.5 }}>
               Are you sure you want to cancel this order? This action cannot be undone.
             </p>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div style={{ marginBottom: "1rem" }}>
+              <label style={{ display: "block", fontSize: "0.875rem", fontWeight: 500, color: "#374151", marginBottom: "0.5rem" }}>
                 Reason for cancellation *
               </label>
               <textarea
                 value={cancelReason}
                 onChange={(e) => setCancelReason(e.target.value)}
                 placeholder="e.g., Changed my mind, wrong item ordered..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                 rows={3}
+                style={{
+                  width: "100%",
+                  padding: "0.625rem 0.75rem",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "0.5rem",
+                  fontSize: "0.875rem",
+                  resize: "none",
+                  outline: "none",
+                  boxSizing: "border-box",
+                  color: "#111827",
+                }}
               />
             </div>
-            <div className="flex space-x-3">
+            <div style={{ display: "flex", gap: "0.75rem" }}>
               <button
                 onClick={() => setShowCancelDialog(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                style={{
+                  flex: 1,
+                  padding: "0.625rem 1rem",
+                  border: "1px solid #d1d5db",
+                  color: "#374151",
+                  borderRadius: "0.5rem",
+                  backgroundColor: "#fff",
+                  cursor: "pointer",
+                  fontWeight: 500,
+                  fontSize: "0.875rem",
+                }}
               >
                 Keep Order
               </button>
               <button
                 onClick={handleCancelOrder}
                 disabled={cancelling || !cancelReason.trim()}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                style={{
+                  flex: 1,
+                  padding: "0.625rem 1rem",
+                  backgroundColor: cancelling || !cancelReason.trim() ? "#fca5a5" : "#dc2626",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "0.5rem",
+                  cursor: cancelling || !cancelReason.trim() ? "not-allowed" : "pointer",
+                  opacity: cancelling || !cancelReason.trim() ? 0.6 : 1,
+                  fontWeight: 500,
+                  fontSize: "0.875rem",
+                }}
               >
                 {cancelling ? 'Cancelling...' : 'Cancel Order'}
               </button>

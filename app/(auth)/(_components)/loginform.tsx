@@ -69,7 +69,7 @@ export default function LoginForm() {
           htmlFor="email"
           className="flex items-center gap-2 text-sm font-semibold text-gray-700"
         >
-          <Mail className="w-4 h-4 text-blue-600" />
+          <Mail className="w-4 h-4 text-primary-600" />
           Email address
         </label>
         <div className="relative group">
@@ -83,13 +83,13 @@ export default function LoginForm() {
               errors.email 
                 ? 'border-red-300 focus:border-red-500' 
                 : emailFocused || emailValue
-                ? 'border-blue-500'
+                ? 'border-primary-500'
                 : 'border-gray-200'
-            } px-4 py-3 pl-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 bg-white`}
+            } px-4 py-3 pl-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-primary-500/10 bg-white`}
             placeholder="you@example.com"
           />
           <div className={`absolute left-4 top-1/2 -translate-y-1/2 transition-all ${
-            emailFocused || emailValue ? 'text-blue-600 scale-110' : 'text-gray-400'
+            emailFocused || emailValue ? 'text-primary-600 scale-110' : 'text-gray-400'
           }`}>
             <Mail className="w-5 h-5" />
           </div>
@@ -114,7 +114,7 @@ export default function LoginForm() {
           htmlFor="password"
           className="flex items-center gap-2 text-sm font-semibold text-gray-700"
         >
-          <Lock className="w-4 h-4 text-blue-600" />
+          <Lock className="w-4 h-4 text-primary-600" />
           Password
         </label>
         <div className="relative group">
@@ -128,13 +128,13 @@ export default function LoginForm() {
               errors.password 
                 ? 'border-red-300 focus:border-red-500' 
                 : passwordFocused || passwordValue
-                ? 'border-blue-500'
+                ? 'border-primary-500'
                 : 'border-gray-200'
-            } px-4 py-3 pl-12 pr-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 bg-white`}
+            } px-4 py-3 pl-12 pr-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-primary-500/10 bg-white`}
             placeholder="Enter your password"
           />
           <div className={`absolute left-4 top-1/2 -translate-y-1/2 transition-all ${
-            passwordFocused || passwordValue ? 'text-blue-600 scale-110' : 'text-gray-400'
+            passwordFocused || passwordValue ? 'text-primary-600 scale-110' : 'text-gray-400'
           }`}>
             <Lock className="w-5 h-5" />
           </div>
@@ -162,11 +162,11 @@ export default function LoginForm() {
         <label className="group flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"
-            className="peer w-5 h-5 rounded-md border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer transition-all checked:bg-blue-600 checked:border-blue-600"
+            className="peer w-5 h-5 rounded-md border-2 border-gray-300 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-0 cursor-pointer transition-all checked:bg-primary-600 checked:border-primary-600"
           />
           <span className="text-gray-600 group-hover:text-gray-900 transition">Remember me</span>
         </label>
-        <a href="/forgotpassword" className="group font-semibold text-blue-600 hover:text-blue-700 transition flex items-center gap-1">
+        <a href="/forgotpassword" className="group font-semibold text-primary-600 hover:text-primary-700 transition flex items-center gap-1">
           <span>Forgot Password?</span>
           <Lock className="w-3 h-3 group-hover:rotate-12 transition-transform" />
         </a>
@@ -176,7 +176,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={isLoading}
-        className="group relative w-full rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 px-4 py-3.5 font-bold text-white transition-all hover:from-blue-700 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 shadow-lg shadow-blue-600/30 hover:shadow-xl hover:shadow-blue-600/40 hover:-translate-y-0.5 disabled:hover:translate-y-0 overflow-hidden"
+        className="group relative w-full rounded-xl bg-primary-600 px-4 py-3.5 font-bold text-white transition-all hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-50 shadow-lg shadow-primary-600/30 hover:shadow-xl hover:shadow-primary-600/40 hover:-translate-y-0.5 disabled:hover:translate-y-0 overflow-hidden"
       >
         {!isLoading && (
           <span className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>

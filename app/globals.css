@@ -1,28 +1,179 @@
 @import "tailwindcss";
 
+/* ============================================
+   TAPTO Theme — matching Flutter app_colors.dart
+   ============================================ */
+
+/* --- Geom Font (heading / display) --- */
+@font-face {
+  font-family: "Geom";
+  src: url("/fonts/Geom-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geom";
+  src: url("/fonts/Geom-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geom";
+  src: url("/fonts/Geom-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geom";
+  src: url("/fonts/Geom-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geom";
+  src: url("/fonts/Geom-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --- CSS Custom Properties (Light Theme) --- */
 :root {
+  /* Core palette — Flutter AppColors */
+  --color-primary: #1687FF;
+  --color-primary-light: #52A4FF;
+  --color-primary-dark: #0B6FE0;
+  --color-secondary: #FFA500;
+  --color-secondary-light: #FFCE4A;
+  --color-secondary-dark: #E08F00;
+
+  /* Backgrounds */
   --background: #ffffff;
-  --foreground: #171717;
+  --surface: #F3F4F6;
+
+  /* Text */
+  --foreground: #111827;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+
+  /* Borders */
+  --border: #595B5D;
+  --border-light: #E5E7EB;
+
+  /* Status */
+  --success: #22C55E;
+  --error: #EF4444;
+  --warning: #F59E0B;
+  --info: #1687FF;
+
+  /* Spacing — Flutter AppSpacing */
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 20px;
+  --spacing-lg: 30px;
+  --spacing-xl: 40px;
+
+  /* Radius — Flutter button radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* --- Dark Theme --- */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-primary: #0A52FF;
+    --color-primary-light: #3B7AFF;
+    --color-primary-dark: #0040CC;
+    --color-secondary: #FFA500;
+
+    --background: #121212;
+    --surface: #1E1E1E;
+
+    --foreground: #FFFFFF;
+    --text-primary: #FFFFFF;
+    --text-secondary: #9CA3AF;
+
+    --border: #374151;
+    --border-light: #4B5563;
   }
 }
 
+/* --- Tailwind v4 Theme Extension --- */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+
+  /* Primary scale (derived from Flutter #1687FF) */
+  --color-primary-50: #F0F7FF;
+  --color-primary-100: #E0EFFF;
+  --color-primary-200: #B8DAFF;
+  --color-primary-300: #8DC2FF;
+  --color-primary-400: #52A4FF;
+  --color-primary-500: #1687FF;
+  --color-primary-600: #0B6FE0;
+  --color-primary-700: #0858B8;
+  --color-primary-800: #064490;
+  --color-primary-900: #043268;
+  --color-primary-950: #021E40;
+
+  /* Secondary scale (derived from Flutter #FFA500) */
+  --color-secondary-50: #FFF8EB;
+  --color-secondary-100: #FFEFC6;
+  --color-secondary-200: #FFDF88;
+  --color-secondary-300: #FFCE4A;
+  --color-secondary-400: #FFB820;
+  --color-secondary-500: #FFA500;
+  --color-secondary-600: #E08F00;
+  --color-secondary-700: #B87300;
+  --color-secondary-800: #905A00;
+  --color-secondary-900: #684200;
+  --color-secondary-950: #402800;
+
+  /* Semantic colors */
+  --color-success-50: #F0FDF4;
+  --color-success-100: #DCFCE7;
+  --color-success-200: #BBF7D0;
+  --color-success-300: #86EFAC;
+  --color-success-400: #4ADE80;
+  --color-success-500: #22C55E;
+  --color-success-600: #16A34A;
+  --color-success-700: #15803D;
+
+  --color-error-50: #FEF2F2;
+  --color-error-100: #FEE2E2;
+  --color-error-200: #FECACA;
+  --color-error-300: #FCA5A5;
+  --color-error-400: #F87171;
+  --color-error-500: #EF4444;
+  --color-error-600: #DC2626;
+  --color-error-700: #B91C1C;
+
+  /* Typography */
+  --font-heading: "Geom", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+
+  /* Spacing tokens matching Flutter AppSpacing */
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 20px;
+  --spacing-lg: 30px;
+  --spacing-xl: 40px;
+}
+
+/* --- Base Styles --- */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
 }
 
 /* Custom Animations */

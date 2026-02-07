@@ -25,20 +25,27 @@ export default function DashboardPage() {
   const [dragCurrent, setDragCurrent] = useState<{ x: number; y: number } | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("browse");
   const [filterCategory, setFilterCategory] = useState<string>("All");
-  const [maxPrice, setMaxPrice] = useState<number>(500);
+  const [maxPrice, setMaxPrice] = useState<number>(10000);
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState<string>("featured");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const cardRef = useRef<HTMLDivElement>(null);
+  const hasLoadedStorage = useRef(false);
 
   // Fetch products on component mount
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        // Try personalized products first, fallback to all products if not authenticated
+        // Try personalized products first, fallback to all products if not authenticated or empty
         let fetchedProducts: Product[];
         try {
           fetchedProducts = await getPersonalizedProducts(50);
+          // If personalized returns empty, fall back to all products
+          if (!fetchedProducts || fetchedProducts.length === 0) {
+            console.log('Personalized products empty, fetching all products');
+            fetchedProducts = await getProducts();
+          }
         } catch (personalizedError) {
           console.log('User not authenticated or personalized products failed, fetching all products');
           fetchedProducts = await getProducts();
@@ -56,16 +63,19 @@ export default function DashboardPage() {
     fetchProducts();
   }, []);
 
-  // Load favorites and cart from localStorage
+  // Load wishlist and cart from localStorage
   useEffect(() => {
-    const savedFavorites = localStorage.getItem('favorites');
+    const savedFavorites = localStorage.getItem('wishlist');
     const savedCart = localStorage.getItem('cart');
     
     if (savedFavorites) {
       try {
-        setFavorites(JSON.parse(savedFavorites));
+        const parsed = JSON.parse(savedFavorites);
+        // Handle both formats: plain string IDs or objects with _id
+        const ids = parsed.map((item: any) => typeof item === 'string' ? item : item._id || item.productId).filter(Boolean);
+        setFavorites(ids);
       } catch (err) {
-        console.error('Error parsing saved favorites:', err);
+        console.error('Error parsing saved wishlist:', err);
       }
     }
     
@@ -76,23 +86,61 @@ export default function DashboardPage() {
         console.error('Error parsing saved cart:', err);
       }
     }
+
+    // Mark as loaded so save effects can start writing
+    hasLoadedStorage.current = true;
   }, []);
 
-  // Save favorites and cart to localStorage whenever they change
+  // Save wishlist and cart to localStorage whenever they change (only after initial load)
   useEffect(() => {
-    localStorage.setItem('favorites', JSON.stringify(favorites));
+    if (hasLoadedStorage.current) {
+      localStorage.setItem('wishlist', JSON.stringify(favorites));
+    }
   }, [favorites]);
 
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
+    if (hasLoadedStorage.current) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
   }, [cart]);
 
-  const currentProduct = products[currentIndex];
+  // Filter & sort products for browse mode
+  const filteredProducts = products.filter(p => {
+    const matchesCategory = filterCategory === "All" || p.category?.toLowerCase() === filterCategory.toLowerCase();
+    const matchesPrice = p.price <= maxPrice;
+    const matchesSearch = !searchQuery || 
+      p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.tags?.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesCategory && matchesPrice && matchesSearch;
+  }).sort((a, b) => {
+    switch (sortBy) {
+      case "price-low": return a.price - b.price;
+      case "price-high": return b.price - a.price;
+      case "rating": return (b.rating || 0) - (a.rating || 0);
+      default: return 0;
+    }
+  });
+
+  const currentProduct = filteredProducts[currentIndex];
   const favoriteProducts = products.filter(p => favorites.includes(p._id));
-  const cartProducts = products.filter(p => cart.includes(p._id));
+
+  // Build cart items with quantities from duplicate IDs
+  const cartItemsWithQty = (() => {
+    const countMap: Record<string, number> = {};
+    cart.forEach(id => { countMap[id] = (countMap[id] || 0) + 1; });
+    return Object.entries(countMap)
+      .map(([id, qty]) => ({ product: products.find(p => p._id === id), quantity: qty }))
+      .filter((item): item is { product: Product; quantity: number } => item.product !== undefined);
+  })();
+
+  // Reset currentIndex when filters change
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [filterCategory, maxPrice, searchQuery, sortBy]);
 
   const handleSwipe = (direction: "left" | "right") => {
-    if (currentIndex >= products.length) return;
+    if (currentIndex >= filteredProducts.length) return;
 
     setSwipeDirection(direction);
     
@@ -185,12 +233,24 @@ export default function DashboardPage() {
     }
   };
 
-  const toggleCart = (productId: string) => {
-    if (cart.includes(productId)) {
-      setCart(cart.filter(id => id !== productId));
-    } else {
-      setCart([...cart, productId]);
-    }
+  // Add one instance of a product to cart (duplicates = quantity)
+  const addToCart = (productId: string) => {
+    setCart(prev => [...prev, productId]);
+  };
+
+  // Remove one instance of a product from cart (decrease quantity by 1)
+  const removeOneFromCart = (productId: string) => {
+    setCart(prev => {
+      const newCart = [...prev];
+      const idx = newCart.indexOf(productId);
+      if (idx !== -1) newCart.splice(idx, 1);
+      return newCart;
+    });
+  };
+
+  // Remove all instances of a product from cart
+  const removeAllFromCart = (productId: string) => {
+    setCart(prev => prev.filter(id => id !== productId));
   };
 
   const categories = ["All", "Men", "Women", "Accessories", "Shoes"];
@@ -199,7 +259,7 @@ export default function DashboardPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading products...</p>
         </div>
       </div>
@@ -213,7 +273,7 @@ export default function DashboardPage() {
           <div className="text-red-500 mb-4">{error}</div>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
           >
             Try Again
           </button>
@@ -226,7 +286,7 @@ export default function DashboardPage() {
     <main className="min-h-screen bg-gray-50">
         {/* Header */}
         <header className="bg-white border-b border-gray-200">
-        <div className="mx-auto max-w-7xl px-4 py-4">
+        <div style={{ maxWidth: "80rem", marginLeft: "auto", marginRight: "auto", padding: "1rem" }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <img
@@ -236,11 +296,37 @@ export default function DashboardPage() {
               />
             </div>
 
+            {/* Search Bar */}
+            <div className="hidden md:flex flex-1 max-w-md mx-4">
+              <div className="relative w-full">
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 bg-gray-100 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
+
             <nav className="hidden md:flex items-center gap-6">
               <button
                 onClick={() => setViewMode("browse")}
                 className={`text-sm font-medium transition ${
-                  viewMode === "browse" ? "text-indigo-600" : "text-gray-600 hover:text-gray-900"
+                  viewMode === "browse" ? "text-primary-600" : "text-gray-600 hover:text-gray-900"
                 }`}
               >
                 Browse
@@ -248,7 +334,7 @@ export default function DashboardPage() {
               <button
                 onClick={() => setViewMode("favorites")}
                 className={`text-sm font-medium transition ${
-                  viewMode === "favorites" ? "text-indigo-600" : "text-gray-600 hover:text-gray-900"
+                  viewMode === "favorites" ? "text-primary-600" : "text-gray-600 hover:text-gray-900"
                 }`}
               >
                 Favorites
@@ -256,7 +342,7 @@ export default function DashboardPage() {
               <button
                 onClick={() => setViewMode("cart")}
                 className={`text-sm font-medium transition ${
-                  viewMode === "cart" ? "text-indigo-600" : "text-gray-600 hover:text-gray-900"
+                  viewMode === "cart" ? "text-primary-600" : "text-gray-600 hover:text-gray-900"
                 }`}
               >
                 Cart
@@ -274,10 +360,10 @@ export default function DashboardPage() {
               </button>
 
               <button
-                onClick={() => router.push('/user/wishlist')}
-                className="relative p-2 rounded-lg hover:bg-gray-100 transition"
+                onClick={() => setViewMode(viewMode === "favorites" ? "browse" : "favorites")}
+                className={`relative p-2 rounded-lg transition ${viewMode === "favorites" ? "bg-primary-50 ring-2 ring-primary-500" : "hover:bg-gray-100"}`}
               >
-                <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className={`h-5 w-5 ${viewMode === "favorites" ? "text-primary-600" : "text-gray-600"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
                 {favorites.length > 0 && (
@@ -288,14 +374,14 @@ export default function DashboardPage() {
               </button>
 
               <button
-                onClick={() => router.push('/user/cart')}
-                className="relative p-2 rounded-lg hover:bg-gray-100 transition"
+                onClick={() => setViewMode(viewMode === "cart" ? "browse" : "cart")}
+                className={`relative p-2 rounded-lg transition ${viewMode === "cart" ? "bg-primary-50 ring-2 ring-primary-500" : "hover:bg-gray-100"}`}
               >
-                <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className={`h-5 w-5 ${viewMode === "cart" ? "text-primary-600" : "text-gray-600"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 {cart.length > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-indigo-600 rounded-full text-xs text-white flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-primary-600 rounded-full text-xs text-white flex items-center justify-center">
                     {cart.length}
                   </span>
                 )}
@@ -310,8 +396,8 @@ export default function DashboardPage() {
         {/* Filters Panel */}
         {showFilters && (
           <div className="border-t border-gray-200 bg-white">
-            <div className="mx-auto max-w-7xl px-4 py-4">
-              <div className="grid md:grid-cols-3 gap-6">
+            <div style={{ maxWidth: "80rem", marginLeft: "auto", marginRight: "auto", padding: "1rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.5rem" }}>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
                   <div className="flex flex-wrap gap-2">
@@ -321,7 +407,7 @@ export default function DashboardPage() {
                         onClick={() => setFilterCategory(cat)}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                           filterCategory === cat
-                            ? "bg-indigo-600 text-white"
+                            ? "bg-primary-600 text-white"
                             : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                         }`}
                       >
@@ -338,11 +424,11 @@ export default function DashboardPage() {
                   <input
                     type="range"
                     min="0"
-                    max="500"
-                    step="10"
+                    max="10000"
+                    step="50"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
                   />
                 </div>
 
@@ -351,7 +437,7 @@ export default function DashboardPage() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-600"
                   >
                     <option value="featured">Featured</option>
                     <option value="price-low">Price: Low to High</option>
@@ -365,26 +451,42 @@ export default function DashboardPage() {
         )}
       </header>
 
+      {/* Mobile Search */}
+      <div className="md:hidden px-4 py-3 bg-white border-b border-gray-200">
+        <div className="relative">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-gray-100 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition"
+          />
+        </div>
+      </div>
+
       {/* Main Content */}
-      <div className="mx-auto max-w-7xl px-4 py-8">
+      <div style={{ maxWidth: "80rem", marginLeft: "auto", marginRight: "auto", padding: "1rem 1rem 2rem" }}>
         {viewMode === "browse" ? (
-          <div className="max-w-md mx-auto">
-            {currentIndex < products.length ? (
+          <div style={{ maxWidth: "28rem", marginLeft: "auto", marginRight: "auto", width: "100%" }}>
+            {currentIndex < filteredProducts.length ? (
               <div className="space-y-6">
                 <div className="flex items-center justify-between text-sm text-gray-600">
-                  <span>Product {currentIndex + 1} of {products.length}</span>
+                  <span>Product {currentIndex + 1} of {filteredProducts.length}</span>
                   <button
                     onClick={() => setViewMode("favorites")}
-                    className="text-indigo-600 hover:text-indigo-700 font-medium"
+                    className="text-primary-600 hover:text-primary-700 font-medium"
                   >
                     View Favorites
                   </button>
                 </div>
 
                 {/* Swipe Card */}
-                <div className="relative h-[550px] touch-none">
+                <div className="relative touch-none" style={{ height: "550px", width: "100%" }}>
                   {/* Next card preview */}
-                  {currentIndex + 1 < products.length && (
+                  {currentIndex + 1 < filteredProducts.length && (
                     <div className="absolute inset-0 scale-95 opacity-30">
                       <div className="h-full rounded-2xl bg-white shadow-lg border border-gray-200" />
                     </div>
@@ -534,10 +636,19 @@ export default function DashboardPage() {
 
                   <button
                     onClick={() => {
-                      toggleCart(currentProduct._id);
-                      handleSwipe("right");
+                      addToCart(currentProduct._id);
+                      // Advance to next card without adding to favorites
+                      if (currentIndex < filteredProducts.length) {
+                        setSwipeDirection("right");
+                        setTimeout(() => {
+                          setCurrentIndex(currentIndex + 1);
+                          setSwipeDirection(null);
+                          setDragStart(null);
+                          setDragCurrent(null);
+                        }, 300);
+                      }
                     }}
-                    className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg transition-all hover:scale-105 hover:bg-indigo-700 active:scale-95"
+                    className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-600 text-white shadow-lg transition-all hover:scale-105 hover:bg-primary-700 active:scale-95"
                   >
                     <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -546,7 +657,7 @@ export default function DashboardPage() {
 
                   <button
                     onClick={() => handleSwipe("right")}
-                    className="flex h-14 w-14 items-center justify-center rounded-full bg-white border-2 border-indigo-600 text-indigo-600 shadow-md transition-all hover:scale-105 hover:bg-indigo-50 active:scale-95"
+                    className="flex h-14 w-14 items-center justify-center rounded-full bg-white border-2 border-primary-600 text-primary-600 shadow-md transition-all hover:scale-105 hover:bg-primary-50 active:scale-95"
                   >
                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -554,14 +665,14 @@ export default function DashboardPage() {
                   </button>
                 </div>
 
-                <div className="text-center text-sm text-gray-500">
-                  <p>Swipe right to favorite • Tap cart to add • Swipe left to skip</p>
-                </div>
+                <p style={{ textAlign: "center", fontSize: "0.875rem", color: "#6B7280" }}>
+                  Swipe right to favorite • Tap cart to add • Swipe left to skip
+                </p>
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center space-y-6 py-20 text-center">
-                <div className="h-20 w-20 rounded-full bg-indigo-100 flex items-center justify-center">
-                  <svg className="h-10 w-10 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="h-20 w-20 rounded-full bg-primary-100 flex items-center justify-center">
+                  <svg className="h-10 w-10 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
@@ -573,7 +684,7 @@ export default function DashboardPage() {
                 <div className="flex gap-4">
                   <button
                     onClick={() => setViewMode("favorites")}
-                    className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition"
+                    className="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition"
                   >
                     View Favorites
                   </button>
@@ -593,7 +704,7 @@ export default function DashboardPage() {
               <h2 className="text-2xl font-bold text-gray-900">Your Favorites</h2>
               <button
                 onClick={() => setViewMode("browse")}
-                className="text-indigo-600 hover:text-indigo-700 font-medium text-sm"
+                className="text-primary-600 hover:text-primary-700 font-medium text-sm"
               >
                 Back to Browse
               </button>
@@ -609,13 +720,13 @@ export default function DashboardPage() {
                 <p className="text-gray-600">No favorites yet</p>
                 <button
                   onClick={() => setViewMode("browse")}
-                  className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition"
+                  className="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition"
                 >
                   Start Browsing
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1.5rem" }}>
                 {favoriteProducts.map(product => (
                   <Link key={product._id} href={`/product/${product._id}`} className="block">
                     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition group">
@@ -675,11 +786,11 @@ export default function DashboardPage() {
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              toggleCart(product._id);
+                              addToCart(product._id);
                             }}
                             className={`p-2 rounded-lg transition ${
                               cart.includes(product._id)
-                                ? "bg-indigo-600 text-white"
+                                ? "bg-primary-600 text-white"
                                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                             }`}
                           >
@@ -696,18 +807,18 @@ export default function DashboardPage() {
             )}
           </div>
         ) : (
-          <div className="max-w-2xl mx-auto space-y-6">
+          <div style={{ maxWidth: "42rem", marginLeft: "auto", marginRight: "auto", width: "100%" }} className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-gray-900">Shopping Cart</h2>
               <button
                 onClick={() => setViewMode("browse")}
-                className="text-indigo-600 hover:text-indigo-700 font-medium text-sm"
+                className="text-primary-600 hover:text-primary-700 font-medium text-sm"
               >
                 Continue Shopping
               </button>
             </div>
 
-            {cartProducts.length === 0 ? (
+            {cartItemsWithQty.length === 0 ? (
               <div className="text-center py-20 space-y-4">
                 <div className="h-16 w-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center">
                   <svg className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -717,17 +828,17 @@ export default function DashboardPage() {
                 <p className="text-gray-600">Your cart is empty</p>
                 <button
                   onClick={() => setViewMode("browse")}
-                  className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition"
+                  className="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition"
                 >
                   Start Shopping
                 </button>
               </div>
             ) : (
               <div className="space-y-4">
-                {cartProducts.map(product => (
+                {cartItemsWithQty.map(({ product, quantity }) => (
                   <Link key={product._id} href={`/product/${product._id}`} className="block">
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex gap-4">
-                      <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs flex-shrink-0">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4" style={{ display: "flex", gap: "1rem" }}>
+                      <div style={{ width: "6rem", height: "6rem", flexShrink: 0 }} className="bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs">
                         {product.images && product.images.length > 0 ? (
                           <img
                             src={resolveImageUrl(product.images[0])}
@@ -740,7 +851,7 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-gray-900">{product.name}</h3>
-                        <p className="text-sm text-gray-600 mt-1">{product.description}</p>
+                        <p className="text-sm text-gray-600 mt-1 line-clamp-1">{product.description}</p>
                         <div className="mt-2">
                           {product.discount ? (
                             <div className="flex items-center gap-2">
@@ -757,12 +868,40 @@ export default function DashboardPage() {
                             </span>
                           )}
                         </div>
+                        {/* Quantity controls */}
+                        <div className="mt-2 flex items-center gap-3" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              removeOneFromCart(product._id);
+                            }}
+                            className="h-8 w-8 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+                          >
+                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                            </svg>
+                          </button>
+                          <span className="text-sm font-semibold text-gray-900 min-w-[1.5rem] text-center">{quantity}</span>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              addToCart(product._id);
+                            }}
+                            className="h-8 w-8 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+                          >
+                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                       <button
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          toggleCart(product._id);
+                          removeAllFromCart(product._id);
                         }}
                         className="p-2 h-10 text-gray-400 hover:text-red-600 transition flex-shrink-0"
                       >
@@ -776,13 +915,16 @@ export default function DashboardPage() {
 
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
                   <div className="flex items-center justify-between text-lg">
-                    <span className="font-medium text-gray-700">Subtotal</span>
+                    <span className="font-medium text-gray-700">Subtotal ({cartItemsWithQty.reduce((sum, item) => sum + item.quantity, 0)} items)</span>
                     <span className="font-bold text-gray-900">
-                      ${cartProducts.reduce((sum, p) => sum + (p.discount ? Number(getDiscountedPrice(p)) : p.price), 0).toFixed(2)}
+                      ${cartItemsWithQty.reduce((sum, { product, quantity }) => {
+                        const price = product.discount ? Number(getDiscountedPrice(product)) : product.price;
+                        return sum + price * quantity;
+                      }, 0).toFixed(2)}
                     </span>
                   </div>
                   <Link href="/checkout" className="block">
-                    <button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                    <button className="w-full bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition">
                       Proceed to Checkout
                     </button>
                   </Link>

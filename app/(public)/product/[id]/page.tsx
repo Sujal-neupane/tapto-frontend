@@ -17,6 +17,24 @@ export default function ProductDetailsPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
+  // Check if product is in wishlist on mount
+  useEffect(() => {
+    if (productId) {
+      try {
+        const savedWishlist = localStorage.getItem('wishlist');
+        if (savedWishlist) {
+          const wishlist: string[] = JSON.parse(savedWishlist);
+          setIsWishlisted(wishlist.includes(productId));
+        }
+      } catch (err) {
+        console.error('Error loading wishlist:', err);
+      }
+    }
+  }, [productId]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -62,11 +80,34 @@ export default function ProductDetailsPage() {
     router.push('/checkout');
   };
 
+  const toggleWishlist = () => {
+    if (!product) return;
+    try {
+      const savedWishlist = localStorage.getItem('wishlist');
+      let wishlist: string[] = savedWishlist ? JSON.parse(savedWishlist) : [];
+
+      if (isWishlisted) {
+        wishlist = wishlist.filter((id: string) => id !== productId);
+        setIsWishlisted(false);
+        toast.info('Removed from wishlist');
+      } else {
+        wishlist.push(product._id);
+        setIsWishlisted(true);
+        toast.success('Added to wishlist!');
+      }
+
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    } catch (err) {
+      console.error('Error updating wishlist:', err);
+      toast.error('Failed to update wishlist');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading product...</p>
         </div>
       </div>
@@ -80,7 +121,7 @@ export default function ProductDetailsPage() {
           <div className="text-red-500 mb-4">{error || 'Product not found'}</div>
           <button
             onClick={() => router.back()}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
           >
             Go Back
           </button>
@@ -163,7 +204,7 @@ export default function ProductDetailsPage() {
                     onClick={() => setSelectedImage(index)}
                     className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
                       selectedImage === index 
-                        ? 'border-indigo-600 shadow-lg scale-105' 
+                        ? 'border-primary-600 shadow-lg scale-105' 
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -206,8 +247,20 @@ export default function ProductDetailsPage() {
                     <span className="text-sm text-gray-600">{product.stock} in stock</span>
                   </div>
                 </div>
-                <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-                  <svg className="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <button
+                  onClick={toggleWishlist}
+                  className={`p-2 rounded-full transition-colors ${
+                    isWishlisted 
+                      ? 'bg-red-50 hover:bg-red-100' 
+                      : 'bg-gray-100 hover:bg-gray-200'
+                  }`}
+                >
+                  <svg 
+                    className={`h-6 w-6 ${isWishlisted ? 'text-red-500 fill-red-500' : 'text-gray-600'}`} 
+                    fill={isWishlisted ? 'currentColor' : 'none'} 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 </button>
@@ -244,10 +297,65 @@ export default function ProductDetailsPage() {
                   {product.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium"
+                      className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full text-sm font-medium"
                     >
                       {tag}
                     </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Size Selector */}
+            {product.sizes && product.sizes.length > 0 && (
+              <div>
+                <h3 className="text-sm font-medium text-gray-900 mb-3">Size</h3>
+                <div className="flex flex-wrap gap-2">
+                  {product.sizes.map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(selectedSize === size ? null : size)}
+                      className={`min-w-[48px] px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
+                        selectedSize === size
+                          ? "bg-primary-600 text-white border-primary-600 shadow-md"
+                          : "bg-white text-gray-700 border-gray-300 hover:border-primary-400 hover:text-primary-700"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Color Selector */}
+            {product.colors && product.colors.length > 0 && (
+              <div>
+                <h3 className="text-sm font-medium text-gray-900 mb-3">
+                  Color{selectedColor ? `: ${selectedColor}` : ""}
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  {product.colors.map((color) => (
+                    <button
+                      key={color}
+                      onClick={() => setSelectedColor(selectedColor === color ? null : color)}
+                      className={`relative group flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
+                        selectedColor === color
+                          ? "bg-primary-50 text-primary-700 border-primary-500 shadow-md"
+                          : "bg-white text-gray-700 border-gray-300 hover:border-primary-400"
+                      }`}
+                    >
+                      <span
+                        className="w-4 h-4 rounded-full border border-gray-300 shadow-inner"
+                        style={{ backgroundColor: color.toLowerCase() }}
+                      />
+                      {color}
+                      {selectedColor === color && (
+                        <svg className="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -286,13 +394,13 @@ export default function ProductDetailsPage() {
             <div className="space-y-4">
               <button
                 onClick={handleAddToCart}
-                className="w-full bg-indigo-600 text-white py-4 rounded-xl font-semibold hover:bg-indigo-700 transition-colors text-lg shadow-lg hover:shadow-xl"
+                className="w-full bg-primary-600 text-white py-4 rounded-xl font-semibold hover:bg-primary-700 transition-colors text-lg shadow-lg hover:shadow-xl"
               >
                 Add to Cart - ${discountedPrice.toFixed(2)}
               </button>
               <button
                 onClick={handleBuyNow}
-                className="w-full border-2 border-indigo-600 text-indigo-600 py-4 rounded-xl font-semibold hover:bg-indigo-50 transition-colors text-lg"
+                className="w-full border-2 border-primary-600 text-primary-600 py-4 rounded-xl font-semibold hover:bg-primary-50 transition-colors text-lg"
               >
                 Buy Now
               </button>
@@ -308,7 +416,7 @@ export default function ProductDetailsPage() {
                 onClick={() => setActiveTab('description')}
                 className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'description'
-                    ? 'border-indigo-500 text-indigo-600'
+                    ? 'border-primary-500 text-primary-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
@@ -318,7 +426,7 @@ export default function ProductDetailsPage() {
                 onClick={() => setActiveTab('specifications')}
                 className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'specifications'
-                    ? 'border-indigo-500 text-indigo-600'
+                    ? 'border-primary-500 text-primary-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
@@ -328,7 +436,7 @@ export default function ProductDetailsPage() {
                 onClick={() => setActiveTab('reviews')}
                 className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'reviews'
-                    ? 'border-indigo-500 text-indigo-600'
+                    ? 'border-primary-500 text-primary-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
@@ -354,7 +462,7 @@ export default function ProductDetailsPage() {
                     <h3 className="text-xl font-semibold text-gray-900 mb-3">Tags</h3>
                     <div className="flex flex-wrap gap-3">
                       {product.tags.map((tag, index) => (
-                        <span key={index} className="bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full text-sm font-medium">
+                        <span key={index} className="bg-primary-100 text-primary-800 px-4 py-2 rounded-full text-sm font-medium">
                           {tag}
                         </span>
                       ))}

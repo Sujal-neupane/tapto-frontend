@@ -100,19 +100,19 @@ export default function UserWishlistPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
         <div className="text-center">
           <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-600">Please login to view your wishlist</h2>
-          <Link href="/auth/login" className="text-blue-600 hover:underline mt-2 inline-block">
+          <Link href="/auth/login" className="text-primary-600 hover:underline mt-2 inline-block">
             Login
           </Link>
         </div>
@@ -121,13 +121,13 @@ export default function UserWishlistPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => router.back()}
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4 bg-transparent border-none cursor-pointer"
+            className="inline-flex items-center text-primary-600 hover:text-primary-800 mb-4 bg-transparent border-none cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
@@ -139,7 +139,7 @@ export default function UserWishlistPage() {
         {/* Wishlist Items */}
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : wishlistItems.length === 0 ? (
           <div className="text-center py-12">
@@ -148,7 +148,7 @@ export default function UserWishlistPage() {
             <p className="text-gray-500 mb-6">Start browsing and add items to your wishlist</p>
             <Link
               href="/dashboard"
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 inline-block"
+              className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 inline-block"
             >
               Start Shopping
             </Link>
@@ -156,7 +156,7 @@ export default function UserWishlistPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {wishlistItems.map((item) => (
-              <div key={item.productId} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <div key={item.productId} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="aspect-square relative">
                   <img
                     src={resolveImageUrl(item.image) || '/api/placeholder/200/200'}
@@ -194,7 +194,7 @@ export default function UserWishlistPage() {
 
                   <button
                     onClick={() => addToCart(item.productId)}
-                    className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="w-full flex items-center justify-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
                   >
                     <ShoppingCart className="w-4 h-4 mr-2" />
                     Add to Cart

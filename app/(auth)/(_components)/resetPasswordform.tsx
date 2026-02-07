@@ -17,8 +17,10 @@ export type ResetPasswordDTO = z.infer<typeof ResetPasswordSchema>;
 
 export default function ResetPasswordForm({
     token,
+    email,
 }: {
     token: string;
+    email: string;
 }) {
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ResetPasswordDTO>({
         resolver: zodResolver(ResetPasswordSchema)
@@ -26,7 +28,7 @@ export default function ResetPasswordForm({
     const router = useRouter();
     const onSubmit = async (data: ResetPasswordDTO) => {
         try {
-            const response = await handleResetPassword(token, data.password);
+            const response = await handleResetPassword(email, token, data.password);
             if (response.success) {
                 toast.success("Password reset successfully");
                     setTimeout(() => {
@@ -73,17 +75,17 @@ export default function ResetPasswordForm({
                     )}
                 </div>
                 <div className="mb-4">
-                    <Link href="/auth/login" className="text-sm text-blue-500 hover:underline mb-4 inline-block">
+                    <Link href="/auth/login" className="text-sm text-primary-500 hover:underline mb-4 inline-block">
                         Back to Login
                     </Link>
-                    <Link href="/auth/request-password-reset" className="text-sm text-blue-500 hover:underline mb-4 inline-block ml-4">
+                    <Link href="/forgotpassword" className="text-sm text-primary-500 hover:underline mb-4 inline-block ml-4">
                         Request another reset email
                     </Link>
                 </div>
 
                 <button
                     type="submit"
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    className="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600"
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? "Resetting..." : "Reset Password"}

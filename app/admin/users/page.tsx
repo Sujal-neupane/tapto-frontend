@@ -119,14 +119,14 @@ const AdminUsersPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4 md:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 py-8 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div className="flex items-start gap-4">
             <button
               onClick={() => router.push("/admin/dashboard")}
-              className="mt-1 p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition bg-transparent border-none cursor-pointer"
+              className="mt-1 p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition bg-transparent border-none cursor-pointer"
               title="Back to Dashboard"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -135,7 +135,7 @@ const AdminUsersPage = () => {
             </button>
             <div>
               <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <Users className="w-8 h-8 text-blue-600" />
+                <Users className="w-8 h-8 text-primary-600" />
                 User Management
               </h1>
               <p className="text-gray-600 mt-1">
@@ -150,7 +150,7 @@ const AdminUsersPage = () => {
           </div>
           <Link
             href="/admin/users/create"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition shadow-lg"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-600 to-primary-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-primary-700 hover:to-primary-700 transition shadow-lg"
           >
             <Plus className="w-5 h-5" />
             Create User
@@ -168,7 +168,7 @@ const AdminUsersPage = () => {
                 placeholder="Search by name or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition text-gray-900 placeholder-gray-500"
+                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary-500 transition text-gray-900 placeholder-gray-500"
               />
             </div>
 
@@ -181,7 +181,7 @@ const AdminUsersPage = () => {
                   setRoleFilter(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="pl-12 pr-8 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition bg-white appearance-none cursor-pointer min-w-[150px]"
+                className="pl-12 pr-8 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary-500 transition bg-white appearance-none cursor-pointer min-w-[150px]"
               >
                 <option value="all">All Roles</option>
                 <option value="user">Users</option>
@@ -203,15 +203,15 @@ const AdminUsersPage = () => {
 
         {/* Bulk Actions */}
         {selectedUsers.length > 0 && (
-          <div className="bg-blue-50 border-b border-blue-200 px-6 py-4">
+          <div className="bg-primary-50 border-b border-primary-200 px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-blue-900">
+                <span className="text-sm font-medium text-primary-900">
                   {selectedUsers.length} user(s) selected
                 </span>
                 <button
                   onClick={() => setSelectedUsers([])}
-                  className="text-sm text-blue-700 hover:text-blue-900 underline"
+                  className="text-sm text-primary-700 hover:text-primary-900 underline"
                 >
                   Clear selection
                 </button>
@@ -238,7 +238,7 @@ const AdminUsersPage = () => {
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+              <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
             </div>
           ) : users.length === 0 ? (
             <div className="text-center py-20">
@@ -256,7 +256,7 @@ const AdminUsersPage = () => {
                         type="checkbox"
                         checked={selectedUsers.length === users.length && users.length > 0}
                         onChange={(e) => handleSelectAll(e.target.checked)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                       />
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -290,7 +290,7 @@ const AdminUsersPage = () => {
                           type="checkbox"
                           checked={selectedUsers.includes(user._id)}
                           onChange={(e) => handleSelectUser(user._id, e.target.checked)}
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                         />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -315,7 +315,7 @@ const AdminUsersPage = () => {
                           className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
                             user.role === "admin"
                               ? "bg-red-100 text-red-700"
-                              : "bg-blue-100 text-blue-700"
+                              : "bg-primary-100 text-primary-700"
                           }`}
                         >
                           {user.role === "admin" && <Shield className="w-3 h-3" />}
@@ -329,7 +329,7 @@ const AdminUsersPage = () => {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => router.push(`/admin/users/${user._id}`)}
-                            className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                            className="p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition"
                             title="View"
                           >
                             <Eye className="w-4 h-4" />
@@ -396,7 +396,7 @@ const AdminUsersPage = () => {
                         onClick={() => setCurrentPage(pageNum)}
                         className={`w-10 h-10 rounded-lg font-medium transition ${
                           currentPage === pageNum
-                            ? "bg-blue-600 text-white"
+                            ? "bg-primary-600 text-white"
                             : "hover:bg-white border border-gray-200"
                         }`}
                       >

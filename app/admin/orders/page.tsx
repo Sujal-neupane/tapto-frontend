@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getAdminOrders, updateAdminOrderStatus, AdminOrder } from "@/lib/api/admin";
+import { getAdminOrders, updateAdminOrderStatus, AdminOrder, getDeliveryDrivers, DeliveryDriver, assignDriverToOrder } from "@/lib/api/admin";
 import { toast } from "react-toastify";
 import {
   ShoppingBag,
@@ -24,7 +24,8 @@ import {
   Mail,
   MoreVertical,
   ArrowLeft,
-  ArrowUpDown
+  ArrowUpDown,
+  UserCheck
 } from "lucide-react";
 import Link from "next/link";
 
@@ -37,6 +38,9 @@ const AdminOrdersPage = () => {
   const [sortBy, setSortBy] = useState<'date' | 'total' | 'status'>('date');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+  const [drivers, setDrivers] = useState<DeliveryDriver[]>([]);
+  const [assigningDriverFor, setAssigningDriverFor] = useState<string | null>(null);
+  const [selectedDriverId, setSelectedDriverId] = useState<string>("");
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -54,6 +58,10 @@ const AdminOrdersPage = () => {
 
   useEffect(() => {
     fetchOrders();
+    // Fetch available drivers
+    getDeliveryDrivers()
+      .then(d => setDrivers(d))
+      .catch(() => console.log('No drivers available'));
   }, []);
 
   const handleStatusUpdate = async (orderId: string, newStatus: string) => {
@@ -69,6 +77,22 @@ const AdminOrdersPage = () => {
     }
   };
 
+  const handleAssignDriver = async (orderId: string) => {
+    if (!selectedDriverId) {
+      toast.error("Please select a driver");
+      return;
+    }
+    try {
+      await assignDriverToOrder(orderId, selectedDriverId);
+      toast.success("Driver assigned successfully");
+      setAssigningDriverFor(null);
+      setSelectedDriverId("");
+      fetchOrders();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to assign driver");
+    }
+  };
+
   const getStatusConfig = (status: string) => {
     switch (status.toLowerCase()) {
       case 'pending':
@@ -80,10 +104,10 @@ const AdminOrdersPage = () => {
         };
       case 'confirmed':
         return {
-          color: 'bg-blue-100 text-blue-800 border-blue-200',
+          color: 'bg-primary-100 text-primary-800 border-primary-200',
           icon: CheckCircle,
           label: 'Confirmed',
-          bgColor: 'bg-blue-50'
+          bgColor: 'bg-primary-50'
         };
       case 'processing':
         return {
@@ -94,10 +118,10 @@ const AdminOrdersPage = () => {
         };
       case 'shipped':
         return {
-          color: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+          color: 'bg-primary-100 text-primary-800 border-primary-200',
           icon: Truck,
           label: 'Shipped',
-          bgColor: 'bg-indigo-50'
+          bgColor: 'bg-primary-50'
         };
       case 'outfordelivery':
         return {
@@ -199,7 +223,7 @@ const AdminOrdersPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50">
       {/* Header */}
       <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="px-6 py-4">
@@ -212,7 +236,7 @@ const AdminOrdersPage = () => {
                 <ArrowLeft className="w-5 h-5 text-slate-600" />
               </Link>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-600 to-primary-600 flex items-center justify-center shadow-lg">
                   <ShoppingBag className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -245,7 +269,7 @@ const AdminOrdersPage = () => {
                   placeholder="Search by order ID, customer name, or email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -255,7 +279,7 @@ const AdminOrdersPage = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white"
               >
                 {statusOptions.map(option => (
                   <option key={option.value} value={option.value}>
@@ -274,7 +298,7 @@ const AdminOrdersPage = () => {
                   setSortBy(field as any);
                   setSortOrder(order as any);
                 }}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white"
               >
                 <option value="date-desc">Newest First</option>
                 <option value="date-asc">Oldest First</option>
@@ -336,8 +360,8 @@ const AdminOrdersPage = () => {
                 <div key={order._id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                        <Package className="w-6 h-6 text-blue-600" />
+                      <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                        <Package className="w-6 h-6 text-primary-600" />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900">
@@ -386,7 +410,7 @@ const AdminOrdersPage = () => {
                       </div>
                       <div className="space-y-1">
                         <p className="text-sm text-gray-600">{order.items?.length || 0} items</p>
-                        <p className="text-sm font-bold text-blue-600">${order.total?.toFixed(2) || '0.00'}</p>
+                        <p className="text-sm font-bold text-primary-600">${order.total?.toFixed(2) || '0.00'}</p>
                       </div>
                     </div>
 
@@ -402,6 +426,101 @@ const AdminOrdersPage = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* Delivery Driver Assignment */}
+                  {['processing', 'shipped', 'outForDelivery'].includes(order.status.toLowerCase()) && (
+                    <div className="mb-4 p-4 rounded-lg border border-teal-200 bg-teal-50">
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.75rem" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                          <Truck className="w-4 h-4 text-teal-600" />
+                          <span className="text-sm font-semibold text-teal-900">Delivery Driver</span>
+                        </div>
+                        {(order as any).deliveryPerson?.name ? (
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                              <div className="w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center text-white text-xs font-bold">
+                                {(order as any).deliveryPerson.name.charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{(order as any).deliveryPerson.name}</p>
+                                <p className="text-xs text-gray-600">{(order as any).deliveryPerson.phone} • {(order as any).deliveryPerson.vehicle}</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => { setAssigningDriverFor(order._id); setSelectedDriverId(""); }}
+                              className="text-xs text-teal-700 hover:text-teal-900 font-medium underline"
+                            >
+                              Reassign
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => { setAssigningDriverFor(order._id); setSelectedDriverId(""); }}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700 transition-colors"
+                          >
+                            <UserCheck className="w-4 h-4" />
+                            Assign Driver
+                          </button>
+                        )}
+                      </div>
+
+                      {assigningDriverFor === order._id && (
+                        <div style={{ marginTop: "0.75rem", display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
+                          <select
+                            value={selectedDriverId}
+                            onChange={(e) => setSelectedDriverId(e.target.value)}
+                            style={{
+                              flex: 1,
+                              minWidth: "200px",
+                              padding: "0.5rem 0.75rem",
+                              border: "1px solid #d1d5db",
+                              borderRadius: "0.5rem",
+                              fontSize: "0.875rem",
+                              color: "#111827",
+                              backgroundColor: "#fff",
+                            }}
+                          >
+                            <option value="">Select a driver...</option>
+                            {drivers.filter(d => d.isActive).map(driver => (
+                              <option key={driver._id} value={driver._id}>
+                                {driver.name} — {driver.vehicleNumber} ({driver.phone})
+                              </option>
+                            ))}
+                          </select>
+                          <button
+                            onClick={() => handleAssignDriver(order._id)}
+                            disabled={!selectedDriverId}
+                            style={{
+                              padding: "0.5rem 1rem",
+                              backgroundColor: selectedDriverId ? "#0d9488" : "#9ca3af",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "0.5rem",
+                              cursor: selectedDriverId ? "pointer" : "not-allowed",
+                              fontSize: "0.875rem",
+                              fontWeight: 500,
+                            }}
+                          >
+                            Confirm
+                          </button>
+                          <button
+                            onClick={() => setAssigningDriverFor(null)}
+                            style={{
+                              padding: "0.5rem 1rem",
+                              backgroundColor: "#fff",
+                              color: "#374151",
+                              border: "1px solid #d1d5db",
+                              borderRadius: "0.5rem",
+                              cursor: "pointer",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* Actions */}
                   <div className="flex items-center justify-between pt-4 border-t border-gray-200">
@@ -425,7 +544,7 @@ const AdminOrdersPage = () => {
                               key={status}
                               onClick={() => handleStatusUpdate(order._id, status)}
                               disabled={updatingStatus === order._id}
-                              className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors duration-200"
+                              className="px-3 py-1 bg-primary-600 text-white text-sm rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors duration-200"
                             >
                               {updatingStatus === order._id ? (
                                 <RefreshCw className="w-4 h-4 animate-spin" />

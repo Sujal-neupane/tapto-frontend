@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import ClientProviders from "./_components/client-providers";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "TAPTO",
@@ -12,7 +19,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className="antialiased bg-white text-slate-900">
+      <body
+        className={`${inter.variable} antialiased bg-background text-foreground`}
+      >
         <ClientProviders>{children}</ClientProviders>
       </body>
     </html>

@@ -79,7 +79,7 @@ const AdminOrderDetailsPage = () => {
         };
       case 'confirmed':
         return {
-          color: 'bg-blue-100 text-blue-800 border-blue-200',
+          color: 'bg-primary-100 text-primary-800 border-primary-200',
           icon: CheckCircle,
           label: 'Confirmed'
         };
@@ -91,7 +91,7 @@ const AdminOrderDetailsPage = () => {
         };
       case 'shipped':
         return {
-          color: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+          color: 'bg-primary-100 text-primary-800 border-primary-200',
           icon: Truck,
           label: 'Shipped'
         };
@@ -134,9 +134,9 @@ const AdminOrderDetailsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <RefreshCw className="w-6 h-6 animate-spin text-indigo-600" />
+          <RefreshCw className="w-6 h-6 animate-spin text-primary-600" />
           <span className="text-slate-600">Loading order details...</span>
         </div>
       </div>
@@ -145,13 +145,13 @@ const AdminOrderDetailsPage = () => {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
         <div className="text-center">
           <Package className="w-16 h-16 text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-900 mb-2">Order not found</h3>
           <Link
             href="/admin/orders"
-            className="text-indigo-600 hover:text-indigo-700"
+            className="text-primary-600 hover:text-primary-700"
           >
             Back to orders
           </Link>
@@ -161,7 +161,7 @@ const AdminOrderDetailsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50">
       {/* Header */}
       <div className="bg-white border-b border-slate-200">
         <div className="px-6 py-4">
@@ -174,7 +174,7 @@ const AdminOrderDetailsPage = () => {
                 <ArrowLeft className="w-5 h-5 text-slate-600" />
               </Link>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-600 to-purple-600 flex items-center justify-center shadow-lg">
                   <ShoppingBag className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -193,7 +193,7 @@ const AdminOrderDetailsPage = () => {
                 value={order.status}
                 onChange={(e) => handleStatusUpdate(e.target.value)}
                 disabled={updatingStatus}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm disabled:opacity-50"
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm disabled:opacity-50"
               >
                 <option value="pending">Pending</option>
                 <option value="confirmed">Confirmed</option>
@@ -205,7 +205,7 @@ const AdminOrderDetailsPage = () => {
                 <option value="refunded">Refunded</option>
               </select>
               {updatingStatus && (
-                <RefreshCw className="w-5 h-5 animate-spin text-blue-600" />
+                <RefreshCw className="w-5 h-5 animate-spin text-primary-600" />
               )}
             </div>
           </div>
@@ -340,7 +340,7 @@ const AdminOrderDetailsPage = () => {
                       track.status.toLowerCase().includes('delivered') ? 'bg-green-100 text-green-600' :
                       track.status.toLowerCase().includes('shipped') ? 'bg-purple-100 text-purple-600' :
                       track.status.toLowerCase().includes('confirmed') ? 'bg-yellow-100 text-yellow-600' :
-                      'bg-blue-100 text-blue-600'
+                      'bg-primary-100 text-primary-600'
                     }`}>
                       {track.status.toLowerCase().includes('delivered') ? <CheckCircle className="w-5 h-5" /> :
                        track.status.toLowerCase().includes('shipped') ? <Truck className="w-5 h-5" /> :

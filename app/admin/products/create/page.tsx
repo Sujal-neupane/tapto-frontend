@@ -171,12 +171,12 @@ const CreateProductPage = () => {
                 onClick={() => setFormData(prev => ({ ...prev, category: "Men" }))}
                 className={`p-8 rounded-xl border-2 transition-all ${
                   formData.category === "Men"
-                    ? "border-blue-500 bg-blue-50"
+                    ? "border-primary-500 bg-primary-50"
                     : "border-slate-200 hover:border-slate-300"
                 }`}
               >
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-2xl">👔</span>
                   </div>
                   <h3 className="text-lg font-semibold text-slate-900 mb-2">Men's Fashion</h3>
@@ -224,7 +224,7 @@ const CreateProductPage = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 placeholder-gray-500"
                     placeholder="Enter product name"
                   />
                 </div>
@@ -237,7 +237,7 @@ const CreateProductPage = () => {
                     name="subcategory"
                     value={formData.subcategory}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-slate-900"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-slate-900"
                   >
                     <option value="">Select a subcategory</option>
                     {getSubcategories().map(subcategory => (
@@ -257,7 +257,7 @@ const CreateProductPage = () => {
                       name="price"
                       value={formData.price}
                       onChange={handleInputChange}
-                      className="w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
+                      className="w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 placeholder-gray-500"
                       placeholder="0.00"
                       step="0.01"
                       min="0"
@@ -274,7 +274,7 @@ const CreateProductPage = () => {
                     name="stock"
                     value={formData.stock}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 placeholder-gray-500"
                     placeholder="Enter stock quantity"
                     min="0"
                   />
@@ -289,7 +289,7 @@ const CreateProductPage = () => {
                     name="discount"
                     value={formData.discount}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 placeholder-gray-500"
                     placeholder="Optional discount percentage"
                     min="0"
                     max="100"
@@ -305,7 +305,7 @@ const CreateProductPage = () => {
                     name="sizes"
                     value={formData.sizes}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 placeholder-gray-500"
                     placeholder="S, M, L, XL"
                   />
                 </div>
@@ -319,7 +319,7 @@ const CreateProductPage = () => {
                     name="colors"
                     value={formData.colors}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 placeholder-gray-500"
                     placeholder="Red, Blue, Black"
                   />
                 </div>
@@ -333,7 +333,7 @@ const CreateProductPage = () => {
                     name="tags"
                     value={formData.tags}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 placeholder-gray-500"
                     placeholder="summer, casual, trendy"
                   />
                 </div>
@@ -348,7 +348,7 @@ const CreateProductPage = () => {
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={4}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-slate-900"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-slate-900"
                   placeholder="Enter product description"
                 />
               </div>
@@ -373,7 +373,7 @@ const CreateProductPage = () => {
                     <div className="text-sm text-slate-600 mb-2">
                       Upload product images (max 5 images)
                     </div>
-                    <label className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 cursor-pointer transition-colors">
+                    <label className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 cursor-pointer transition-colors">
                       <span>Choose Files</span>
                       <input
                         type="file"
@@ -418,7 +418,7 @@ const CreateProductPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50">
       {/* Header */}
       <div className="bg-white border-b border-slate-200">
         <div className="px-6 py-4">
@@ -431,7 +431,7 @@ const CreateProductPage = () => {
                 <ArrowLeft className="w-5 h-5 text-slate-600" />
               </Link>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-600 to-purple-600 flex items-center justify-center shadow-lg">
                   <Package className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -452,13 +452,13 @@ const CreateProductPage = () => {
               <div key={index} className="flex items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                   index <= currentStep
-                    ? "bg-indigo-600 text-white"
+                    ? "bg-primary-600 text-white"
                     : "bg-slate-200 text-slate-600"
                 }`}>
                   {index < currentStep ? "✓" : index + 1}
                 </div>
                 <span className={`ml-2 text-sm font-medium ${
-                  index <= currentStep ? "text-indigo-600" : "text-slate-600"
+                  index <= currentStep ? "text-primary-600" : "text-slate-600"
                 }`}>
                   {step}
                 </span>
@@ -491,7 +491,7 @@ const CreateProductPage = () => {
               {currentStep < 2 ? (
                 <button
                   onClick={nextStep}
-                  className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                  className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2"
                 >
                   Next
                   <ChevronRight className="w-4 h-4" />
@@ -500,7 +500,7 @@ const CreateProductPage = () => {
                 <button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                  className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                 >
                   <Save className="w-4 h-4" />
                   {loading ? "Creating..." : "Create Product"}

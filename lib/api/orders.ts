@@ -104,9 +104,9 @@ export const trackOrder = async (id: string): Promise<any> => {
     }
 };
 
-export const cancelOrder = async (id: string): Promise<Order> => {
+export const cancelOrder = async (id: string, reason: string): Promise<Order> => {
     try {
-        const response = await axiosInstance.post(`/api/orders/${id}/cancel`);
+        const response = await axiosInstance.post(`/api/orders/${id}/cancel`, { reason });
         return response.data.data || response.data;
     } catch (error) {
         console.error('Error cancelling order:', error);

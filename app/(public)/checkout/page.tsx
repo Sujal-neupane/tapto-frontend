@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createOrder, CreateOrderData } from "@/lib/api/orders";
 import { getProductById, Product } from "@/lib/api/products";
+import { getUserAddresses, Address } from "@/lib/api/addresses";
 import { toast } from "react-toastify";
 
 interface CartItem {
@@ -23,6 +24,8 @@ export default function CheckoutPage() {
   const [cartItems, setCartItems] = useState<CartItemWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
+  const [showSavedAddresses, setShowSavedAddresses] = useState(false);
 
   // Form state
   const [shippingAddress, setShippingAddress] = useState({
@@ -32,7 +35,7 @@ export default function CheckoutPage() {
     city: '',
     state: '',
     zipCode: '',
-    country: '',
+    country: 'United States',
   });
   const [paymentMethod, setPaymentMethod] = useState({
     type: 'card',
@@ -41,6 +44,26 @@ export default function CheckoutPage() {
 
   // Load cart items from localStorage and fetch product details
   useEffect(() => {
+    // Also load saved addresses
+    getUserAddresses()
+      .then(addrs => {
+        setSavedAddresses(addrs);
+        // Auto-fill with default address if available
+        const defaultAddr = addrs.find(a => a.isDefault);
+        if (defaultAddr) {
+          setShippingAddress({
+            fullName: defaultAddr.fullName,
+            phone: defaultAddr.phone,
+            street: defaultAddr.street,
+            city: defaultAddr.city,
+            state: defaultAddr.state || '',
+            zipCode: defaultAddr.zipCode,
+            country: defaultAddr.country,
+          });
+        }
+      })
+      .catch(() => {});
+
     const loadCartItems = async () => {
       try {
         const savedCart = localStorage.getItem('cart');
@@ -100,12 +123,12 @@ export default function CheckoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!shippingAddress.fullName || !shippingAddress.phone || !shippingAddress.street || !shippingAddress.city || !shippingAddress.zipCode) {
+    if (!shippingAddress.fullName || !shippingAddress.phone || !shippingAddress.street || !shippingAddress.city || !shippingAddress.state || !shippingAddress.zipCode || !shippingAddress.country) {
       toast.error('Please fill in all required shipping fields');
       return;
     }
 
-    setLoading(true);
+    setSubmitting(true);
     try {
       const orderData: CreateOrderData = {
         items: cartItems.map(item => ({
@@ -127,12 +150,12 @@ export default function CheckoutPage() {
 
       // Clear cart and redirect
       localStorage.removeItem('cart');
-      router.push(`/user/orders/${order._id}`);
+      router.push(`/orders/${order._id}`);
     } catch (error) {
       console.error('Error creating order:', error);
       toast.error('Failed to place order. Please try again.');
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
@@ -143,7 +166,7 @@ export default function CheckoutPage() {
           <div className="text-gray-500 mb-4">Your cart is empty</div>
           <button
             onClick={() => router.push('/dashboard')}
-            className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
           >
             Continue Shopping
           </button>
@@ -179,7 +202,59 @@ export default function CheckoutPage() {
           <div className="space-y-8">
             {/* Shipping Address */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Shipping Address</h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">Shipping Address</h2>
+                {savedAddresses.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowSavedAddresses(!showSavedAddresses)}
+                    className="text-sm font-medium text-primary-600 hover:text-primary-700 transition"
+                  >
+                    {showSavedAddresses ? 'Enter manually' : 'Use saved address'}
+                  </button>
+                )}
+              </div>
+
+              {/* Saved Address Picker */}
+              {showSavedAddresses && savedAddresses.length > 0 && (
+                <div className="mb-6 space-y-2">
+                  {savedAddresses.map((addr) => (
+                    <button
+                      key={addr._id}
+                      type="button"
+                      onClick={() => {
+                        setShippingAddress({
+                          fullName: addr.fullName,
+                          phone: addr.phone,
+                          street: addr.street,
+                          city: addr.city,
+                          state: addr.state || '',
+                          zipCode: addr.zipCode,
+                          country: addr.country,
+                        });
+                        setShowSavedAddresses(false);
+                      }}
+                      className={`w-full text-left p-4 border-2 rounded-xl transition ${
+                        shippingAddress.street === addr.street && shippingAddress.fullName === addr.fullName
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-gray-200 hover:border-primary-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-gray-900">{addr.fullName}</p>
+                          <p className="text-sm text-gray-600">{addr.street}, {addr.city}{addr.state ? `, ${addr.state}` : ''} {addr.zipCode}</p>
+                          <p className="text-sm text-gray-500">{addr.country} • {addr.phone}</p>
+                        </div>
+                        {addr.isDefault && (
+                          <span className="text-xs font-semibold text-primary-600 bg-primary-100 px-2 py-1 rounded-full">Default</span>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <div className="grid grid-cols-1 gap-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -191,7 +266,7 @@ export default function CheckoutPage() {
                       required
                       value={shippingAddress.fullName}
                       onChange={(e) => setShippingAddress(prev => ({ ...prev, fullName: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                       placeholder="John Doe"
                     />
                   </div>
@@ -204,7 +279,7 @@ export default function CheckoutPage() {
                       required
                       value={shippingAddress.phone}
                       onChange={(e) => setShippingAddress(prev => ({ ...prev, phone: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                       placeholder="+1 (555) 123-4567"
                     />
                   </div>
@@ -218,7 +293,7 @@ export default function CheckoutPage() {
                     required
                     value={shippingAddress.street}
                     onChange={(e) => setShippingAddress(prev => ({ ...prev, street: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="123 Main St"
                   />
                 </div>
@@ -232,19 +307,20 @@ export default function CheckoutPage() {
                       required
                       value={shippingAddress.city}
                       onChange={(e) => setShippingAddress(prev => ({ ...prev, city: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                       placeholder="New York"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      State
+                      State *
                     </label>
                     <input
                       type="text"
+                      required
                       value={shippingAddress.state}
                       onChange={(e) => setShippingAddress(prev => ({ ...prev, state: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                       placeholder="NY"
                     />
                   </div>
@@ -259,7 +335,7 @@ export default function CheckoutPage() {
                       required
                       value={shippingAddress.zipCode}
                       onChange={(e) => setShippingAddress(prev => ({ ...prev, zipCode: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                       placeholder="10001"
                     />
                   </div>
@@ -272,7 +348,7 @@ export default function CheckoutPage() {
                       required
                       value={shippingAddress.country}
                       onChange={(e) => setShippingAddress(prev => ({ ...prev, country: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                       placeholder="United States"
                     />
                   </div>
@@ -291,7 +367,7 @@ export default function CheckoutPage() {
                     value="card"
                     checked={paymentMethod.type === 'card'}
                     onChange={(e) => setPaymentMethod(prev => ({ ...prev, type: e.target.value }))}
-                    className="text-indigo-600 focus:ring-indigo-500"
+                    className="text-primary-600 focus:ring-primary-500"
                   />
                   <span className="ml-2 text-gray-700">Credit/Debit Card</span>
                 </label>
@@ -302,7 +378,7 @@ export default function CheckoutPage() {
                     value="paypal"
                     checked={paymentMethod.type === 'paypal'}
                     onChange={(e) => setPaymentMethod(prev => ({ ...prev, type: e.target.value }))}
-                    className="text-indigo-600 focus:ring-indigo-500"
+                    className="text-primary-600 focus:ring-primary-500"
                   />
                   <span className="ml-2 text-gray-700">PayPal</span>
                 </label>
@@ -313,7 +389,7 @@ export default function CheckoutPage() {
                     value="cod"
                     checked={paymentMethod.type === 'cod'}
                     onChange={(e) => setPaymentMethod(prev => ({ ...prev, type: e.target.value }))}
-                    className="text-indigo-600 focus:ring-indigo-500"
+                    className="text-primary-600 focus:ring-primary-500"
                   />
                   <span className="ml-2 text-gray-700">Cash on Delivery</span>
                 </label>
@@ -375,10 +451,10 @@ export default function CheckoutPage() {
 
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full mt-6 bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={submitting}
+                className="w-full mt-6 bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Processing...' : `Place Order - $${total.toFixed(2)}`}
+                {submitting ? 'Processing...' : `Place Order - $${total.toFixed(2)}`}
               </button>
             </div>
           </div>

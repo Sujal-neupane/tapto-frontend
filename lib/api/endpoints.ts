@@ -29,7 +29,11 @@ export const API = {
             GET_ALL: '/api/admin/orders',
             GET_BY_ID: (id: string) => `/api/admin/orders/${id}`,
             UPDATE_STATUS: (id: string) => `/api/admin/orders/${id}/status`,
+            ASSIGN_DRIVER: (id: string) => `/api/admin/orders/${id}/assign-driver`,
         },
+    },
+    DRIVERS: {
+        GET_ALL: '/api/drivers',
     },
     PRODUCTS: {
         GET_ALL: '/api/products',
@@ -47,5 +51,13 @@ export const API = {
         GET_BY_ID: (id: string) => `/api/orders/${id}`,
         GET_USER_ORDERS: '/api/orders/my-orders',
         UPDATE_STATUS: (id: string) => `/api/orders/${id}/status`,
+    },
+    ADDRESSES: {
+        GET_ALL: '/api/addresses',
+        CREATE: '/api/addresses',
+        GET_BY_ID: (id: string) => `/api/addresses/${id}`,
+        UPDATE: (id: string) => `/api/addresses/${id}`,
+        DELETE: (id: string) => `/api/addresses/${id}`,
+        SET_DEFAULT: (id: string) => `/api/addresses/${id}/default`,
     },
 } as const;

@@ -78,19 +78,19 @@ const AdminUserDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
         <div className="text-center">
           <UserIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-600">User not found</h2>
-          <Link href="/admin/users" className="text-blue-600 hover:underline mt-2 inline-block">
+          <Link href="/admin/users" className="text-primary-600 hover:underline mt-2 inline-block">
             Back to Users
           </Link>
         </div>
@@ -99,13 +99,13 @@ const AdminUserDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <Link
             href="/admin/users"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition mb-4"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-primary-600 transition mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Users
@@ -139,7 +139,7 @@ const AdminUserDetailPage = () => {
         {/* User Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
           {/* Profile Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-12">
+          <div className="bg-gradient-to-r from-primary-600 to-primary-600 px-8 py-12">
             <div className="flex flex-col md:flex-row items-center gap-6">
               <img
                 src={normalizeImageSrc(user.profilePicture)}
@@ -149,13 +149,13 @@ const AdminUserDetailPage = () => {
               />
               <div className="text-center md:text-left">
                 <h2 className="text-3xl font-bold text-white">{user.fullName}</h2>
-                <p className="text-blue-100 mt-1">{user.email}</p>
+                <p className="text-primary-100 mt-1">{user.email}</p>
                 <div className="flex items-center justify-center md:justify-start gap-2 mt-3">
                   <span
                     className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold ${
                       user.role === "admin"
                         ? "bg-red-100 text-red-700"
-                        : "bg-blue-100 text-blue-700"
+                        : "bg-primary-100 text-primary-700"
                     }`}
                   >
                     {user.role === "admin" && <Shield className="w-3 h-3" />}
@@ -171,8 +171,8 @@ const AdminUserDetailPage = () => {
             <h3 className="text-lg font-semibold text-gray-900 mb-6">User Information</h3>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <UserIcon className="w-5 h-5 text-blue-600" />
+                <div className="p-3 bg-primary-100 rounded-lg">
+                  <UserIcon className="w-5 h-5 text-primary-600" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Full Name</p>
@@ -221,8 +221,8 @@ const AdminUserDetailPage = () => {
               </div>
 
               <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-                <div className="p-3 bg-indigo-100 rounded-lg">
-                  <Calendar className="w-5 h-5 text-indigo-600" />
+                <div className="p-3 bg-primary-100 rounded-lg">
+                  <Calendar className="w-5 h-5 text-primary-600" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Last Updated</p>
