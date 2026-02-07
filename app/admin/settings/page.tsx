@@ -124,8 +124,8 @@ const AdminSettingsPage = () => {
           {/* Notification Settings */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Bell className="w-5 h-5 text-blue-600" />
+              <div className="p-2 bg-primary-100 rounded-lg">
+                <Bell className="w-5 h-5 text-primary-600" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">Notification Settings</h3>

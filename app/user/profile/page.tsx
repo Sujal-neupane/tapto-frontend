@@ -116,20 +116,20 @@ const UserProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8 animate-fadeIn">
           <button
-            onClick={() => router.push("/dashboard")}
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-all duration-200 group mb-6 bg-transparent border-none cursor-pointer"
+            onClick={() => router.push("/user")}
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-primary-600 transition-all duration-200 group mb-6 bg-transparent border-none cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             <span className="font-medium">Back to Dashboard</span>
           </button>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-primary-900 to-primary-900 bg-clip-text text-transparent">
                 Edit Profile
               </h1>
               <p className="text-gray-600 mt-2 flex items-center gap-2">
@@ -153,9 +153,9 @@ const UserProfilePage = () => {
         </div>
 
         {/* Profile Card */}
-        <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden animate-fadeIn">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden animate-fadeIn">
           {/* Profile Picture Section with Enhanced Gradient */}
-          <div className="relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 px-8 py-16 text-center overflow-hidden">
+          <div className="relative bg-linear-to-br from-primary-600 to-primary-700 px-8 py-16 text-center overflow-hidden">
             {/* Decorative Elements */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full -translate-x-32 -translate-y-32" />
@@ -204,7 +204,7 @@ const UserProfilePage = () => {
                 {/* Camera Button */}
                 <label
                   htmlFor="profilePicture"
-                  className="absolute bottom-2 right-2 bg-white text-blue-600 rounded-full p-3 cursor-pointer shadow-lg hover:bg-blue-50 hover:scale-110 transition-all duration-200"
+                  className="absolute bottom-2 right-2 bg-white text-primary-600 rounded-full p-3 cursor-pointer shadow-lg hover:bg-primary-50 hover:scale-110 transition-all duration-200"
                 >
                   <Camera className="w-5 h-5" />
                 </label>
@@ -223,8 +223,8 @@ const UserProfilePage = () => {
                 {user?.fullName || "User Name"}
               </h2>
               <div className="flex items-center justify-center gap-2 mt-3">
-                <Shield className="w-5 h-5 text-blue-200" />
-                <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-blue-50 text-sm font-medium capitalize border border-white/30">
+                <Shield className="w-5 h-5 text-primary-200" />
+                <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-primary-50 text-sm font-medium capitalize border border-white/30">
                   {user?.role}
                 </span>
               </div>
@@ -237,8 +237,8 @@ const UserProfilePage = () => {
               {/* Full Name */}
               <div className="space-y-3 animate-slideIn" style={{ animationDelay: '100ms' }}>
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                  <div className="p-1.5 bg-blue-50 rounded-lg">
-                    <User className="w-4 h-4 text-blue-600" />
+                  <div className="p-1.5 bg-primary-50 rounded-lg">
+                    <User className="w-4 h-4 text-primary-600" />
                   </div>
                   Full Name
                 </label>
@@ -247,7 +247,7 @@ const UserProfilePage = () => {
                   type="text"
                   value={form.fullName}
                   onChange={handleChange}
-                  className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all duration-200 bg-gray-50/50 hover:bg-white"
+                  className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-50 transition-all duration-200 bg-gray-50/50 hover:bg-white"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -255,8 +255,8 @@ const UserProfilePage = () => {
               {/* Email */}
               <div className="space-y-3 animate-slideIn" style={{ animationDelay: '200ms' }}>
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                  <div className="p-1.5 bg-blue-50 rounded-lg">
-                    <Mail className="w-4 h-4 text-blue-600" />
+                  <div className="p-1.5 bg-primary-50 rounded-lg">
+                    <Mail className="w-4 h-4 text-primary-600" />
                   </div>
                   Email Address
                 </label>
@@ -265,7 +265,7 @@ const UserProfilePage = () => {
                   type="email"
                   value={form.email}
                   onChange={handleChange}
-                  className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all duration-200 bg-gray-50/50 hover:bg-white"
+                  className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-50 transition-all duration-200 bg-gray-50/50 hover:bg-white"
                   placeholder="Enter your email"
                 />
               </div>
@@ -273,8 +273,8 @@ const UserProfilePage = () => {
               {/* Phone Number */}
               <div className="space-y-3 animate-slideIn" style={{ animationDelay: '300ms' }}>
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                  <div className="p-1.5 bg-blue-50 rounded-lg">
-                    <Phone className="w-4 h-4 text-blue-600" />
+                  <div className="p-1.5 bg-primary-50 rounded-lg">
+                    <Phone className="w-4 h-4 text-primary-600" />
                   </div>
                   Phone Number
                 </label>
@@ -283,7 +283,7 @@ const UserProfilePage = () => {
                   type="text"
                   value={form.phoneNumber}
                   onChange={handleChange}
-                  className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all duration-200 bg-gray-50/50 hover:bg-white"
+                  className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-50 transition-all duration-200 bg-gray-50/50 hover:bg-white"
                   placeholder="Enter your phone number"
                 />
               </div>
@@ -291,8 +291,8 @@ const UserProfilePage = () => {
               {/* Shopping Preference */}
               <div className="space-y-3 animate-slideIn" style={{ animationDelay: '400ms' }}>
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                  <div className="p-1.5 bg-blue-50 rounded-lg">
-                    <Shield className="w-4 h-4 text-blue-600" />
+                  <div className="p-1.5 bg-primary-50 rounded-lg">
+                    <Shield className="w-4 h-4 text-primary-600" />
                   </div>
                   Shopping Preference
                 </label>
@@ -300,7 +300,7 @@ const UserProfilePage = () => {
                   name="shoppingPreference"
                   value={form.shoppingPreference}
                   onChange={handleChange}
-                  className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all duration-200 bg-gray-50/50 hover:bg-white cursor-pointer"
+                  className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-50 transition-all duration-200 bg-gray-50/50 hover:bg-white cursor-pointer"
                 >
                   <option value="">Select preference</option>
                   <option value="Mens Fashion">Men&apos;s Fashion</option>
@@ -324,9 +324,9 @@ const UserProfilePage = () => {
                 <button
                   type="submit"
                   disabled={loading || !hasChanges}
-                  className="flex-1 flex items-center justify-center gap-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-4 px-6 rounded-xl font-semibold hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg relative overflow-hidden group"
+                  className="flex-1 flex items-center justify-center gap-3 bg-primary-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-primary-700 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg relative overflow-hidden group"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                  <div className="absolute inset-0 bg-primary-700 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                   {loading ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin relative z-10" />
@@ -364,8 +364,8 @@ const UserProfilePage = () => {
         {/* Additional Info Card */}
         <div className="mt-6 bg-white/60 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 animate-fadeIn" style={{ animationDelay: '600ms' }}>
           <div className="flex items-start gap-4">
-            <div className="p-2 bg-blue-50 rounded-lg">
-              <Shield className="w-5 h-5 text-blue-600" />
+            <div className="p-2 bg-primary-50 rounded-lg">
+              <Shield className="w-5 h-5 text-primary-600" />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 mb-1">Privacy & Security</h3>

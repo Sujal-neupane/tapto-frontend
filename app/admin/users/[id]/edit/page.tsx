@@ -100,20 +100,20 @@ const AdminUserEditPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 py-8 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => router.push("/admin/users")}
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition mb-4 bg-transparent border-none cursor-pointer"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-primary-600 transition mb-4 bg-transparent border-none cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Users
@@ -125,7 +125,7 @@ const AdminUserEditPage = () => {
         {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
           {/* Profile Picture Section */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-12 text-center">
+          <div className="bg-gradient-to-r from-primary-600 to-primary-600 px-8 py-12 text-center">
             <div className="relative inline-block">
               <img
                 src={resolveImageUrl(preview)}
@@ -135,7 +135,7 @@ const AdminUserEditPage = () => {
               />
               <label
                 htmlFor="profilePicture"
-                className="absolute bottom-0 right-0 bg-white text-blue-600 rounded-full p-3 cursor-pointer shadow-lg hover:bg-blue-50 transition"
+                className="absolute bottom-0 right-0 bg-white text-primary-600 rounded-full p-3 cursor-pointer shadow-lg hover:bg-primary-50 transition"
               >
                 <Camera className="w-5 h-5" />
                 <input
@@ -148,7 +148,7 @@ const AdminUserEditPage = () => {
                 />
               </label>
             </div>
-            <p className="text-blue-100 mt-4 text-sm">Click the camera icon to change profile picture</p>
+            <p className="text-primary-100 mt-4 text-sm">Click the camera icon to change profile picture</p>
           </div>
 
           {/* Form */}
@@ -157,7 +157,7 @@ const AdminUserEditPage = () => {
               {/* Full Name */}
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                  <User className="w-4 h-4 text-blue-600" />
+                  <User className="w-4 h-4 text-primary-600" />
                   Full Name
                 </label>
                 <input
@@ -166,7 +166,7 @@ const AdminUserEditPage = () => {
                   value={form.fullName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition text-gray-900 placeholder-gray-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary-500 transition text-gray-900 placeholder-gray-500"
                   placeholder="Enter full name"
                 />
               </div>
@@ -174,7 +174,7 @@ const AdminUserEditPage = () => {
               {/* Email */}
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                  <Mail className="w-4 h-4 text-blue-600" />
+                  <Mail className="w-4 h-4 text-primary-600" />
                   Email Address
                 </label>
                 <input
@@ -183,7 +183,7 @@ const AdminUserEditPage = () => {
                   value={form.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition text-gray-900 placeholder-gray-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary-500 transition text-gray-900 placeholder-gray-500"
                   placeholder="Enter email address"
                 />
               </div>
@@ -191,7 +191,7 @@ const AdminUserEditPage = () => {
               {/* Phone Number */}
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                  <Phone className="w-4 h-4 text-blue-600" />
+                  <Phone className="w-4 h-4 text-primary-600" />
                   Phone Number
                 </label>
                 <input
@@ -199,7 +199,7 @@ const AdminUserEditPage = () => {
                   type="text"
                   value={form.phoneNumber}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition text-gray-900 placeholder-gray-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary-500 transition text-gray-900 placeholder-gray-500"
                   placeholder="Enter phone number"
                 />
               </div>
@@ -207,14 +207,14 @@ const AdminUserEditPage = () => {
               {/* Role */}
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                  <Shield className="w-4 h-4 text-blue-600" />
+                  <Shield className="w-4 h-4 text-primary-600" />
                   Role
                 </label>
                 <select
                   name="role"
                   value={form.role}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition bg-white text-gray-900"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary-500 transition bg-white text-gray-900"
                 >
                   <option value="user">User</option>
                   <option value="admin">Admin</option>
@@ -224,14 +224,14 @@ const AdminUserEditPage = () => {
               {/* Shopping Preference */}
               <div className="space-y-2 md:col-span-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                  <ShoppingBag className="w-4 h-4 text-blue-600" />
+                  <ShoppingBag className="w-4 h-4 text-primary-600" />
                   Shopping Preference
                 </label>
                 <select
                   name="shoppingPreference"
                   value={form.shoppingPreference}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition bg-white text-gray-900"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary-500 transition bg-white text-gray-900"
                 >
                   <option value="">Select preference</option>
                   <option value="Mens Fashion">Men&apos;s Fashion</option>
@@ -252,7 +252,7 @@ const AdminUserEditPage = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-primary-600 to-primary-600 text-white py-4 px-6 rounded-xl font-semibold hover:from-primary-700 hover:to-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
               >
                 {submitting ? (
                   <>

@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/context/auth-context";
 import Link from "next/link";
 import { ShoppingCart, ArrowLeft, Trash2, Plus, Minus } from "lucide-react";
 import { toast } from "react-toastify";
 import { getProductById, Product } from "@/lib/api/products";
+import { resolveImageUrl } from "@/lib/utils/image";
 
 interface CartItem {
   productId: string;
@@ -18,6 +20,7 @@ interface CartItem {
 
 export default function UserCartPage() {
   const { user, isLoading: authLoading } = useAuth();
+  const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -137,19 +140,19 @@ export default function UserCartPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
         <div className="text-center">
           <ShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-600">Please login to view your cart</h2>
-          <Link href="/auth/login" className="text-blue-600 hover:underline mt-2 inline-block">
+          <Link href="/auth/login" className="text-primary-600 hover:underline mt-2 inline-block">
             Login
           </Link>
         </div>
@@ -158,17 +161,17 @@ export default function UserCartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4"
+          <button
+            onClick={() => router.back()}
+            className="inline-flex items-center text-primary-600 hover:text-primary-800 mb-4 bg-transparent border-none cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
-          </Link>
+            Back
+          </button>
           <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
           <p className="text-gray-600 mt-2">
             {getTotalItems()} {getTotalItems() === 1 ? 'item' : 'items'} in your cart
@@ -178,7 +181,7 @@ export default function UserCartPage() {
         {/* Cart Items */}
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : cartItems.length === 0 ? (
           <div className="text-center py-12">
@@ -187,7 +190,7 @@ export default function UserCartPage() {
             <p className="text-gray-500 mb-6">Add some items to get started</p>
             <Link
               href="/dashboard"
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 inline-block"
+              className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 inline-block"
             >
               Start Shopping
             </Link>
@@ -198,10 +201,10 @@ export default function UserCartPage() {
             <div className="lg:col-span-2 space-y-4">
               {cartItems.map((item) => (
 
-                <div key={item.productId} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <div key={item.productId} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                   <div className="flex items-center space-x-4">
                     <img
-                      src={item.image ? `http://localhost:4000${item.image}` : '/api/placeholder/80/80'}
+                      src={resolveImageUrl(item.image) || '/api/placeholder/80/80'}
                       alt={item.name}
                       className="w-20 h-20 object-cover rounded-lg"
                     />
@@ -221,17 +224,17 @@ export default function UserCartPage() {
                     </div>
 
                     {/* Quantity Controls */}
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center text-black space-x-2">
                       <button
                         onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                        className="p-1 rounded-md border border-gray-300 hover:bg-gray-50"
+                        className="p-1 rounded-md border text-black border-gray-300 hover:bg-gray-50"
                       >
                         <Minus className="w-4 h-4" />
                       </button>
                       <span className="w-8 text-center">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                        className="p-1 rounded-md border border-gray-300 hover:bg-gray-50"
+                        className="p-1 rounded-md border border-gray-300 text-black hover:bg-gray-50"
                       >
                         <Plus className="w-4 h-4" />
                       </button>
@@ -258,28 +261,28 @@ export default function UserCartPage() {
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-4">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h3>
 
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal ({getTotalItems()} items)</span>
-                    <span className="font-medium">${getTotalPrice().toFixed(2)}</span>
+                    <span className="font-medium text-black">${getTotalPrice().toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping</span>
-                    <span className="font-medium">
-                      {getTotalPrice() > 50 ? 'Free' : '$9.99'}
+                    <span className="font-medium text-black">
+                      {getTotalPrice() > 50 ? 'Free'  : '$9.99'}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Tax</span>
-                    <span className="font-medium">${(getTotalPrice() * 0.08).toFixed(2)}</span>
+                    <span className="font-medium text-black">${(getTotalPrice() * 0.08).toFixed(2)}</span>
                   </div>
                 </div>
 
                 <div className="border-t border-gray-200 pt-4 mb-6">
-                  <div className="flex justify-between text-lg font-bold">
+                  <div className="flex justify-between text-lg font-bold text-black">
                     <span>Total</span>
                     <span>${(getTotalPrice() + (getTotalPrice() > 50 ? 0 : 9.99) + (getTotalPrice() * 0.08)).toFixed(2)}</span>
                   </div>
@@ -287,7 +290,7 @@ export default function UserCartPage() {
 
                 <Link
                   href="/checkout"
-                  className="w-full block text-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="w-full block text-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
                 >
                   Proceed to Checkout
                 </Link>

@@ -8,12 +8,16 @@ export interface Product {
     description: string;
     price: number;
     category: string;
+    subcategory?: string;
     images: string[];
     tags?: string[];
+    sizes?: string[];
+    colors?: string[];
     discount?: number;
     rating?: number;
     reviews?: number;
     stock: number;
+    isActive?: boolean;
     createdAt: string;
     updatedAt: string;
 }

@@ -27,7 +27,7 @@ export default function ProfileDropdown() {
         className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition"
         onClick={() => setOpen((v) => !v)}
       >
-        <span className="h-8 w-8 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-700 font-bold">
+        <span className="h-8 w-8 rounded-full bg-primary-200 flex items-center justify-center text-primary-700 font-bold">
           {user.fullName?.[0]?.toUpperCase() || "U"}
         </span>
         <svg className="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -40,19 +40,19 @@ export default function ProfileDropdown() {
           <div className="px-4 py-2 text-xs text-gray-500">{user.email}</div>
           <hr />
           <button
-            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+            className="w-full text-black text-left px-4 py-2 hover:bg-gray-100 text-sm"
             onClick={() => {
               setOpen(false);
-              router.push("/orders");
+              router.push("/user/orders");
             }}
           >
             My Orders
           </button>
           <button
-            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+            className="w-full text-black text-left px-4 py-2 hover:bg-gray-100 text-sm"
             onClick={() => {
               setOpen(false);
-              router.push("/user");
+              router.push("/user/profile");
             }}
           >
             Profile

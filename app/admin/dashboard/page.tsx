@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { getDashboardStats, getRecentUsers } from "@/lib/api/admin";
+import { useAuth } from "@/lib/context/auth-context";
 import LogoutButton from "../../_components/logout-button";
 import {
   Users,
@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 
 export default function AdminDashboard() {
-  const router = useRouter();
+  const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [stats, setStats] = useState<any>(null);
   const [recentUsers, setRecentUsers] = useState<any[]>([]);
@@ -93,7 +93,7 @@ export default function AdminDashboard() {
   const activityLog = generateActivityLog();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Top Navigation Bar */}
       <nav className="bg-white border-b border-slate-200 sticky top-0 z-40 backdrop-blur-lg bg-white/80">
         <div className="px-6 py-4">
@@ -108,11 +108,13 @@ export default function AdminDashboard() {
                 </svg>
               </button>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-lg">A</span>
-                </div>
+                <img
+                  src="/logo1.png"
+                  alt="TapTo Logo"
+                  className="w-10 h-10 rounded-xl object-contain"
+                />
                 <div>
-                  <h1 className="text-xl font-bold text-slate-900">Admin Portal</h1>
+                  <h1 className="text-xl font-bold text-slate-900">TapTo Admin</h1>
                   <p className="text-xs text-slate-500">Management Dashboard</p>
                 </div>
               </div>
@@ -123,7 +125,7 @@ export default function AdminDashboard() {
                 <input
                   type="search"
                   placeholder="Search users, actions..."
-                  className="w-64 pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-slate-50 text-gray-900 placeholder-gray-500"
+                  className="w-64 pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-slate-50 text-gray-900 placeholder-gray-500"
                 />
                 <svg className="w-5 h-5 text-slate-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -139,12 +141,12 @@ export default function AdminDashboard() {
 
               <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
                 <div className="text-right hidden sm:block">
-                  <p className="text-sm font-semibold text-slate-900">Admin User</p>
-                  <p className="text-xs text-slate-500">admin@example.com</p>
+                  <p className="text-sm font-semibold text-slate-900">{user?.fullName || 'Admin'}</p>
+                  <p className="text-xs text-slate-500">{user?.email || ''}</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
-                  AU
-                </div>
+                <Link href="/admin/profile" className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white font-semibold">
+                  {(user?.fullName || 'A').charAt(0).toUpperCase()}
+                </Link>
               </div>
             </div>
           </div>
@@ -157,39 +159,30 @@ export default function AdminDashboard() {
           <div className="p-6 space-y-8">
             <nav className="space-y-2">
               <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Main</div>
-              <Link href="/admin" className="flex items-center gap-3 px-4 py-3 rounded-lg bg-indigo-50 text-indigo-600 font-medium transition-colors">
+              <Link href="/admin/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-50 text-primary-600 font-medium transition-colors">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
                 Dashboard
               </Link>
-              <button
-                onClick={() => router.push("/admin/users")}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-slate-50 font-medium transition-colors bg-transparent border-none cursor-pointer"
-              >
+              <Link href="/admin/users" className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-slate-50 font-medium transition-colors">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
                 Users
-              </button>
-              <button
-                onClick={() => router.push("/admin/products")}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-slate-50 font-medium transition-colors bg-transparent border-none cursor-pointer"
-              >
+              </Link>
+              <Link href="/admin/products" className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-slate-50 font-medium transition-colors">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
                 Products
-              </button>
-              <button
-                onClick={() => router.push("/admin/orders")}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-slate-50 font-medium transition-colors bg-transparent border-none cursor-pointer"
-              >
+              </Link>
+              <Link href="/admin/orders" className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-slate-50 font-medium transition-colors">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 Orders
-              </button>
+              </Link>
               <Link href="/admin/profile" className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-slate-50 font-medium transition-colors">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -258,7 +251,7 @@ export default function AdminDashboard() {
                   label: "Total Users",
                   value: stats.totalUsers?.toLocaleString() || "0",
                   icon: Users,
-                  color: "bg-blue-50 text-blue-600 border-blue-200",
+                  color: "bg-primary-50 text-primary-600 border-primary-200",
                   change: "+12%",
                   changeType: "positive"
                 },
@@ -317,7 +310,7 @@ export default function AdminDashboard() {
                 <h3 className="text-lg font-medium text-slate-900 mb-2">Failed to load stats</h3>
                 <button
                   onClick={() => fetchStats(true)}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
                 >
                   <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                   Retry
@@ -326,86 +319,81 @@ export default function AdminDashboard() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
-            {/* Recent Users */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <div className="p-6 border-b border-slate-200 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <Users className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-slate-900">Recent Users</h2>
-                    <p className="text-sm text-slate-600">Latest registered users</p>
-                  </div>
+          {/* Recent Users - full width */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm mb-6">
+            <div className="p-6 border-b border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary-100 rounded-lg">
+                  <Users className="w-5 h-5 text-primary-600" />
                 </div>
-                <Link href="/admin/users" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm flex items-center gap-1">
-                  View All
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900">Recent Users</h2>
+                  <p className="text-sm text-slate-600">Latest registered users</p>
+                </div>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-slate-50 border-b border-slate-200">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">User</th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Role</th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Joined</th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200">
-                    {recentUsers.length > 0 ? recentUsers.map((user) => (
-                      <tr key={user._id} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-semibold">
-                              {(user.fullName || user.name || 'U').split(' ').map((n: string) => n[0]).join('').toUpperCase()}
-                            </div>
-                            <div>
-                              <p className="font-medium text-slate-900">{user.fullName || user.name}</p>
-                              <p className="text-sm text-slate-500">{user.email}</p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-700'
-                          }`}>
-                            {user.role === 'admin' ? 'Admin' : 'User'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
-                            Active
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-slate-600">
-                          {new Date(user.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4">
-                          <a
-                            href={`/admin/users/${user._id}`}
-                            className="text-indigo-600 hover:text-indigo-700 font-medium text-sm"
-                          >
-                            View
-                          </a>
-                        </td>
-                      </tr>
-                    )) : (
-                      <tr>
-                        <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
-                          No users found
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+              <Link href="/admin/users" className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center gap-1">
+                View All
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
             </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">User</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Role</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Joined</th>
+                    <th className="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {recentUsers.length > 0 ? recentUsers.map((u) => (
+                    <tr key={u._id} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-primary-600 flex items-center justify-center text-white font-semibold text-sm">
+                            {(u.fullName || u.name || 'U').charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="font-medium text-slate-900">{u.fullName || u.name}</p>
+                            <p className="text-sm text-slate-500">{u.email}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-700'
+                        }`}>
+                          {u.role === 'admin' ? 'Admin' : 'User'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate-600">
+                        {new Date(u.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <Link
+                          href={`/admin/users/${u._id}`}
+                          className="text-primary-600 hover:text-primary-700 font-medium text-sm"
+                        >
+                          View
+                        </Link>
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr>
+                      <td colSpan={4} className="px-6 py-8 text-center text-slate-500">
+                        No users found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             {/* Recent Orders */}
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
@@ -419,7 +407,7 @@ export default function AdminDashboard() {
                     <p className="text-sm text-slate-600">Latest customer orders</p>
                   </div>
                 </div>
-                <Link href="/admin/orders" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm flex items-center gap-1">
+                <Link href="/admin/orders" className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center gap-1">
                   View All
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -431,8 +419,8 @@ export default function AdminDashboard() {
                   <div className="space-y-4">
                     {stats.recentOrders.slice(0, 5).map((order: any, index: number) => (
                       <div key={index} className="flex items-center gap-4 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
-                        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                          <ShoppingBag className="w-5 h-5 text-indigo-600" />
+                        <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+                          <ShoppingBag className="w-5 h-5 text-primary-600" />
                         </div>
                         <div className="flex-1">
                           <p className="font-medium text-slate-900">Order #{order._id?.slice(-8)}</p>
@@ -443,7 +431,7 @@ export default function AdminDashboard() {
                         <div className="text-right">
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                             order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                            order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                            order.status === 'shipped' ? 'bg-primary-100 text-primary-800' :
                             order.status === 'confirmed' ? 'bg-yellow-100 text-yellow-800' :
                             'bg-gray-100 text-gray-800'
                           }`}>
@@ -511,8 +499,8 @@ export default function AdminDashboard() {
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
               <div className="p-6 border-b border-slate-200">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-indigo-100 rounded-lg">
-                    <Activity className="w-5 h-5 text-indigo-600" />
+                  <div className="p-2 bg-primary-100 rounded-lg">
+                    <Activity className="w-5 h-5 text-primary-600" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-slate-900">Activity Log</h2>
@@ -527,7 +515,7 @@ export default function AdminDashboard() {
                       <div key={index} className="flex gap-4 p-3 rounded-lg hover:bg-slate-50 transition-colors">
                         <div className={`w-3 h-3 mt-1 rounded-full flex-shrink-0 ${
                           activity.type === 'create' ? 'bg-green-500' : 
-                          activity.type === 'update' ? 'bg-blue-500' : 'bg-red-500'
+                          activity.type === 'update' ? 'bg-primary-500' : 'bg-red-500'
                         }`}></div>
                         <div className="flex-1">
                           <p className="text-sm font-medium text-slate-900">{activity.action}</p>
@@ -550,11 +538,11 @@ export default function AdminDashboard() {
           </div>
 
           {/* Quick Actions */}
-          <div className="mt-8 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-xl p-8 text-white shadow-lg hover:shadow-xl transition-shadow">
+          <div className="mt-8 bg-primary-600 rounded-xl p-8 text-white shadow-sm">
             <div className="flex items-center justify-between flex-wrap gap-6">
               <div className="flex-1">
                 <h3 className="text-2xl font-bold mb-2">Quick Actions</h3>
-                <p className="text-indigo-100 text-lg">Manage your system efficiently with powerful tools</p>
+                <p className="text-primary-100 text-lg">Manage your system efficiently with powerful tools</p>
                 <div className="flex flex-wrap gap-3 mt-4">
                   <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2">
                     <CheckCircle className="w-4 h-4" />
@@ -573,7 +561,7 @@ export default function AdminDashboard() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                   href="/admin/users/create"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-indigo-600 rounded-lg font-semibold hover:bg-indigo-50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-primary-600 rounded-lg font-semibold hover:bg-primary-50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   <Users className="w-5 h-5" />
                   Create New User

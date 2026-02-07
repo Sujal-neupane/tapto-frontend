@@ -105,7 +105,7 @@ export default function RegisterForm() {
 
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+          <div className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700">
             Step {step + 1} of 3
           </div>
           <div className="text-lg font-semibold text-gray-900">{steps[step].title}</div>
@@ -115,7 +115,7 @@ export default function RegisterForm() {
           {steps.map((_, i) => (
             <span
               key={i}
-              className={`h-2 w-10 rounded-full transition-all ${i <= step ? "bg-blue-600" : "bg-gray-200"}`}
+              className={`h-2 w-10 rounded-full transition-all ${i <= step ? "bg-primary-600" : "bg-gray-200"}`}
             />
           ))}
         </div>
@@ -125,15 +125,15 @@ export default function RegisterForm() {
         <div className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="fullName" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-              <User className="w-4 h-4 text-blue-600" /> Full Name
+              <User className="w-4 h-4 text-primary-600" /> Full Name
             </label>
             <div className="relative">
               <input
                 id="fullName"
                 type="text"
                 {...register("fullName")}
-                className={`w-full rounded-xl border-2 px-4 py-3 pl-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 ${
-                  errors.fullName ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-blue-500"
+                className={`w-full rounded-xl border-2 px-4 py-3 pl-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-primary-500/10 ${
+                  errors.fullName ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-primary-500"
                 }`}
                 placeholder="Alex Carter"
               />
@@ -146,15 +146,15 @@ export default function RegisterForm() {
 
           <div className="space-y-2">
             <label htmlFor="email" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-              <Mail className="w-4 h-4 text-blue-600" /> Email address
+              <Mail className="w-4 h-4 text-primary-600" /> Email address
             </label>
             <div className="relative">
               <input
                 id="email"
                 type="email"
                 {...register("email")}
-                className={`w-full rounded-xl border-2 px-4 py-3 pl-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 ${
-                  errors.email ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-blue-500"
+                className={`w-full rounded-xl border-2 px-4 py-3 pl-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-primary-500/10 ${
+                  errors.email ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-primary-500"
                 }`}
                 placeholder="you@example.com"
               />
@@ -168,15 +168,15 @@ export default function RegisterForm() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label htmlFor="password" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                <Lock className="w-4 h-4 text-blue-600" /> Password
+                <Lock className="w-4 h-4 text-primary-600" /> Password
               </label>
               <div className="relative">
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   {...register("password")}
-                  className={`w-full rounded-xl border-2 px-4 py-3 pl-12 pr-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 ${
-                    errors.password ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-blue-500"
+                  className={`w-full rounded-xl border-2 px-4 py-3 pl-12 pr-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-primary-500/10 ${
+                    errors.password ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-primary-500"
                   }`}
                   placeholder="••••••••"
                 />
@@ -196,15 +196,15 @@ export default function RegisterForm() {
 
             <div className="space-y-2">
               <label htmlFor="confirmPassword" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                <Lock className="w-4 h-4 text-blue-600" /> Confirm Password
+                <Lock className="w-4 h-4 text-primary-600" /> Confirm Password
               </label>
               <div className="relative">
                 <input
                   id="confirmPassword"
                   type={showConfirm ? "text" : "password"}
                   {...register("confirmPassword")}
-                  className={`w-full rounded-xl border-2 px-4 py-3 pl-12 pr-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 ${
-                    errors.confirmPassword ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-blue-500"
+                  className={`w-full rounded-xl border-2 px-4 py-3 pl-12 pr-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-primary-500/10 ${
+                    errors.confirmPassword ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-primary-500"
                   }`}
                   placeholder="••••••••"
                 />
@@ -227,23 +227,23 @@ export default function RegisterForm() {
 
       {step === 1 && (
         <div className="space-y-4">
-          <div className="flex items-center gap-3 bg-blue-50 rounded-xl p-3 text-blue-800">
+          <div className="flex items-center gap-3 bg-primary-50 rounded-xl p-3 text-primary-800">
             <Phone className="w-5 h-5" />
             <div>
               <div className="font-semibold">Add your phone number</div>
-              <div className="text-sm text-blue-700">We'll use this for account security and updates.</div>
+              <div className="text-sm text-primary-700">We'll use this for account security and updates.</div>
             </div>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="countryCode" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-              <Phone className="w-4 h-4 text-blue-600" /> Country Code
+              <Phone className="w-4 h-4 text-primary-600" /> Country Code
             </label>
             <select
               id="countryCode"
               {...register("countryCode")}
-              className={`w-full rounded-xl border-2 px-4 py-3 text-gray-900 transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 ${
-                errors.countryCode ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-blue-500"
+              className={`w-full rounded-xl border-2 px-4 py-3 text-gray-900 transition-all focus:outline-none focus:ring-4 focus:ring-primary-500/10 ${
+                errors.countryCode ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-primary-500"
               }`}
             >
               <option value="">Select country code</option>
@@ -263,15 +263,15 @@ export default function RegisterForm() {
 
           <div className="space-y-2">
             <label htmlFor="phoneNumber" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-              <Phone className="w-4 h-4 text-blue-600" /> Phone Number
+              <Phone className="w-4 h-4 text-primary-600" /> Phone Number
             </label>
             <div className="relative">
               <input
                 id="phoneNumber"
                 type="tel"
                 {...register("phoneNumber")}
-                className={`w-full rounded-xl border-2 px-4 py-3 pl-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 ${
-                  errors.phoneNumber ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-blue-500"
+                className={`w-full rounded-xl border-2 px-4 py-3 pl-12 text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-4 focus:ring-primary-500/10 ${
+                  errors.phoneNumber ? "border-red-300 focus:border-red-500" : "border-gray-200 focus:border-primary-500"
                 }`}
                 placeholder="1234567890"
               />
@@ -341,7 +341,7 @@ export default function RegisterForm() {
           <button
             type="button"
             onClick={goNext}
-            className="group inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:from-blue-700 hover:to-indigo-700 shadow-md"
+            className="group inline-flex items-center gap-2 rounded-xl bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-700 shadow-md"
           >
             Next
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

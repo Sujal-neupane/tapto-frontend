@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { getAdminOrderById, updateAdminOrderStatus, AdminOrder } from "@/lib/api/admin";
+import { resolveImageUrl } from "../../../../lib/utils/image";
 import { toast } from "react-toastify";
 import {
   ShoppingBag,
@@ -68,37 +69,62 @@ const AdminOrderDetailsPage = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusConfig = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'order placed':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'pending':
+        return {
+          color: 'bg-orange-100 text-orange-800 border-orange-200',
+          icon: Clock,
+          label: 'Pending'
+        };
       case 'confirmed':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return {
+          color: 'bg-primary-100 text-primary-800 border-primary-200',
+          icon: CheckCircle,
+          label: 'Confirmed'
+        };
+      case 'processing':
+        return {
+          color: 'bg-purple-100 text-purple-800 border-purple-200',
+          icon: RefreshCw,
+          label: 'Processing'
+        };
       case 'shipped':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
+        return {
+          color: 'bg-primary-100 text-primary-800 border-primary-200',
+          icon: Truck,
+          label: 'Shipped'
+        };
+      case 'outfordelivery':
+        return {
+          color: 'bg-teal-100 text-teal-800 border-teal-200',
+          icon: Truck,
+          label: 'Out for Delivery'
+        };
       case 'delivered':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return {
+          color: 'bg-green-100 text-green-800 border-green-200',
+          icon: CheckCircle,
+          label: 'Delivered'
+        };
       case 'cancelled':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return {
+          color: 'bg-red-100 text-red-800 border-red-200',
+          icon: XCircle,
+          label: 'Cancelled'
+        };
+      case 'refunded':
+        return {
+          color: 'bg-gray-100 text-gray-800 border-gray-200',
+          icon: XCircle,
+          label: 'Refunded'
+        };
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'order placed':
-        return <Clock className="w-5 h-5" />;
-      case 'confirmed':
-        return <CheckCircle className="w-5 h-5" />;
-      case 'shipped':
-        return <Truck className="w-5 h-5" />;
-      case 'delivered':
-        return <CheckCircle className="w-5 h-5" />;
-      case 'cancelled':
-        return <XCircle className="w-5 h-5" />;
-      default:
-        return <Package className="w-5 h-5" />;
+        return {
+          color: 'bg-gray-100 text-gray-800 border-gray-200',
+          icon: Package,
+          label: 'Unknown'
+        };
     }
   };
 
@@ -108,9 +134,9 @@ const AdminOrderDetailsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <RefreshCw className="w-6 h-6 animate-spin text-indigo-600" />
+          <RefreshCw className="w-6 h-6 animate-spin text-primary-600" />
           <span className="text-slate-600">Loading order details...</span>
         </div>
       </div>
@@ -119,13 +145,13 @@ const AdminOrderDetailsPage = () => {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50 flex items-center justify-center">
         <div className="text-center">
           <Package className="w-16 h-16 text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-900 mb-2">Order not found</h3>
           <Link
             href="/admin/orders"
-            className="text-indigo-600 hover:text-indigo-700"
+            className="text-primary-600 hover:text-primary-700"
           >
             Back to orders
           </Link>
@@ -135,7 +161,7 @@ const AdminOrderDetailsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-50">
       {/* Header */}
       <div className="bg-white border-b border-slate-200">
         <div className="px-6 py-4">
@@ -148,7 +174,7 @@ const AdminOrderDetailsPage = () => {
                 <ArrowLeft className="w-5 h-5 text-slate-600" />
               </Link>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-600 to-purple-600 flex items-center justify-center shadow-lg">
                   <ShoppingBag className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -159,24 +185,27 @@ const AdminOrderDetailsPage = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${getStatusColor(order.status)}`}>
-                {getStatusIcon(order.status)}
-                <span className="font-medium">{order.status}</span>
+              <div className={`inline-flex items-center px-4 py-2 rounded-lg border ${getStatusConfig(order.status).color}`}>
+                {React.createElement(getStatusConfig(order.status).icon, { className: "w-4 h-4 mr-2" })}
+                <span className="font-medium">{getStatusConfig(order.status).label}</span>
               </div>
               <select
                 value={order.status}
                 onChange={(e) => handleStatusUpdate(e.target.value)}
                 disabled={updatingStatus}
-                className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-900 disabled:opacity-50"
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm disabled:opacity-50"
               >
-                <option value="Order Placed">Order Placed</option>
+                <option value="pending">Pending</option>
                 <option value="confirmed">Confirmed</option>
+                <option value="processing">Processing</option>
                 <option value="shipped">Shipped</option>
+                <option value="outForDelivery">Out for Delivery</option>
                 <option value="delivered">Delivered</option>
                 <option value="cancelled">Cancelled</option>
+                <option value="refunded">Refunded</option>
               </select>
               {updatingStatus && (
-                <RefreshCw className="w-5 h-5 animate-spin text-indigo-600" />
+                <RefreshCw className="w-5 h-5 animate-spin text-primary-600" />
               )}
             </div>
           </div>
@@ -263,7 +292,7 @@ const AdminOrderDetailsPage = () => {
               {order.items.map((item, index) => (
                 <div key={index} className="flex items-center gap-4 p-4 border border-slate-200 rounded-lg">
                   <img
-                    src={item.productImage ? `http://localhost:4000${item.productImage}` : '/default-avatar.svg'}
+                    src={item.productImage ? resolveImageUrl(item.productImage) : '/default-avatar.svg'}
                     alt={item.productName || 'Product'}
                     className="w-16 h-16 object-cover rounded-lg"
                   />
@@ -311,7 +340,7 @@ const AdminOrderDetailsPage = () => {
                       track.status.toLowerCase().includes('delivered') ? 'bg-green-100 text-green-600' :
                       track.status.toLowerCase().includes('shipped') ? 'bg-purple-100 text-purple-600' :
                       track.status.toLowerCase().includes('confirmed') ? 'bg-yellow-100 text-yellow-600' :
-                      'bg-blue-100 text-blue-600'
+                      'bg-primary-100 text-primary-600'
                     }`}>
                       {track.status.toLowerCase().includes('delivered') ? <CheckCircle className="w-5 h-5" /> :
                        track.status.toLowerCase().includes('shipped') ? <Truck className="w-5 h-5" /> :

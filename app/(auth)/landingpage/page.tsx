@@ -21,10 +21,10 @@ import {
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+    <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-100">
-        <div className="mx-auto max-w-7xl px-6 py-4">
+        <div style={{ maxWidth: "80rem", marginLeft: "auto", marginRight: "auto", padding: "1rem 1.5rem" }}>
           <div className="flex items-center justify-between gap-6">
             {/* Logo */}
             <div className="flex items-center gap-3">
@@ -36,7 +36,7 @@ export default function LandingPage() {
                 className="h-12 w-12"
               />
               <div>
-                <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">TAPTO</div>
+                <div className="text-2xl font-bold font-heading text-primary-600">TAPTO</div>
                 <div className="text-xs text-gray-600">Swipe. Shop. Smile.</div>
               </div>
             </div>
@@ -45,13 +45,13 @@ export default function LandingPage() {
             <div className="flex items-center gap-3">
               <Link
                 href="/auth/login"
-                className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-blue-600 transition"
+                className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-primary-600 transition"
               >
                 Login
               </Link>
               <Link
                 href="/auth/register"
-                className="px-6 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center gap-2"
+                className="px-6 py-2 rounded-xl bg-primary-600 text-white text-sm font-semibold shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all flex items-center gap-2"
               >
                 Get Started <ChevronRight className="w-4 h-4" />
               </Link>
@@ -62,45 +62,39 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="px-4 py-20 relative overflow-hidden">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '2s' }}></div>
-        </div>
-
-        <div className="mx-auto max-w-6xl relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div style={{ maxWidth: "72rem", marginLeft: "auto", marginRight: "auto", position: "relative", zIndex: 10 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "3rem", alignItems: "center" }}>
             {/* Left: CTA */}
-            <div className="space-y-8">
-              <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-2 text-sm font-semibold text-blue-700 border border-blue-100">
+            <div style={{ flex: "1 1 480px", minWidth: 0 }} className="space-y-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-700 border border-primary-100">
                 <Sparkles className="w-4 h-4" /> Daily drops live now
               </div>
 
-              <h1 className="text-5xl md:text-7xl font-bold text-gray-900 leading-tight">
-                Swipe. Save. <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Smile.</span>
+              <h1 className="text-5xl md:text-7xl font-bold font-heading text-gray-900 leading-tight">
+                Swipe. Save. <span className="text-primary-600">Smile.</span>
               </h1>
-              <p className="text-xl text-gray-600 max-w-xl leading-relaxed">
+              <p className="text-xl text-gray-600 leading-relaxed">
                 Tap through curated looks, heart your favorites, and unlock member-only perks every day. Shopping has never been this addictive.
               </p>
               
               <div className="flex flex-wrap gap-4">
                 <Link
                   href="/auth/register"
-                  className="group bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-10 py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-2xl shadow-blue-600/40 hover:shadow-3xl hover:-translate-y-0.5 flex items-center gap-2 relative overflow-hidden"
+                  className="group bg-primary-600 text-white px-10 py-4 rounded-xl font-semibold hover:bg-primary-700 transition-all shadow-2xl shadow-primary-600/40 hover:shadow-3xl hover:-translate-y-0.5 flex items-center gap-2 relative overflow-hidden"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
                   <span className="relative">Start for free</span>
                   <ChevronRight className="w-5 h-5 relative group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
-                  href="/login"
-                  className="group border-2 border-gray-300 text-gray-700 px-10 py-4 rounded-xl font-semibold hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all flex items-center gap-2"
+                  href="/auth/login"
+                  className="group border-2 border-gray-300 text-gray-700 px-10 py-4 rounded-xl font-semibold hover:border-primary-500 hover:text-primary-600 hover:bg-primary-50 transition-all flex items-center gap-2"
                 >
                   Login
                 </Link>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 pt-6">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", paddingTop: "1.5rem" }}>
                 <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-4 border border-emerald-100 group hover:shadow-md transition-all">
                   <div className="flex items-center gap-2 text-emerald-700 mb-1">
                     <Check className="w-4 h-4" />
@@ -133,9 +127,9 @@ export default function LandingPage() {
             </div>
 
             {/* Right: Product Card with real image */}
-            <div className="relative mx-auto max-w-md w-full">
+            <div style={{ flex: "1 1 320px", minWidth: 0, maxWidth: "28rem" }} className="relative mx-auto w-full">
               {/* Floating badges */}
-              <div className="absolute -top-4 -left-4 z-20 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl px-4 py-3 shadow-xl flex items-center gap-2 animate-bounce">
+              <div className="absolute -top-4 -left-4 z-20 bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-2xl px-4 py-3 shadow-xl flex items-center gap-2 animate-bounce">
                 <Zap className="w-5 h-5 fill-white" />
                 <span className="font-bold text-sm">50% OFF</span>
               </div>
@@ -154,10 +148,10 @@ export default function LandingPage() {
               </div>
 
               <div className="bg-white rounded-3xl shadow-2xl p-6 border border-gray-200 relative overflow-hidden">
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5 pointer-events-none"></div>
+                {/* Subtle overlay */}
+                <div className="absolute inset-0 bg-primary-500/5 pointer-events-none"></div>
                 
-                <div className="relative h-120 rounded-2xl overflow-hidden bg-gray-100 shadow-inner">
+                <div className="relative rounded-2xl overflow-hidden bg-gray-100 shadow-inner" style={{ height: "24rem" }}>
                   <img
                     src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1100&q=80"
                     alt="Sale items"
@@ -173,11 +167,11 @@ export default function LandingPage() {
                         <h3 className="font-bold text-gray-900 mb-1">Summer Collection</h3>
                         <p className="text-sm text-gray-600">Limited time offer</p>
                         <div className="flex items-center gap-2 mt-2">
-                          <span className="text-2xl font-bold text-blue-600">$49</span>
+                          <span className="text-2xl font-bold text-primary-600">$49</span>
                           <span className="text-sm text-gray-400 line-through">$99</span>
                         </div>
                       </div>
-                      <button className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg rounded-xl p-3 hover:shadow-xl transition-all hover:scale-105">
+                      <button className="bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg rounded-xl p-3 hover:shadow-xl transition-all hover:scale-105">
                         <Heart className="w-6 h-6" />
                       </button>
                     </div>
@@ -206,24 +200,24 @@ export default function LandingPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="px-4 py-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <section className="px-4 py-12 bg-primary-600 text-white">
+        <div style={{ maxWidth: "72rem", marginLeft: "auto", marginRight: "auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "2rem" }}>
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">50K+</div>
-              <div className="text-blue-100 text-sm">Happy Shoppers</div>
+              <div className="text-primary-100 text-sm">Happy Shoppers</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">10K+</div>
-              <div className="text-blue-100 text-sm">Daily Orders</div>
+              <div className="text-primary-100 text-sm">Daily Orders</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">99%</div>
-              <div className="text-blue-100 text-sm">Satisfaction Rate</div>
+              <div className="text-primary-100 text-sm">Satisfaction Rate</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">24/7</div>
-              <div className="text-blue-100 text-sm">Support Available</div>
+              <div className="text-primary-100 text-sm">Support Available</div>
             </div>
           </div>
         </div>
@@ -231,19 +225,19 @@ export default function LandingPage() {
 
       {/* Features Section */}
       <section className="px-4 py-24 bg-white">
-        <div className="mx-auto max-w-6xl space-y-12">
+        <div style={{ maxWidth: "72rem", marginLeft: "auto", marginRight: "auto" }} className="space-y-12">
           <div className="text-center space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700">
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-700">
               <Sparkles className="w-4 h-4" /> Features
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900">Built to keep you hooked</h2>
+            <h2 className="text-4xl md:text-5xl font-bold font-heading text-gray-900">Built to keep you hooked</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">Experience shopping like never before with our cutting-edge features</p>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div className="group bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 hover:shadow-2xl transition-all border border-blue-100 relative overflow-hidden hover:-translate-y-1">
-              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-blue-200 opacity-20 group-hover:opacity-30 transition-opacity" />
-              <div className="relative mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "2rem" }}>
+            <div className="group bg-primary-50 rounded-2xl p-8 hover:shadow-2xl transition-all border border-primary-100 relative overflow-hidden hover:-translate-y-1">
+              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-primary-200 opacity-20 group-hover:opacity-30 transition-opacity" />
+              <div className="relative mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg">
                 <ShoppingBag className="w-7 h-7" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">One-swipe carts</h3>
@@ -259,9 +253,9 @@ export default function LandingPage() {
               <p className="text-gray-600 leading-relaxed">Favorites auto-sync across all devices. Never lose track of items you love. Your wishlist, always within reach.</p>
             </div>
 
-            <div className="group bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-8 hover:shadow-2xl transition-all border border-indigo-100 relative overflow-hidden hover:-translate-y-1">
-              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-indigo-200 opacity-20 group-hover:opacity-30 transition-opacity" />
-              <div className="relative mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg">
+            <div className="group bg-gradient-to-br from-primary-50 to-purple-50 rounded-2xl p-8 hover:shadow-2xl transition-all border border-primary-100 relative overflow-hidden hover:-translate-y-1">
+              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-primary-200 opacity-20 group-hover:opacity-30 transition-opacity" />
+              <div className="relative mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-purple-600 text-white shadow-lg">
                 <Bell className="w-7 h-7" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">Drop alerts</h3>
@@ -299,22 +293,22 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="px-4 py-24 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 relative overflow-hidden">
+      <section className="px-4 py-24 bg-linear-to-br from-primary-600 via-primary-700 to-primary-800 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjA1IiBzdHJva2Utd2lkdGg9IjIiLz48L2c+PC9zdmc+')] opacity-30"></div>
         
-        <div className="mx-auto max-w-4xl text-center relative z-10">
+        <div style={{ maxWidth: "56rem", marginLeft: "auto", marginRight: "auto" }} className="text-center relative z-10">
           <div className="space-y-8">
-            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+            <h2 className="text-4xl md:text-5xl font-bold font-heading text-white leading-tight">
               Ready to revolutionize your shopping?
             </h2>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+            <p className="text-xl text-primary-100 max-w-2xl mx-auto">
               Join thousands of shoppers who've already discovered the future of online shopping. Start your journey today.
             </p>
             
             <div className="flex flex-wrap justify-center gap-4 pt-4">
               <Link
                 href="/auth/register"
-                className="bg-white text-blue-600 px-10 py-4 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-2xl hover:shadow-3xl hover:-translate-y-0.5 flex items-center gap-2 text-lg"
+                className="bg-white text-primary-600 px-10 py-4 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-2xl hover:shadow-3xl hover:-translate-y-0.5 flex items-center gap-2 text-lg"
               >
                 Get Started Free <ChevronRight className="w-5 h-5" />
               </Link>
@@ -346,9 +340,9 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-gray-200 bg-white px-4 py-12">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div className="col-span-1 md:col-span-2">
+        <div style={{ maxWidth: "72rem", marginLeft: "auto", marginRight: "auto" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "2rem" }} className="mb-8">
+            <div style={{ flex: "1 1 300px", minWidth: 0 }}>
               <div className="flex items-center gap-3 mb-4">
                 <Image
                   src="/logo1.png"
@@ -357,39 +351,39 @@ export default function LandingPage() {
                   height={40}
                   className="h-10 w-10  "
                 />
-                <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">TAPTO</div>
+                <div className="text-2xl font-bold font-heading text-primary-600">TAPTO</div>
               </div>
               <p className="text-gray-600 mb-4 max-w-md">
                 The future of online shopping. Swipe, save, and smile with every purchase.
               </p>
               <div className="flex gap-4">
-                <a href="#" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-blue-100 transition">
+                <a href="#" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-primary-100 transition">
                   <Users className="w-5 h-5 text-gray-600" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-blue-100 transition">
+                <a href="#" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-primary-100 transition">
                   <Heart className="w-5 h-5 text-gray-600" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-blue-100 transition">
+                <a href="#" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-primary-100 transition">
                   <Star className="w-5 h-5 text-gray-600" />
                 </a>
               </div>
             </div>
-            <div>
+            <div style={{ flex: "1 1 140px", minWidth: 0 }}>
               <h4 className="font-bold text-gray-900 mb-4">Company</h4>
               <nav className="flex flex-col gap-2 text-gray-600">
-                <a href="#" className="hover:text-blue-600 transition">About Us</a>
-                <a href="#" className="hover:text-blue-600 transition">Careers</a>
-                <a href="#" className="hover:text-blue-600 transition">Press</a>
-                <a href="#" className="hover:text-blue-600 transition">Blog</a>
+                <a href="#" className="hover:text-primary-600 transition">About Us</a>
+                <a href="#" className="hover:text-primary-600 transition">Careers</a>
+                <a href="#" className="hover:text-primary-600 transition">Press</a>
+                <a href="#" className="hover:text-primary-600 transition">Blog</a>
               </nav>
             </div>
-            <div>
+            <div style={{ flex: "1 1 140px", minWidth: 0 }}>
               <h4 className="font-bold text-gray-900 mb-4">Support</h4>
               <nav className="flex flex-col gap-2 text-gray-600">
-                <a href="#" className="hover:text-blue-600 transition">Help Center</a>
-                <a href="#" className="hover:text-blue-600 transition">Contact Us</a>
-                <a href="#" className="hover:text-blue-600 transition">Privacy Policy</a>
-                <a href="#" className="hover:text-blue-600 transition">Terms of Service</a>
+                <a href="#" className="hover:text-primary-600 transition">Help Center</a>
+                <a href="#" className="hover:text-primary-600 transition">Contact Us</a>
+                <a href="#" className="hover:text-primary-600 transition">Privacy Policy</a>
+                <a href="#" className="hover:text-primary-600 transition">Terms of Service</a>
               </nav>
             </div>
           </div>
