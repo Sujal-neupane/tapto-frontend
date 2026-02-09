@@ -2,401 +2,347 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { 
-  Heart, 
-  ShoppingBag, 
-  Zap, 
-  Bell, 
-  Shield, 
-  TrendingUp, 
+import {
+  Heart,
+  Zap,
+  Shield,
   Sparkles,
-  Star,
-  Clock,
-  Users,
+  Smartphone,
+  ArrowRight,
   ChevronRight,
+  Laptop,
   Check,
-  Package,
-  Smartphone
+  ShoppingBag,
+  CreditCard,
+  Globe
 } from "lucide-react";
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-100">
-        <div style={{ maxWidth: "80rem", marginLeft: "auto", marginRight: "auto", padding: "1rem 1.5rem" }}>
-          <div className="flex items-center justify-between gap-6">
+    <main className="min-h-screen bg-white overflow-x-hidden selection:bg-primary-100 selection:text-primary-900">
+
+      {/* ── Navbar ── */}
+      <header className="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
               <Image
                 src="/logo1.png"
                 alt="TAPTO Logo"
-                width={50}
-                height={50}
-                className="h-12 w-12"
+                width={48}
+                height={48}
+                className="h-10 w-10"
               />
               <div>
-                <div className="text-2xl font-bold font-heading text-primary-600">TAPTO</div>
-                <div className="text-xs text-gray-600">Swipe. Shop. Smile.</div>
+                <span className="text-2xl font-bold font-heading text-gray-900 tracking-tight">TAPTO</span>
               </div>
-            </div>
+            </Link>
 
             {/* Nav Actions */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <Link
                 href="/auth/login"
-                className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-primary-600 transition"
+                className="hidden sm:inline-flex px-5 py-2.5 text-sm font-semibold text-gray-600 hover:text-primary-600 transition-colors"
               >
-                Login
+                Sign In
               </Link>
               <Link
                 href="/auth/register"
-                className="px-6 py-2 rounded-xl bg-primary-600 text-white text-sm font-semibold shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all flex items-center gap-2"
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-600 text-white text-sm font-semibold rounded-full hover:bg-primary-700 hover:scale-105 transition-all shadow-lg shadow-primary-500/20"
               >
-                Get Started <ChevronRight className="w-4 h-4" />
+                Get Started
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="px-4 py-20 relative overflow-hidden">
-        <div style={{ maxWidth: "72rem", marginLeft: "auto", marginRight: "auto", position: "relative", zIndex: 10 }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "3rem", alignItems: "center" }}>
-            {/* Left: CTA */}
-            <div style={{ flex: "1 1 480px", minWidth: 0 }} className="space-y-8">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-700 border border-primary-100">
-                <Sparkles className="w-4 h-4" /> Daily drops live now
-              </div>
-
-              <h1 className="text-5xl md:text-7xl font-bold font-heading text-gray-900 leading-tight">
-                Swipe. Save. <span className="text-primary-600">Smile.</span>
-              </h1>
-              <p className="text-xl text-gray-600 leading-relaxed">
-                Tap through curated looks, heart your favorites, and unlock member-only perks every day. Shopping has never been this addictive.
-              </p>
-              
-              <div className="flex flex-wrap gap-4">
-                <Link
-                  href="/auth/register"
-                  className="group bg-primary-600 text-white px-10 py-4 rounded-xl font-semibold hover:bg-primary-700 transition-all shadow-2xl shadow-primary-600/40 hover:shadow-3xl hover:-translate-y-0.5 flex items-center gap-2 relative overflow-hidden"
-                >
-                  <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
-                  <span className="relative">Start for free</span>
-                  <ChevronRight className="w-5 h-5 relative group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link
-                  href="/auth/login"
-                  className="group border-2 border-gray-300 text-gray-700 px-10 py-4 rounded-xl font-semibold hover:border-primary-500 hover:text-primary-600 hover:bg-primary-50 transition-all flex items-center gap-2"
-                >
-                  Login
-                </Link>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", paddingTop: "1.5rem" }}>
-                <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-4 border border-emerald-100 group hover:shadow-md transition-all">
-                  <div className="flex items-center gap-2 text-emerald-700 mb-1">
-                    <Check className="w-4 h-4" />
-                    <span className="font-bold text-sm">Free Shipping</span>
-                  </div>
-                  <p className="text-xs text-emerald-600">On orders over $50</p>
-                </div>
-                <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-xl p-4 border border-violet-100 group hover:shadow-md transition-all">
-                  <div className="flex items-center gap-2 text-violet-700 mb-1">
-                    <Shield className="w-4 h-4" />
-                    <span className="font-bold text-sm">Secure</span>
-                  </div>
-                  <p className="text-xs text-violet-600">256-bit encryption</p>
-                </div>
-                <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-100 group hover:shadow-md transition-all">
-                  <div className="flex items-center gap-2 text-amber-700 mb-1">
-                    <Clock className="w-4 h-4" />
-                    <span className="font-bold text-sm">24/7 Support</span>
-                  </div>
-                  <p className="text-xs text-amber-600">Always here to help</p>
-                </div>
-                <div className="bg-gradient-to-br from-rose-50 to-pink-50 rounded-xl p-4 border border-rose-100 group hover:shadow-md transition-all">
-                  <div className="flex items-center gap-2 text-rose-700 mb-1">
-                    <Heart className="w-4 h-4" />
-                    <span className="font-bold text-sm">Easy Returns</span>
-                  </div>
-                  <p className="text-xs text-rose-600">30-day guarantee</p>
-                </div>
-              </div>
+      {/* ── Hero Section with Web + Mobile Mockups ── */}
+      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center max-w-5xl mx-auto mb-20 animate-fadeInUp">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 text-primary-700 text-xs font-bold uppercase tracking-wider mb-8">
+              <Sparkles className="w-3 h-3" />
+              <span className="relative">
+                The All-In-One Commerce Platform
+                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary-200"></span>
+              </span>
             </div>
 
-            {/* Right: Product Card with real image */}
-            <div style={{ flex: "1 1 320px", minWidth: 0, maxWidth: "28rem" }} className="relative mx-auto w-full">
-              {/* Floating badges */}
-              <div className="absolute -top-4 -left-4 z-20 bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-2xl px-4 py-3 shadow-xl flex items-center gap-2 animate-bounce">
-                <Zap className="w-5 h-5 fill-white" />
-                <span className="font-bold text-sm">50% OFF</span>
-              </div>
-              
-              {/* Additional floating element */}
-              <div className="absolute -top-2 -right-2 z-20">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-yellow-400 rounded-full blur-md opacity-75 animate-pulse"></div>
-                  <div className="relative bg-gradient-to-br from-yellow-400 to-orange-500 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-xl">
-                    <div className="text-center">
-                      <div className="text-xs font-bold">NEW</div>
-                      <div className="text-[10px] -mt-0.5">2025</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <h1 className="text-6xl md:text-8xl font-bold font-heading text-gray-900 tracking-tight leading-[0.95] mb-8">
+              Shop anywhere. <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400">Sync everywhere.</span>
+            </h1>
 
-              <div className="bg-white rounded-3xl shadow-2xl p-6 border border-gray-200 relative overflow-hidden">
-                {/* Subtle overlay */}
-                <div className="absolute inset-0 bg-primary-500/5 pointer-events-none"></div>
-                
-                <div className="relative rounded-2xl overflow-hidden bg-gray-100 shadow-inner" style={{ height: "24rem" }}>
-                  <img
-                    src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1100&q=80"
-                    alt="Sale items"
-                    className="absolute inset-0 h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
-
-                  {/* Product info overlay */}
-                  <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-lg">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="font-bold text-gray-900 mb-1">Summer Collection</h3>
-                        <p className="text-sm text-gray-600">Limited time offer</p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <span className="text-2xl font-bold text-primary-600">$49</span>
-                          <span className="text-sm text-gray-400 line-through">$99</span>
-                        </div>
-                      </div>
-                      <button className="bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg rounded-xl p-3 hover:shadow-xl transition-all hover:scale-105">
-                        <Heart className="w-6 h-6" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Quick actions */}
-                  <div className="absolute top-4 right-4 flex flex-col gap-2">
-                    <button className="bg-white/90 backdrop-blur-sm p-2 rounded-lg shadow-md hover:shadow-lg transition-all">
-                      <ShoppingBag className="w-5 h-5 text-gray-700" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating stats */}
-              <div className="absolute -bottom-6 -right-6 bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl px-6 py-4 shadow-xl flex items-center gap-3">
-                <TrendingUp className="w-6 h-6" />
-                <div>
-                  <div className="text-xs opacity-90">Trending</div>
-                  <div className="font-bold text-lg">Top 10%</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="px-4 py-12 bg-primary-600 text-white">
-        <div style={{ maxWidth: "72rem", marginLeft: "auto", marginRight: "auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "2rem" }}>
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">50K+</div>
-              <div className="text-primary-100 text-sm">Happy Shoppers</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">10K+</div>
-              <div className="text-primary-100 text-sm">Daily Orders</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">99%</div>
-              <div className="text-primary-100 text-sm">Satisfaction Rate</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">24/7</div>
-              <div className="text-primary-100 text-sm">Support Available</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="px-4 py-24 bg-white">
-        <div style={{ maxWidth: "72rem", marginLeft: "auto", marginRight: "auto" }} className="space-y-12">
-          <div className="text-center space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-700">
-              <Sparkles className="w-4 h-4" /> Features
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold font-heading text-gray-900">Built to keep you hooked</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Experience shopping like never before with our cutting-edge features</p>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "2rem" }}>
-            <div className="group bg-primary-50 rounded-2xl p-8 hover:shadow-2xl transition-all border border-primary-100 relative overflow-hidden hover:-translate-y-1">
-              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-primary-200 opacity-20 group-hover:opacity-30 transition-opacity" />
-              <div className="relative mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg">
-                <ShoppingBag className="w-7 h-7" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">One-swipe carts</h3>
-              <p className="text-gray-600 leading-relaxed">Add, remove, and reorder in a tap. Lightning-fast checkout with zero friction. Shopping should be effortless.</p>
-            </div>
-
-            <div className="group bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-8 hover:shadow-2xl transition-all border border-pink-100 relative overflow-hidden hover:-translate-y-1">
-              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-pink-200 opacity-20 group-hover:opacity-30 transition-opacity" />
-              <div className="relative mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-lg">
-                <Heart className="w-7 h-7" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Heart it, get it</h3>
-              <p className="text-gray-600 leading-relaxed">Favorites auto-sync across all devices. Never lose track of items you love. Your wishlist, always within reach.</p>
-            </div>
-
-            <div className="group bg-gradient-to-br from-primary-50 to-purple-50 rounded-2xl p-8 hover:shadow-2xl transition-all border border-primary-100 relative overflow-hidden hover:-translate-y-1">
-              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-primary-200 opacity-20 group-hover:opacity-30 transition-opacity" />
-              <div className="relative mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-purple-600 text-white shadow-lg">
-                <Bell className="w-7 h-7" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Drop alerts</h3>
-              <p className="text-gray-600 leading-relaxed">Real-time notifications when your style drops. Be first in line for exclusive deals. Zero FOMO, guaranteed.</p>
-            </div>
-
-            <div className="group bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 hover:shadow-2xl transition-all border border-green-100 relative overflow-hidden hover:-translate-y-1">
-              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-green-200 opacity-20 group-hover:opacity-30 transition-opacity" />
-              <div className="relative mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg">
-                <Shield className="w-7 h-7" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Secure payments</h3>
-              <p className="text-gray-600 leading-relaxed">Bank-level encryption protects every transaction. Shop with confidence knowing your data is safe and secure.</p>
-            </div>
-
-            <div className="group bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-8 hover:shadow-2xl transition-all border border-orange-100 relative overflow-hidden hover:-translate-y-1">
-              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-orange-200 opacity-20 group-hover:opacity-30 transition-opacity" />
-              <div className="relative mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-lg">
-                <Package className="w-7 h-7" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Fast delivery</h3>
-              <p className="text-gray-600 leading-relaxed">Same-day delivery available in major cities. Track your order in real-time from warehouse to doorstep.</p>
-            </div>
-
-            <div className="group bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-8 hover:shadow-2xl transition-all border border-violet-100 relative overflow-hidden hover:-translate-y-1">
-              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-violet-200 opacity-20 group-hover:opacity-30 transition-opacity" />
-              <div className="relative mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg">
-                <Smartphone className="w-7 h-7" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Mobile first</h3>
-              <p className="text-gray-600 leading-relaxed">Designed for your phone. Smooth swipes, instant loads, and intuitive gestures make shopping addictive.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="px-4 py-24 bg-linear-to-br from-primary-600 via-primary-700 to-primary-800 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjA1IiBzdHJva2Utd2lkdGg9IjIiLz48L2c+PC9zdmc+')] opacity-30"></div>
-        
-        <div style={{ maxWidth: "56rem", marginLeft: "auto", marginRight: "auto" }} className="text-center relative z-10">
-          <div className="space-y-8">
-            <h2 className="text-4xl md:text-5xl font-bold font-heading text-white leading-tight">
-              Ready to revolutionize your shopping?
-            </h2>
-            <p className="text-xl text-primary-100 max-w-2xl mx-auto">
-              Join thousands of shoppers who've already discovered the future of online shopping. Start your journey today.
+            <p className="text-xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed">
+              Seamlessly switch between your phone and desktop.
+              Your cart, favorites, and drops follow you across the web.
             </p>
-            
-            <div className="flex flex-wrap justify-center gap-4 pt-4">
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/auth/register"
-                className="bg-white text-primary-600 px-10 py-4 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-2xl hover:shadow-3xl hover:-translate-y-0.5 flex items-center gap-2 text-lg"
+                className="px-10 py-4 bg-primary-600 text-white rounded-full font-bold text-lg hover:bg-primary-700 transition-all shadow-xl shadow-primary-600/20 hover:-translate-y-1"
               >
-                Get Started Free <ChevronRight className="w-5 h-5" />
+                Start Tapping
               </Link>
-              <Link
-                href="/auth/login"
-                className="border-2 border-white/30 text-white px-10 py-4 rounded-xl font-bold hover:bg-white/10 transition-all flex items-center gap-2 text-lg backdrop-blur-sm"
-              >
-                Sign In
-              </Link>
+              <span className="text-sm text-gray-400 font-medium">No app download needed</span>
+            </div>
+          </div>
+
+          {/* ── Mockup Composition ── */}
+          <div className="relative mt-20 h-[500px] md:h-[600px] w-full max-w-7xl mx-auto perspective-1000 flex items-center justify-center">
+
+            {/* Laptop Mockup (Left, Angled Right) */}
+            <div className="relative w-[60%] md:w-[600px] aspect-[16/10] bg-white rounded-t-xl shadow-2xl border-[12px] border-gray-900 z-10 transform -rotate-y-12 translate-x-10 hover:-translate-x-4 transition-all duration-700 ease-out origin-right">
+              {/* Screen Header */}
+              <div className="h-6 bg-gray-100 border-b border-gray-200 flex items-center px-3 gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-red-400"></div>
+                <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
+                <div className="w-2 h-2 rounded-full bg-green-400"></div>
+              </div>
+              {/* Screen Content */}
+              <div className="h-full w-full bg-gray-50 p-4 relative overflow-hidden">
+                <div className="flex gap-4 h-full">
+                  <div className="w-1/4 h-full bg-white rounded-lg shadow-sm"></div>
+                  <div className="flex-1 grid grid-cols-2 gap-3">
+                    <div className="bg-white rounded-lg shadow-sm h-32"></div>
+                    <div className="bg-white rounded-lg shadow-sm h-32"></div>
+                    <div className="bg-white rounded-lg shadow-sm h-32"></div>
+                    <div className="bg-white rounded-lg shadow-sm h-32"></div>
+                  </div>
+                </div>
+                {/* Overlay UI */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/90 backdrop-blur px-6 py-3 rounded-xl shadow-lg border border-gray-100">
+                  <div className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                    <Globe className="w-4 h-4 text-primary-600" />
+                    tapto.com
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-8 pt-8 text-white/90">
-              <div className="flex items-center gap-2">
-                <Check className="w-5 h-5" />
-                <span>No credit card required</span>
+            {/* Phone Mockup (Right, Angled Left - Back to Back feel) */}
+            <div className="relative w-48 md:w-64 aspect-[9/19] bg-white rounded-[2.5rem] shadow-2xl border-[8px] border-gray-900 z-20 transform rotate-y-12 -translate-x-10 hover:translate-x-4 transition-all duration-700 ease-out origin-left">
+              <div className="h-full w-full bg-white relative rounded-[2rem] overflow-hidden">
+                {/* Mobile Header */}
+                <div className="absolute top-0 inset-x-0 h-12 bg-white/90 backdrop-blur z-10 flex items-center justify-center">
+                  <span className="font-bold text-primary-600 text-sm">TAPTO</span>
+                </div>
+                {/* Mobile Content */}
+                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80" className="w-full h-full object-cover" alt="Mobile" />
+                {/* Floating Elements on Phone */}
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[90%] bg-white/90 backdrop-blur p-3 rounded-2xl shadow-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-gray-500 uppercase font-bold">New Drop</span>
+                      <span className="text-sm font-bold text-gray-900">$129.00</span>
+                    </div>
+                    <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white">
+                      <ShoppingBag className="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Check className="w-5 h-5" />
-                <span>14-day free trial</span>
+            </div>
+
+            {/* Sync Badge */}
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 translate-y-1/2 bg-white px-5 py-3 rounded-full shadow-2xl border border-gray-100 z-30 flex items-center gap-3 animate-float-delayed">
+              <div className="p-1.5 bg-green-100 rounded-full text-green-600">
+                <Zap className="w-4 h-4" />
               </div>
-              <div className="flex items-center gap-2">
-                <Check className="w-5 h-5" />
-                <span>Cancel anytime</span>
+              <div className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                Desktop <span className="text-gray-400">&harr;</span> Mobile
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white px-4 py-12">
-        <div style={{ maxWidth: "72rem", marginLeft: "auto", marginRight: "auto" }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "2rem" }} className="mb-8">
-            <div style={{ flex: "1 1 300px", minWidth: 0 }}>
-              <div className="flex items-center gap-3 mb-4">
-                <Image
-                  src="/logo1.png"
-                  alt="TAPTO Logo"
-                  width={40}
-                  height={40}
-                  className="h-10 w-10  "
-                />
-                <div className="text-2xl font-bold font-heading text-primary-600">TAPTO</div>
+      {/* ── Feature Breakdown (Z-Pattern) ── */}
+      <section className="bg-gray-50 py-32 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-32">
+
+          {/* Feature 1: Universal Cart */}
+          <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+            <div className="w-full md:w-1/2">
+              <div className="relative aspect-square md:aspect-[4/3] bg-white rounded-3xl shadow-xl border border-gray-100 p-8 flex items-center justify-center overflow-hidden group hover:shadow-2xl transition-all duration-500">
+                <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-50"></div>
+
+                {/* Visual: Laptop and Phone syncing */}
+                <div className="relative flex items-center gap-4">
+                  {/* Laptop Icon Rep */}
+                  <div className="w-32 h-24 bg-gray-900 rounded-lg flex items-center justify-center relative">
+                    <div className="w-24 h-16 bg-white rounded flex items-center justify-center text-xs text-gray-400">TAPTO Web</div>
+                    <div className="absolute -bottom-2 w-40 h-2 bg-gray-800 rounded-b-lg"></div>
+                  </div>
+
+                  {/* Sync Particles */}
+                  <div className="flex gap-1 animate-pulse">
+                    <div className="w-2 h-2 rounded-full bg-primary-400"></div>
+                    <div className="w-2 h-2 rounded-full bg-primary-500"></div>
+                    <div className="w-2 h-2 rounded-full bg-primary-600"></div>
+                  </div>
+
+                  {/* Phone Icon Rep */}
+                  <div className="w-16 h-28 bg-white border-4 border-gray-900 rounded-2xl flex items-center justify-center relative shadow-lg">
+                    <div className="w-10 h-16 bg-gray-50 rounded flex items-center justify-center text-[8px] text-gray-400">App</div>
+                  </div>
+                </div>
+
+                {/* Floating badge */}
+                <div className="absolute bottom-8 right-8 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 animate-bounce">
+                  <Check className="w-4 h-4" /> Synced
+                </div>
               </div>
-              <p className="text-gray-600 mb-4 max-w-md">
-                The future of online shopping. Swipe, save, and smile with every purchase.
+            </div>
+            <div className="w-full md:w-1/2 space-y-6">
+              <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center text-primary-600">
+                <Globe className="w-7 h-7" />
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold font-heading text-gray-900">
+                Start here. <br /> <span className="text-primary-600">Finish there.</span>
+              </h2>
+              <p className="text-xl text-gray-600 leading-relaxed">
+                Add to cart on your morning commute. Checkout on your desktop at work.
+                Your shopping bag follows you everywhere you go, instantly.
               </p>
-              <div className="flex gap-4">
-                <a href="#" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-primary-100 transition">
-                  <Users className="w-5 h-5 text-gray-600" />
-                </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-primary-100 transition">
-                  <Heart className="w-5 h-5 text-gray-600" />
-                </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-primary-100 transition">
-                  <Star className="w-5 h-5 text-gray-600" />
-                </a>
-              </div>
-            </div>
-            <div style={{ flex: "1 1 140px", minWidth: 0 }}>
-              <h4 className="font-bold text-gray-900 mb-4">Company</h4>
-              <nav className="flex flex-col gap-2 text-gray-600">
-                <a href="#" className="hover:text-primary-600 transition">About Us</a>
-                <a href="#" className="hover:text-primary-600 transition">Careers</a>
-                <a href="#" className="hover:text-primary-600 transition">Press</a>
-                <a href="#" className="hover:text-primary-600 transition">Blog</a>
-              </nav>
-            </div>
-            <div style={{ flex: "1 1 140px", minWidth: 0 }}>
-              <h4 className="font-bold text-gray-900 mb-4">Support</h4>
-              <nav className="flex flex-col gap-2 text-gray-600">
-                <a href="#" className="hover:text-primary-600 transition">Help Center</a>
-                <a href="#" className="hover:text-primary-600 transition">Contact Us</a>
-                <a href="#" className="hover:text-primary-600 transition">Privacy Policy</a>
-                <a href="#" className="hover:text-primary-600 transition">Terms of Service</a>
-              </nav>
+              <ul className="space-y-3 pt-4">
+                {['Real-time cart synchronization', 'Cross-device wishlist', 'Shared history'].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-gray-700 font-medium">
+                    <div className="w-6 h-6 rounded-full bg-primary-50 flex items-center justify-center text-primary-600">
+                      <Check className="w-3.5 h-3.5" />
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
-          <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-600">
-            <div>© 2025 TAPTO. All rights reserved.</div>
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4" />
-              <span>Secured by industry-leading encryption</span>
+
+          {/* Feature 2: Instant Checkout */}
+          <div className="flex flex-col md:flex-row-reverse items-center gap-12 lg:gap-20">
+            <div className="w-full md:w-1/2">
+              <div className="relative aspect-square md:aspect-[4/3] bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl shadow-xl p-8 flex items-center justify-center overflow-hidden group hover:scale-[1.02] transition-transform duration-500">
+                {/* Blur effects */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary-600/20 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary-600/20 rounded-full blur-3xl"></div>
+
+                {/* Visual: Checkout Card */}
+                <div className="relative w-64 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-white space-y-4">
+                  <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                    <span className="font-bold text-lg">Checkout</span>
+                    <span className="text-xs text-gray-400">Tapto Pay</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
+                      <ShoppingBag className="w-6 h-6 text-gray-900" />
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-300">Total</div>
+                      <div className="font-bold text-xl">$142.50</div>
+                    </div>
+                  </div>
+                  <div className="h-12 bg-primary-600 rounded-xl flex items-center justify-center font-bold shadow-lg shadow-primary-600/30 cursor-pointer hover:bg-primary-500 transition-colors">
+                    Pay Now
+                  </div>
+                </div>
+              </div>
             </div>
+            <div className="w-full md:w-1/2 space-y-6">
+              <div className="w-14 h-14 bg-secondary-100 rounded-2xl flex items-center justify-center text-secondary-600">
+                <Zap className="w-7 h-7" />
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold font-heading text-gray-900">
+                Checkout in <br /> <span className="text-secondary-500">Seconds.</span>
+              </h2>
+              <p className="text-xl text-gray-600 leading-relaxed">
+                Skip the forms. Our one-tap checkout remembers your preferences
+                so you can secure that limited drop before it's gone.
+              </p>
+            </div>
+          </div>
+
+          {/* Feature 3: Security */}
+          <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+            <div className="w-full md:w-1/2">
+              <div className="relative aspect-square md:aspect-[4/3] bg-white rounded-3xl shadow-xl border border-gray-100 p-8 flex items-center justify-center overflow-hidden group">
+                <div className="absolute inset-0 bg-[#F9FAFB] pattern-grid-lg opacity-50"></div>
+
+                {/* Visual: Shield Concept */}
+                <div className="relative z-10">
+                  <div className="w-40 h-48 bg-gradient-to-b from-gray-100 to-white border border-gray-200 rounded-[3rem] flex items-center justify-center shadow-lg transform group-hover:rotate-y-12 transition-transform duration-700 perspective-1000">
+                    <Shield className="w-20 h-20 text-gray-300 group-hover:text-primary-600 transition-colors duration-500" />
+                  </div>
+                  <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow-lg border border-gray-100 flex items-center gap-2 whitespace-nowrap">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-xs font-bold text-gray-900">256-bit Encrypted</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="w-full md:w-1/2 space-y-6">
+              <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-900">
+                <Shield className="w-7 h-7" />
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold font-heading text-gray-900">
+                Ironclad <br /> <span className="text-gray-400">Protection.</span>
+              </h2>
+              <p className="text-xl text-gray-600 leading-relaxed">
+                We take security seriously. Every transaction is encrypted,
+                monitored, and insured. Shop without a second thought.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ── Big Impact CTA ── */}
+      <section className="py-32 relative bg-gray-900 overflow-hidden text-center">
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff33_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div className="relative z-10 max-w-4xl mx-auto px-4">
+          <h2 className="text-5xl md:text-7xl font-heading font-bold text-white mb-8 tracking-tight">
+            Your new favorite <br /> way to shop.
+          </h2>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              href="/auth/register"
+              className="px-12 py-5 bg-white text-gray-900 rounded-full font-bold text-xl hover:scale-105 transition-transform"
+            >
+              Get Started Free
+            </Link>
+            <Link
+              href="/auth/login"
+              className="px-12 py-5 border border-white/20 text-white rounded-full font-bold text-xl hover:bg-white/10 transition-colors"
+            >
+              Browser Catalog
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer className="bg-white py-12 border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-2">
+            <span className="text-xl font-bold font-heading text-gray-900">TAPTO</span>
+          </div>
+          <div className="flex gap-8">
+            <span className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-primary-50 hover:text-primary-600 transition-colors cursor-pointer">
+              <Globe className="w-4 h-4" />
+            </span>
+            <span className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-primary-50 hover:text-primary-600 transition-colors cursor-pointer">
+              <Smartphone className="w-4 h-4" />
+            </span>
+          </div>
+          <div className="text-gray-500 text-sm">
+            © 2025 Tapto Inc.
           </div>
         </div>
       </footer>
     </main>
   );
 }
-
