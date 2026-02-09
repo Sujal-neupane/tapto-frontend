@@ -98,7 +98,7 @@ function ShoppingDiscoveryScene() {
           <text x="190" y="208" fill="#fff" fontSize="11" fontWeight="700" fontFamily="system-ui">Air Zoom Runner</text>
           <text x="190" y="222" fill="#94a3b8" fontSize="9" fontFamily="system-ui">Premium Collection</text>
           <g transform="translate(190, 230)">
-            {[0,10,20,30,40].map(x => (
+            {[0, 10, 20, 30, 40].map(x => (
               <polygon key={x} points="4,-4 5.2,-1 8,-1 5.8,0.8 6.5,4 4,2 1.5,4 2.2,0.8 0,-1 2.8,-1" transform={`translate(${x},0) scale(0.7)`} fill="#fbbf24" />
             ))}
             <text x="42" y="2" fill="#94a3b8" fontSize="7" fontFamily="system-ui">4.9</text>

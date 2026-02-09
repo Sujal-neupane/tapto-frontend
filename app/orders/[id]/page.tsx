@@ -27,11 +27,13 @@ import {
 } from "lucide-react";
 import { getOrderById, cancelOrder, Order } from "@/lib/api/orders";
 import { toast } from "react-toastify";
+import { useCurrency } from "@/lib/hooks/useCurrency";
 
 export default function OrderDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
+  const { format: formatCurrency } = useCurrency();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -232,15 +234,15 @@ Phone: ${order.shippingAddress.phone}
 ORDER ITEMS
 ===========
 ${order.items.map(item => 
-  `${item.productName} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}`
+  `${item.productName} (x${item.quantity}) - ${formatCurrency(item.price * item.quantity)}`
 ).join('\n')}
 
 ORDER SUMMARY
 =============
-Subtotal: $${order.subtotal.toFixed(2)}
-Shipping: $${order.shippingFee.toFixed(2)}
-Tax: $${order.tax.toFixed(2)}
-Total: $${order.total.toFixed(2)}
+Subtotal: ${formatCurrency(order.subtotal)}
+Shipping: ${formatCurrency(order.shippingFee)}
+Tax: ${formatCurrency(order.tax)}
+Total: ${formatCurrency(order.total)}
 
 Payment Method: ${order.paymentMethod.type.toUpperCase()}
 ${order.paymentMethod.last4 ? `Card ending in ${order.paymentMethod.last4}` : ''}
@@ -351,8 +353,8 @@ Thank you for your business!
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
-                      <p className="text-sm text-gray-700">${item.price.toFixed(2)} each</p>
+                      <p className="font-bold text-gray-900">{formatCurrency(item.price * item.quantity)}</p>
+                      <p className="text-sm text-gray-700">{formatCurrency(item.price)} each</p>
                     </div>
                   </div>
                 ))}
@@ -365,20 +367,20 @@ Thank you for your business!
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-700">Subtotal</span>
-                  <span className="font-medium text-gray-900">${order.subtotal.toFixed(2)}</span>
+                  <span className="font-medium text-gray-900">{formatCurrency(order.subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-700">Shipping</span>
-                  <span className="font-medium text-gray-900">${order.shippingFee.toFixed(2)}</span>
+                  <span className="font-medium text-gray-900">{formatCurrency(order.shippingFee)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-700">Tax</span>
-                  <span className="font-medium text-gray-900">${order.tax.toFixed(2)}</span>
+                  <span className="font-medium text-gray-900">{formatCurrency(order.tax)}</span>
                 </div>
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between text-lg font-bold">
                     <span className="text-gray-900">Total</span>
-                    <span className="text-primary-600">${order.total.toFixed(2)}</span>
+                    <span className="text-primary-600">{formatCurrency(order.total)}</span>
                   </div>
                 </div>
               </div>

@@ -20,10 +20,12 @@ import {
 } from "lucide-react";
 import { getMyOrders, cancelOrder, Order } from "@/lib/api/orders";
 import { toast } from "react-toastify";
+import { useCurrency } from "@/lib/hooks/useCurrency";
 
 export default function UserOrdersPage() {
   const { user, isLoading: authLoading } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
+  const { format: formatCurrency } = useCurrency();
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -328,7 +330,7 @@ export default function UserOrdersPage() {
                       <span className="text-sm font-medium text-gray-700">
                         {order.items.length} item{order.items.length !== 1 ? 's' : ''}
                       </span>
-                      <span className="text-lg font-bold text-primary-600">${order.total.toFixed(2)}</span>
+                      <span className="text-lg font-bold text-primary-600">{formatCurrency(order.total)}</span>
                     </div>
                     <div className="space-y-2">
                       {order.items.slice(0, 2).map((item, index) => (

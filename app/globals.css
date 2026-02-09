@@ -12,6 +12,7 @@
   font-style: normal;
   font-display: swap;
 }
+
 @font-face {
   font-family: "Geom";
   src: url("/fonts/Geom-Regular.ttf") format("truetype");
@@ -19,6 +20,7 @@
   font-style: normal;
   font-display: swap;
 }
+
 @font-face {
   font-family: "Geom";
   src: url("/fonts/Geom-Medium.ttf") format("truetype");
@@ -26,6 +28,7 @@
   font-style: normal;
   font-display: swap;
 }
+
 @font-face {
   font-family: "Geom";
   src: url("/fonts/Geom-SemiBold.ttf") format("truetype");
@@ -33,6 +36,7 @@
   font-style: normal;
   font-display: swap;
 }
+
 @font-face {
   font-family: "Geom";
   src: url("/fonts/Geom-Bold.ttf") format("truetype");
@@ -182,6 +186,7 @@ body {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -192,6 +197,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -202,6 +208,7 @@ body {
     opacity: 0;
     transform: translateX(-50px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -213,6 +220,7 @@ body {
     opacity: 0;
     transform: translateX(50px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -220,18 +228,24 @@ body {
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-20px);
   }
 }
 
 @keyframes pulse-slow {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.8;
   }
@@ -242,6 +256,7 @@ body {
     transform: translateX(0) rotate(0);
     opacity: 1;
   }
+
   to {
     transform: translateX(-150%) rotate(-20deg);
     opacity: 0;
@@ -253,6 +268,7 @@ body {
     transform: translateX(0) rotate(0);
     opacity: 1;
   }
+
   to {
     transform: translateX(150%) rotate(20deg);
     opacity: 0;
@@ -289,4 +305,107 @@ body {
 
 .animate-swipeRight {
   animation: swipeRight 0.3s ease-out forwards;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 8s ease-in-out infinite;
+}
+
+@keyframes float-delayed {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.animate-float-delayed {
+  animation: float-delayed 4s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.rotate-y-12 {
+  transform: rotateY(12deg);
+}
+
+.rotate-x-12 {
+  transform: rotateX(12deg);
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+/* Brand Utilities */
+.bg-brand-gradient {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+}
+
+.text-brand-gradient {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.bg-accent-gradient {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getDashboardStats, getRecentUsers } from "@/lib/api/admin";
 import { useAuth } from "@/lib/context/auth-context";
 import LogoutButton from "../../_components/logout-button";
+import { useCurrency } from "@/lib/hooks/useCurrency";
 import {
   Users,
   ShoppingBag,
@@ -23,6 +24,7 @@ import {
 
 export default function AdminDashboard() {
   const { user } = useAuth();
+  const { format: formatCurrency } = useCurrency();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [stats, setStats] = useState<any>(null);
   const [recentUsers, setRecentUsers] = useState<any[]>([]);
@@ -425,7 +427,7 @@ export default function AdminDashboard() {
                         <div className="flex-1">
                           <p className="font-medium text-slate-900">Order #{order._id?.slice(-8)}</p>
                           <p className="text-sm text-slate-600">
-                            {order.userId?.name || 'Unknown User'} • ${order.total?.toFixed(2)}
+                            {order.userId?.name || 'Unknown User'} • {formatCurrency(order.total || 0)}
                           </p>
                         </div>
                         <div className="text-right">

@@ -8,15 +8,12 @@ import AuthHeroPanel from "../(_components)/auth-hero-panel";
 
 export default function ForgotPasswordPage() {
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
+    <div className="grid min-h-screen lg:grid-cols-2 bg-white">
       {/* ── Left Branding Panel ── */}
       <AuthHeroPanel variant="forgot" />
 
       {/* ── Right Form Panel ── */}
-      <div
-        className="flex items-center justify-center bg-white"
-        style={{ flex: 1, minWidth: 0, padding: "2rem" }}
-      >
+      <div className="flex items-center justify-center p-4 md:p-8 bg-white">
         <div style={{ width: "100%", maxWidth: "28rem" }}>
           {/* Back link */}
           <Link
