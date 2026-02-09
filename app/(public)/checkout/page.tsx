@@ -6,6 +6,7 @@ import { createOrder, CreateOrderData } from "@/lib/api/orders";
 import { getProductById, Product } from "@/lib/api/products";
 import { getUserAddresses, Address } from "@/lib/api/addresses";
 import { toast } from "react-toastify";
+import { useCurrency } from "@/lib/hooks/useCurrency";
 
 interface CartItem {
   productId: string;
@@ -26,6 +27,7 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
   const [showSavedAddresses, setShowSavedAddresses] = useState(false);
+  const { format: formatCurrency, paymentMethods: availablePaymentMethods, currency } = useCurrency();
 
   // Form state
   const [shippingAddress, setShippingAddress] = useState({
@@ -38,7 +40,7 @@ export default function CheckoutPage() {
     country: 'United States',
   });
   const [paymentMethod, setPaymentMethod] = useState({
-    type: 'card',
+    type: availablePaymentMethods[0]?.id || 'card',
     last4: '4242',
   });
 
@@ -358,41 +360,35 @@ export default function CheckoutPage() {
 
             {/* Payment Method */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Payment Method</h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">Payment Method</h2>
+                <span className="text-sm text-gray-500 flex items-center gap-1">
+                  <span>{currency.flag}</span>
+                  <span>{currency.name}</span>
+                </span>
+              </div>
               <div className="space-y-3">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="card"
-                    checked={paymentMethod.type === 'card'}
-                    onChange={(e) => setPaymentMethod(prev => ({ ...prev, type: e.target.value }))}
-                    className="text-primary-600 focus:ring-primary-500"
-                  />
-                  <span className="ml-2 text-gray-700">Credit/Debit Card</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="paypal"
-                    checked={paymentMethod.type === 'paypal'}
-                    onChange={(e) => setPaymentMethod(prev => ({ ...prev, type: e.target.value }))}
-                    className="text-primary-600 focus:ring-primary-500"
-                  />
-                  <span className="ml-2 text-gray-700">PayPal</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="cod"
-                    checked={paymentMethod.type === 'cod'}
-                    onChange={(e) => setPaymentMethod(prev => ({ ...prev, type: e.target.value }))}
-                    className="text-primary-600 focus:ring-primary-500"
-                  />
-                  <span className="ml-2 text-gray-700">Cash on Delivery</span>
-                </label>
+                {availablePaymentMethods.map((method) => (
+                  <label
+                    key={method.id}
+                    className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                      paymentMethod.type === method.id
+                        ? 'border-primary-500 bg-primary-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="payment"
+                      value={method.id}
+                      checked={paymentMethod.type === method.id}
+                      onChange={(e) => setPaymentMethod(prev => ({ ...prev, type: e.target.value }))}
+                      className="text-primary-600 focus:ring-primary-500"
+                    />
+                    <span className="text-lg">{method.icon}</span>
+                    <span className="text-gray-900 font-medium">{method.label}</span>
+                  </label>
+                ))}
               </div>
             </div>
           </div>
@@ -416,7 +412,7 @@ export default function CheckoutPage() {
                     </div>
                     <div className="text-right">
                       <p className="font-semibold text-gray-900">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {formatCurrency(item.price * item.quantity)}
                       </p>
                     </div>
                   </div>
@@ -429,22 +425,22 @@ export default function CheckoutPage() {
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="text-gray-900">${subtotal.toFixed(2)}</span>
+                  <span className="text-gray-900">{formatCurrency(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Shipping</span>
                   <span className="text-gray-900">
-                    {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
+                    {shipping === 0 ? 'Free' : formatCurrency(shipping)}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Tax</span>
-                  <span className="text-gray-900">${tax.toFixed(2)}</span>
+                  <span className="text-gray-900">{formatCurrency(tax)}</span>
                 </div>
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between text-lg font-semibold">
                     <span className="text-gray-900">Total</span>
-                    <span className="text-gray-900">${total.toFixed(2)}</span>
+                    <span className="text-gray-900">{formatCurrency(total)}</span>
                   </div>
                 </div>
               </div>
@@ -454,7 +450,7 @@ export default function CheckoutPage() {
                 disabled={submitting}
                 className="w-full mt-6 bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {submitting ? 'Processing...' : `Place Order - $${total.toFixed(2)}`}
+                {submitting ? 'Processing...' : `Place Order - ${formatCurrency(total)}`}
               </button>
             </div>
           </div>

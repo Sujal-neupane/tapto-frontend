@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import ProfileDropdown from "./ProfileDropdown";
 import { getProducts, getPersonalizedProducts, Product } from "@/lib/api/products";
 import { resolveImageUrl } from "@/lib/utils/image";
+import { useCurrency } from "@/lib/hooks/useCurrency";
 
 // Product catalog - now fetched from API
 const productCatalog: Product[] = [];
@@ -29,8 +30,11 @@ export default function DashboardPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState<string>("featured");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchExpanded, setSearchExpanded] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const hasLoadedStorage = useRef(false);
+  const { format: formatCurrency } = useCurrency();
 
   // Fetch products on component mount
   useEffect(() => {
@@ -296,30 +300,45 @@ export default function DashboardPage() {
               />
             </div>
 
-            {/* Search Bar */}
-            <div className="hidden md:flex flex-1 max-w-md mx-4">
-              <div className="relative w-full">
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-100 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
-              </div>
+            {/* Search Bar - Expandable */}
+            <div className="hidden md:flex items-center">
+              {searchExpanded ? (
+                <div className="relative w-80 animate-in slide-in-from-right duration-200">
+                  <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Search products, categories, tags..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onBlur={() => { if (!searchQuery) setSearchExpanded(false); }}
+                    className="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-full text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all shadow-sm hover:shadow"
+                    autoFocus
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => { setSearchQuery(""); searchInputRef.current?.focus(); }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition"
+                    >
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <button
+                  onClick={() => setSearchExpanded(true)}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-full text-sm text-gray-400 hover:bg-white hover:border-gray-300 hover:shadow-sm transition-all cursor-pointer"
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  Search...
+                </button>
+              )}
             </div>
 
             <nav className="hidden md:flex items-center gap-6">
@@ -419,7 +438,7 @@ export default function DashboardPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Price Range: ${maxPrice}
+                    Price Range: {formatCurrency(maxPrice)}
                   </label>
                   <input
                     type="range"
@@ -437,7 +456,7 @@ export default function DashboardPage() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-600"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm text-black focus:outline-none focus:ring-2 focus:ring-primary-600"
                   >
                     <option value="featured">Featured</option>
                     <option value="price-low">Price: Low to High</option>
@@ -459,10 +478,10 @@ export default function DashboardPage() {
           </svg>
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder="Search products, categories, tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-gray-100 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition"
+            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-full text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all shadow-sm"
           />
         </div>
       </div>
@@ -604,15 +623,15 @@ export default function DashboardPage() {
                               {currentProduct.discount ? (
                                 <>
                                   <span className="text-3xl font-bold text-gray-900">
-                                    ${getDiscountedPrice(currentProduct)}
+                                    {formatCurrency(Number(getDiscountedPrice(currentProduct)))}
                                   </span>
                                   <span className="text-lg text-gray-400 line-through">
-                                    ${currentProduct.price.toFixed(2)}
+                                    {formatCurrency(currentProduct.price)}
                                   </span>
                                 </>
                               ) : (
                                 <span className="text-3xl font-bold text-gray-900">
-                                  ${currentProduct.price.toFixed(2)}
+                                  {formatCurrency(currentProduct.price)}
                                 </span>
                               )}
                             </div>
@@ -770,15 +789,15 @@ export default function DashboardPage() {
                             {product.discount ? (
                               <div className="flex items-center gap-2">
                                 <span className="text-lg font-bold text-gray-900">
-                                  ${getDiscountedPrice(product)}
+                                  {formatCurrency(Number(getDiscountedPrice(product)))}
                                 </span>
                                 <span className="text-sm text-gray-400 line-through">
-                                  ${product.price.toFixed(2)}
+                                  {formatCurrency(product.price)}
                                 </span>
                               </div>
                             ) : (
                               <span className="text-lg font-bold text-gray-900">
-                                ${product.price.toFixed(2)}
+                                {formatCurrency(product.price)}
                               </span>
                             )}
                           </div>
@@ -856,15 +875,15 @@ export default function DashboardPage() {
                           {product.discount ? (
                             <div className="flex items-center gap-2">
                               <span className="text-lg font-bold text-gray-900">
-                                ${getDiscountedPrice(product)}
+                                {formatCurrency(Number(getDiscountedPrice(product)))}
                               </span>
                               <span className="text-sm text-gray-400 line-through">
-                                ${product.price.toFixed(2)}
+                                {formatCurrency(product.price)}
                               </span>
                             </div>
                           ) : (
                             <span className="text-lg font-bold text-gray-900">
-                              ${product.price.toFixed(2)}
+                              {formatCurrency(product.price)}
                             </span>
                           )}
                         </div>
@@ -917,10 +936,10 @@ export default function DashboardPage() {
                   <div className="flex items-center justify-between text-lg">
                     <span className="font-medium text-gray-700">Subtotal ({cartItemsWithQty.reduce((sum, item) => sum + item.quantity, 0)} items)</span>
                     <span className="font-bold text-gray-900">
-                      ${cartItemsWithQty.reduce((sum, { product, quantity }) => {
+                      {formatCurrency(cartItemsWithQty.reduce((sum, { product, quantity }) => {
                         const price = product.discount ? Number(getDiscountedPrice(product)) : product.price;
                         return sum + price * quantity;
-                      }, 0).toFixed(2)}
+                      }, 0))}
                     </span>
                   </div>
                   <Link href="/checkout" className="block">

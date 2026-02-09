@@ -8,6 +8,7 @@ import { Heart, ShoppingCart, ArrowLeft, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { getProductById, Product } from "@/lib/api/products";
 import { resolveImageUrl } from "@/lib/utils/image";
+import { useCurrency } from "@/lib/hooks/useCurrency";
 
 interface WishlistItem {
   productId: string;
@@ -22,6 +23,7 @@ export default function UserWishlistPage() {
   const router = useRouter();
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const { format: formatCurrency } = useCurrency();
 
   useEffect(() => {
     const loadWishlist = async () => {
@@ -182,11 +184,11 @@ export default function UserWishlistPage() {
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-2">
                       <span className="text-lg font-bold text-gray-900">
-                        ${item.price.toFixed(2)}
+                        {formatCurrency(item.price)}
                       </span>
                       {item.discount && (
                         <span className="text-sm text-gray-500 line-through">
-                          ${(item.price / (1 - item.discount / 100)).toFixed(2)}
+                          {formatCurrency(item.price / (1 - item.discount / 100))}
                         </span>
                       )}
                     </div>

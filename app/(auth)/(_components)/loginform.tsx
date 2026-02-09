@@ -7,9 +7,11 @@ import { useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, Loader2, Sparkles } from "lucide-react";
 import { loginSchema, type LoginFormData } from "..//..//../lib/validations/auth";
 import { handleLogin } from "../../../lib/actions/auth-action";
+import { useAuth } from "@/lib/context/auth-context";
 
 export default function LoginForm() {
   const router = useRouter();
+  const { setUser, setToken } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -34,6 +36,10 @@ export default function LoginForm() {
     try {
       const result = await handleLogin(data);
       if (result.success) {
+        // Update auth context immediately so UI reflects login state
+        if (result.data) setUser(result.data);
+        if (result.token) setToken(result.token);
+
         const user = result.data;
         if (user && user.role === "admin") {
           router.push("/admin/dashboard");

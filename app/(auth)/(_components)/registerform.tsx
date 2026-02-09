@@ -21,9 +21,11 @@ import {
 } from "lucide-react";
 import { RegisterFormData, registerSchema } from "../../../lib/validations/auth";
 import { handleRegister } from "../../../lib/actions/auth-action";
+import { useAuth } from "@/lib/context/auth-context";
 
 export default function RegisterForm() {
   const router = useRouter();
+  const { setUser, setToken } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -75,6 +77,10 @@ export default function RegisterForm() {
       });
       
       if (result.success) {
+        // Update auth context immediately so UI reflects login state
+        if (result.data) setUser(result.data);
+        if (result.token) setToken(result.token);
+
         router.push(result.redirect || "/dashboard");
         router.refresh();
       } else {

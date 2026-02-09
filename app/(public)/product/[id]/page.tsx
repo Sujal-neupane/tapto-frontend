@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { getProductById, Product } from "@/lib/api/products";
 import { resolveImageUrl } from "@/lib/utils/image";
 import { toast } from "react-toastify";
+import { useCurrency } from "@/lib/hooks/useCurrency";
 
 export default function ProductDetailsPage() {
   const params = useParams();
@@ -20,6 +21,7 @@ export default function ProductDetailsPage() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const { format: formatCurrency } = useCurrency();
 
   // Check if product is in wishlist on mount
   useEffect(() => {
@@ -270,10 +272,10 @@ export default function ProductDetailsPage() {
                 {product.discount ? (
                   <>
                     <span className="text-4xl font-bold text-gray-900">
-                      ${discountedPrice.toFixed(2)}
+                      {formatCurrency(discountedPrice)}
                     </span>
                     <span className="text-2xl text-gray-500 line-through">
-                      ${product.price.toFixed(2)}
+                      {formatCurrency(product.price)}
                     </span>
                     <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
                       {product.discount}% OFF
@@ -281,7 +283,7 @@ export default function ProductDetailsPage() {
                   </>
                 ) : (
                   <span className="text-4xl font-bold text-gray-900">
-                    ${product.price.toFixed(2)}
+                    {formatCurrency(product.price)}
                   </span>
                 )}
               </div>
@@ -396,7 +398,7 @@ export default function ProductDetailsPage() {
                 onClick={handleAddToCart}
                 className="w-full bg-primary-600 text-white py-4 rounded-xl font-semibold hover:bg-primary-700 transition-colors text-lg shadow-lg hover:shadow-xl"
               >
-                Add to Cart - ${discountedPrice.toFixed(2)}
+                Add to Cart - {formatCurrency(discountedPrice)}
               </button>
               <button
                 onClick={handleBuyNow}
@@ -503,7 +505,7 @@ export default function ProductDetailsPage() {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span className="text-gray-600">Base Price:</span>
-                        <span className="font-medium">${product.price.toFixed(2)}</span>
+                        <span className="font-medium">{formatCurrency(product.price)}</span>
                       </div>
                       {product.discount && (
                         <>
@@ -513,14 +515,14 @@ export default function ProductDetailsPage() {
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-600">Final Price:</span>
-                            <span className="font-medium text-green-600">${discountedPrice.toFixed(2)}</span>
+                            <span className="font-medium text-green-600">{formatCurrency(discountedPrice)}</span>
                           </div>
                         </>
                       )}
                       <div className="flex justify-between">
                         <span className="text-gray-600">Savings:</span>
                         <span className="font-medium text-green-600">
-                          ${product.discount ? (product.price - discountedPrice).toFixed(2) : '0.00'}
+                          {formatCurrency(product.discount ? product.price - discountedPrice : 0)}
                         </span>
                       </div>
                     </div>

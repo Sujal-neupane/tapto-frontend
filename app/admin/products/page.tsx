@@ -18,9 +18,11 @@ import {
   Box,
 } from "lucide-react";
 import Link from "next/link";
+import { useCurrency } from "@/lib/hooks/useCurrency";
 
 const AdminProductsPage = () => {
   const router = useRouter();
+  const { format: formatCurrency } = useCurrency();
   const [products, setProducts] = useState<AdminProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -174,11 +176,11 @@ const AdminProductsPage = () => {
                     <div className="flex items-center gap-1">
                       <DollarSign className="w-4 h-4 text-slate-600" />
                       <span className="font-bold text-slate-900">
-                        ${product.price.toFixed(2)}
+                        {formatCurrency(product.price)}
                       </span>
                       {product.discount && product.discount > 0 && (
                         <span className="text-sm text-slate-500 line-through ml-1">
-                          ${(product.price * (1 + product.discount / 100)).toFixed(2)}
+                          {formatCurrency(product.price * (1 + product.discount / 100))}
                         </span>
                       )}
                     </div>

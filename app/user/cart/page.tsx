@@ -8,6 +8,7 @@ import { ShoppingCart, ArrowLeft, Trash2, Plus, Minus } from "lucide-react";
 import { toast } from "react-toastify";
 import { getProductById, Product } from "@/lib/api/products";
 import { resolveImageUrl } from "@/lib/utils/image";
+import { useCurrency } from "@/lib/hooks/useCurrency";
 
 interface CartItem {
   productId: string;
@@ -23,6 +24,7 @@ export default function UserCartPage() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const { format: formatCurrency } = useCurrency();
 
   useEffect(() => {
     const loadCart = async () => {
@@ -213,11 +215,11 @@ export default function UserCartPage() {
                       <h3 className="font-medium text-gray-900">{item.name}</h3>
                       <div className="flex items-center space-x-2 mt-1">
                         <span className="text-lg font-bold text-gray-900">
-                          ${item.price.toFixed(2)}
+                          {formatCurrency(item.price)}
                         </span>
                         {item.discount && (
                           <span className="text-sm text-gray-500 line-through">
-                            ${(item.price / (1 - item.discount / 100)).toFixed(2)}
+                            {formatCurrency(item.price / (1 - item.discount / 100))}
                           </span>
                         )}
                       </div>
@@ -243,7 +245,7 @@ export default function UserCartPage() {
                     {/* Item Total */}
                     <div className="text-right">
                       <p className="font-semibold text-gray-900">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {formatCurrency(item.price * item.quantity)}
                       </p>
                     </div>
 
@@ -267,24 +269,24 @@ export default function UserCartPage() {
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal ({getTotalItems()} items)</span>
-                    <span className="font-medium text-black">${getTotalPrice().toFixed(2)}</span>
+                    <span className="font-medium text-black">{formatCurrency(getTotalPrice())}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping</span>
                     <span className="font-medium text-black">
-                      {getTotalPrice() > 50 ? 'Free'  : '$9.99'}
+                      {getTotalPrice() > 50 ? 'Free'  : formatCurrency(9.99)}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Tax</span>
-                    <span className="font-medium text-black">${(getTotalPrice() * 0.08).toFixed(2)}</span>
+                    <span className="font-medium text-black">{formatCurrency(getTotalPrice() * 0.08)}</span>
                   </div>
                 </div>
 
                 <div className="border-t border-gray-200 pt-4 mb-6">
                   <div className="flex justify-between text-lg font-bold text-black">
                     <span>Total</span>
-                    <span>${(getTotalPrice() + (getTotalPrice() > 50 ? 0 : 9.99) + (getTotalPrice() * 0.08)).toFixed(2)}</span>
+                    <span>{formatCurrency(getTotalPrice() + (getTotalPrice() > 50 ? 0 : 9.99) + (getTotalPrice() * 0.08))}</span>
                   </div>
                 </div>
 

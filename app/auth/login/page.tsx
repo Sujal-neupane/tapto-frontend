@@ -3,8 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import LoginForm from "../../(auth)/(_components)/loginform";
-import AuthHeroPanel from "../../(auth)/(_components)/auth-hero-panel";
 import { ArrowLeft, Lock, ChevronRight } from "lucide-react";
+import AuthHeroPanel from "@/app/(auth)/(_components)/auth-hero-panel";
 
 export default function LoginPage() {
   return (

@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { getAdminOrderById, updateAdminOrderStatus, AdminOrder } from "@/lib/api/admin";
 import { resolveImageUrl } from "../../../../lib/utils/image";
 import { toast } from "react-toastify";
+import { useCurrency } from "@/lib/hooks/useCurrency";
 import {
   ShoppingBag,
   ArrowLeft,
@@ -27,6 +28,7 @@ const AdminOrderDetailsPage = () => {
   const router = useRouter();
   const params = useParams();
   const orderId = params.id as string;
+  const { format: formatCurrency } = useCurrency();
 
   const [order, setOrder] = useState<AdminOrder | null>(null);
   const [loading, setLoading] = useState(true);
@@ -239,7 +241,7 @@ const AdminOrderDetailsPage = () => {
                 <DollarSign className="w-5 h-5 text-slate-600" />
                 <div>
                   <div className="text-sm text-slate-600">Total Amount</div>
-                  <div className="font-bold text-slate-900 text-lg">${order.total?.toFixed(2)}</div>
+                  <div className="font-bold text-slate-900 text-lg">{formatCurrency(order.total || 0)}</div>
                 </div>
               </div>
             </div>
@@ -302,8 +304,8 @@ const AdminOrderDetailsPage = () => {
                   </div>
                   <div className="text-right">
                     <div className="text-sm text-slate-600">Quantity: {item.quantity}</div>
-                    <div className="font-medium text-slate-900">${item.price.toFixed(2)} each</div>
-                    <div className="font-bold text-slate-900">${(item.price * item.quantity).toFixed(2)}</div>
+                    <div className="font-medium text-slate-900">{formatCurrency(item.price)} each</div>
+                    <div className="font-bold text-slate-900">{formatCurrency(item.price * item.quantity)}</div>
                   </div>
                 </div>
               ))}
@@ -315,11 +317,11 @@ const AdminOrderDetailsPage = () => {
                 <div className="w-64">
                   <div className="flex justify-between text-sm text-slate-600 mb-2">
                     <span>Subtotal ({order.items.length} items)</span>
-                    <span>${order.total?.toFixed(2)}</span>
+                    <span>{formatCurrency(order.total || 0)}</span>
                   </div>
                   <div className="flex justify-between text-lg font-bold text-slate-900 pt-2 border-t border-slate-200">
                     <span>Total</span>
-                    <span>${order.total?.toFixed(2)}</span>
+                    <span>{formatCurrency(order.total || 0)}</span>
                   </div>
                 </div>
               </div>
